@@ -138,5 +138,8 @@
       }
     }
   },
-  "defaultProject": "DemoNumber6"
+  "defaultProject": "DemoNumber6",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
