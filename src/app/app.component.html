@@ -1,2 +1,22 @@
-<app-permit></app-permit>
-<router-outlet></router-outlet>
+<div>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>Permit Applications</span>
+      <span class="example-spacer"></span>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [routerLink]="['/search']">
+          <mat-icon>search</mat-icon>
+          <span>Search</span>
+        </button>
+        <button mat-menu-item [routerLink]="['/about']">
+          <mat-icon>info</mat-icon>
+          <span>About</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+<router-outlet #routerOutlet="outlet"></router-outlet>
