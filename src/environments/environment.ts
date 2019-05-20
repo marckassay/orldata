@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  token: 'SODA_APP_TOKEN',
+  endpoint: 'https://data.cityoforlando.net/resource/ryhf-m453.json'
 };
 
 /*
