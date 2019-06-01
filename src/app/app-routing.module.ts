@@ -1,29 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
-    path: '',
-    redirectTo: '/permit',
-    pathMatch: 'full'
-  },
-  {
-    path: 'permit',
-    loadChildren: './permit/permit.module#PermitModule'
-  },
-  {
-    path: 'search',
-    loadChildren: './search/search.module#SearchModule'
+    path: 'home',
+    loadChildren: './app.module#AppModule'
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,
-    {
-      relativeLinkResolution: 'legacy',
-      enableTracing: true, // <-- debugging purposes only
-      initialNavigation: false
-    })],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }

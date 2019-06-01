@@ -7,13 +7,104 @@
 
 
 // Copy the palettes from your selected theme (usually theme.scss).
-$app-primary: mat-palette($mat-grey);
+// $app-primary: mat-palette($mat-grey);
+@import '../node_modules/@angular/material/theming';
+/*
+@import './app/pages/component-category-list/component-category-list-theme';
+@import './app/pages/component-list/component-list-theme';
+@import './app/pages/component-sidenav/component-sidenav-theme';
+@import './app/pages/component-viewer/component-viewer-theme';
+@import './app/pages/guide-list/guide-list-theme';
+@import './app/pages/homepage/homepage-theme';
+@import './app/shared/example-viewer/example-viewer-theme';
+@import './app/shared/footer/footer-theme';
+@import './app/shared/navbar/navbar-theme';
+@import './app/shared/table-of-contents/table-of-contents-theme';
+@import './styles/api-theme';
+@import './styles/markdown-theme';
+@import './styles/svg-theme';
+@import './styles/tables-theme';
+ */
+
+// Styles for the docs app that are based on the current theme.
+@mixin material-docs-app-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $next-theme: mat-palette($mat-red);
+
+/*   .docs-app-background {
+    background: mat-color($background, background);
+  }
+
+  .docs-primary-header {
+    background: mat-color($primary);
+
+    h1 {
+      color: mat-color($primary, default-contrast);
+    }
+  } */
+
+  header,
+  .docs-footer {
+    background: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+
+/*   .is-next-version {
+    background: mat-color($next-theme, 900) !important;
+  } */
+
+/*   @include component-category-list-theme($theme);
+  @include component-list-theme($theme);
+  @include component-viewer-sidenav-theme($theme);
+  @include component-viewer-theme($theme);
+  @include docs-site-api-theme($theme);
+  @include docs-site-markdown-theme($theme);
+  @include docs-site-svg-theme($theme);
+  @include docs-site-tables-theme($theme);
+  @include example-viewer-theme($theme); */
+  @include footer-theme($theme);
+ /*  @include guide-list-theme($theme);
+  @include home-page-theme($theme);
+  @include nav-bar-theme($theme);
+  @include table-of-contents-theme($theme); */
+}
+
+@mixin footer-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  orl-footer {
+    .docs-footer-links a {
+      color: mat-color($primary, default-contrast);
+    }
+  }
+}
+
+// Define the light theme.
+$primary: mat-palette($mat-indigo);
+$accent:  mat-palette($mat-pink, A200, A100, A400);
+
+$theme: mat-light-theme($primary, $accent);
+@include angular-material-theme($theme);
+@include material-docs-app-theme($theme);
 
 html, body { height: 100%; }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  // TODO: find responsive method of darkening background.
-  // background-color: map_get($mat-dark-theme-background, background);
-  background-color: #3b3b3b;
+}
+
+.docs-footer {
+  background: mat-color($primary);
+  color: mat-color($primary, default-contrast);
+  padding: 12px;
+  font-size: 12px;
+  margin-top: 40px;
 }
