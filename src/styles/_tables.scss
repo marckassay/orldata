@@ -1,0 +1,43 @@
+@import './constants';
+
+.orl-api table,
+.orl-markdown-table {
+  border-collapse: collapse;
+  border-radius: 2px;
+  border-spacing: 0;
+  margin: 0 0 32px 0;
+  width: 100%;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.orl-api th,
+.orl-markdown-th {
+  font-weight: 400;
+  max-width: 100px;
+  padding: 13px 32px;
+  text-align: left;
+}
+
+.orl-api td,
+.orl-markdown-td {
+  font-weight: 400;
+  padding: 8px 16px;
+}
+
+
+@media (max-width: $small-breakpoint-width) {
+  .orl-api table,
+  .orl-markdown-table {
+    margin: 0 0 32px 0;
+  }
+
+  .orl-api th,
+  .orl-markdown-th {
+    padding: 6px 16px;
+  }
+
+  .orl-api td,
+  .orl-markdown-td {
+    padding: 4px 8px;
+  }
+}

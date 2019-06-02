@@ -8,6 +8,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
+import { StyleManager } from './core/shared/style-manager';
+import { ThemePickerModule } from './core/shared/theme-picker';
 
 
 @NgModule({
@@ -17,7 +19,6 @@ import { CoreModule } from './core/core.module';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-
     /**
      * StoreModule.forRoot is imported once in the root module, accepting a reducer
      * function or object map of reducer functions. If passed an object of
@@ -56,7 +57,9 @@ import { CoreModule } from './core/core.module';
    // EffectsModule.forRoot([]),
 
     CoreModule,
+    ThemePickerModule
   ],
+  providers: [StyleManager],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
