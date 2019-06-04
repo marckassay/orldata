@@ -30,8 +30,8 @@ export class AppComponent implements OnInit {
     );
 
     this.iconRegistry.addSvgIcon(
-      'orlando_open_data_fountain',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/orlando-open-data-fountain.svg')
+      'orlando_fountain',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/orlando-fountain.svg')
     );
   }
 }

@@ -1,59 +1,60 @@
 <header class="orl-header-background" [class.is-next-version]="isNextVersion">
   <div class="orl-header-section">
     <div class="orl-header-headline">
-      <h1 class="mat-h1">City of Orlando Open Data</h1>
-      <h2>an unoffical syndication app</h2>
+      <h1>City of Orlando</h1>
+      <h2>Open Data</h2>
+      <h3>an unoffical syndication app</h3>
     </div>
-    <div class="orl-header-start">
+<!--     <div class="orl-header-start">
       <a mat-raised-button class="orl-button" routerLink="/guide/getting-started">Get started</a>
-    </div>
+    </div> -->
   </div>
 </header>
 
 <div class="orl-homepage-promo">
-  <div class="orl-homepage-row">
-    <div class="orl-homepage-promo-img">
-      <orl-svg-viewer src="../assets/img/homepage/sprintzerotoapp.svg" scaleToContainer="true"></orl-svg-viewer>
-    </div>
-    <div class="orl-homepage-promo-desc">
-      <h2>Sprint from Zero to App</h2>
-      <p>Hit the ground running with comprehensive, modern UI components that work across
-        the web, mobile and desktop.</p>
-    </div>
-  </div>
-  <div class="orl-homepage-row orl-homepage-reverse-row">
-    <div class="orl-homepage-promo-img">
-      <orl-svg-viewer src="../assets/img/homepage/fastandconsistent.svg" scaleToContainer="true"></orl-svg-viewer>
-
-    </div>
-    <div class="orl-homepage-promo-desc">
-      <h2>Fast and Consistent</h2>
-      <p>Finely tuned performance, because every millisecond counts. Fully tested across
-        modern browsers.</p>
-    </div>
+  <div class="orl-homepage-title">
+  <h2>How does this app get city's records?</h2>
   </div>
   <div class="orl-homepage-row">
     <div class="orl-homepage-promo-img">
-      <orl-svg-viewer src="../assets/img/homepage/versatile.svg" scaleToContainer="true"></orl-svg-viewer>
-
+      <orl-svg-viewer src="../assets/img/homepage/orlando-open-data.svg" scaleToContainer="true"></orl-svg-viewer>
     </div>
     <div class="orl-homepage-promo-desc">
-      <h2>Versatile</h2>
-      <p>Themable, for when you need to stay on brand or just have a favorite color.
-        Accessible and internationalized so that all users are welcome.</p>
+
+      <p>In 2016, the City of Orlando, Florida took the initiative to increase public transparency by launching a website of theirs to "provide the public with immediate access to valuable City-specific data."</p>
+      <p>
+        "The public publishing of data will also help the City to drive internal efficiencies at the City, develop opportunities
+        for economic development, enhance community engagement, increase community trust and fuel Orlando’s civic tech
+        ecosystem."
+      </p>
     </div>
+  </div>
+  <div class="orl-homepage-title">
+    <h2>And with the City using Socrata services...</h2>
   </div>
   <div class="orl-homepage-row orl-homepage-reverse-row">
     <div class="orl-homepage-promo-img">
-      <orl-svg-viewer src="../assets/img/homepage/optimized.svg" scaleToContainer="true"></orl-svg-viewer>
-
+      <orl-svg-viewer src="../assets/img/homepage/snu-heart-orlando.svg" scaleToContainer="true"></orl-svg-viewer>
     </div>
     <div class="orl-homepage-promo-desc">
-      <h2>Optimized for Angular</h2>
-      <p>Built by the Angular team to integrate seamlessly with Angular.</p>
+      <p>An Open Data API is available for public use! With this API software developers can query City of Orlando's records for: Building Permits Issued, Business Tax Receipts Issued, Orlando Police Department Cases and Calls for Service and Orlando Police Department Response to Resistance</p>
+    </div>
+  </div>
+  <div class="orl-homepage-title">
+    <h2>Click on the 'Catalog' link to start!</h2>
+  </div>
+  <div class="orl-homepage-row">
+    <div class="orl-homepage-promo-img">
+      <orl-svg-viewer src="../assets/img/homepage/snu-data.svg" scaleToContainer="true"></orl-svg-viewer>
+    </div>
+    <div class="orl-homepage-promo-img right-gap">
+      <orl-svg-viewer src="../assets/img/homepage/snu-washington.svg" scaleToContainer="true"></orl-svg-viewer>
+    </div>
+    <div class="orl-homepage-promo-desc">
+      <p>The catalog is where all available datasets that this application currently provides.</p>
     </div>
   </div>
   <div class="orl-homepage-bottom-start">
-    <a mat-raised-button class="orl-button" routerLink="/guide/getting-started">Get started</a>
+    <a mat-raised-button class="orl-button" color="primary" routerLink="/guide/getting-started">Catalog</a>
   </div>
 </div>

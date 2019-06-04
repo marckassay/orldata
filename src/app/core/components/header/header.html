@@ -1,9 +1,9 @@
 <!-- TODO: figure out if the <nav> should go inside of a <header> element. -->
 <nav class="orl-navbar-header" [class.is-next-version]="isNextVersion">
-  <a mat-button class="orl-button" routerLink="/" aria-label="Angular Material">
+<!--   <a mat-button class="orl-button" routerLink="/" aria-label="Angular Material">
     <img class="orl-angular-logo" src="../../../../assets/orlando-open-data-fountain.svg" alt="angular">
     <span>Orlando Open Data</span>
-  </a>
+  </a> -->
   <a mat-button class="orl-navbar-hide-small orl-button" *ngFor="let key of sectionKeys"
     [routerLink]="key">{{sections[key].name}}</a>
   <a mat-button class="orl-navbar-hide-small orl-button" routerLink="guides">Catalog</a>

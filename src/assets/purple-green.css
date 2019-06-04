@@ -1453,6 +1453,24 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .orl-svg-accent-stop-color {
   stop-color: #69f0ae; }
 
+.orl-svg-primary-dark-10-fill {
+  fill: #8c239e; }
+
+.orl-svg-primary-dark-10-stroke {
+  stroke: #8c239e; }
+
+.orl-svg-primary-dark-10-stop-color {
+  stop-color: #8c239e; }
+
+.orl-svg-primary-dark-20-fill {
+  fill: #7d1f8d; }
+
+.orl-svg-primary-dark-20-stroke {
+  stroke: #7d1f8d; }
+
+.orl-svg-primary-dark-20-stop-color {
+  stop-color: #7d1f8d; }
+
 .orl-svg-primary-dark-30-fill {
   fill: #6d1b7b; }
 

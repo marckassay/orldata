@@ -2,6 +2,11 @@
 $margin-promotion-sections: 60px;
 $margin-promotion-sections-small: 15px;
 
+
+.right-gap {
+  margin-right: 20px;
+}
+
 .orl-header-background {
   overflow: hidden;
 }
@@ -20,10 +25,17 @@ $margin-promotion-sections-small: 15px;
   }
 
   h2 {
-    font-size: 18px;
+    font-size: 48px;
     font-weight: 300;
     line-height: 28px;
     margin: 15px 0 25px 0;
+  }
+
+  h3 {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 28px;
+    margin: 0 0 10px;
   }
 }
 
@@ -49,6 +61,11 @@ $margin-promotion-sections-small: 15px;
   }
 }
 
+.orl-homepage-title {
+  display: flex;
+  max-width: 920px;
+  margin: $margin-promotion-sections 0 0;
+}
 
 .orl-homepage-row {
   display: flex;
