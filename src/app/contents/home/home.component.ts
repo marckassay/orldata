@@ -1,7 +1,6 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { FooterModule } from 'src/app/core/components/footer/footer.component';
 // import { ComponentPageTitle } from '../page-title/page-title';
 
 @Component({
@@ -20,7 +19,7 @@ export class HomeComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [MatButtonModule, FooterModule, RouterModule],
+  imports: [MatButtonModule, RouterModule],
   exports: [HomeComponent],
   declarations: [HomeComponent],
 })
