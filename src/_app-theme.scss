@@ -11,9 +11,11 @@
 @import './app/shared/navbar/navbar-theme';
 @import './app/shared/table-of-contents/table-of-contents-theme'; */
 
-@import './app/contents/home/mixin-theme';
+@import './app/core/components/catalog/mixin-theme';
+@import './app/core/components/home/mixin-theme';
 @import './app/core/components/header/mixin-theme';
 @import './app/core/components/footer/mixin-theme';
+@import './app/core/containers/page-viewer/mixin-theme';
 @import './styles/api-theme';
 @import './styles/markdown-theme';
 @import './styles/svg-theme';
@@ -62,6 +64,7 @@
  // @include example-viewer-theme($theme);
   @include header-theme($theme);
   @include footer-theme($theme);
+  @include page-viewer-theme($theme);
   // @include guide-list-theme($theme);
   @include home-content-theme($theme);
  // @include table-of-contents-theme($theme);

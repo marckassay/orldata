@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
+import { PageViewerModule } from './core/containers/page-viewer/page-viewer.component';
 import { CoreModule } from './core/core.module';
 import { StyleManager } from './core/shared/style-manager';
 import { ThemePickerModule } from './core/shared/theme-picker';
@@ -19,6 +20,7 @@ import { ThemePickerModule } from './core/shared/theme-picker';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    PageViewerModule,
     /**
      * StoreModule.forRoot is imported once in the root module, accepting a reducer
      * function or object map of reducer functions. If passed an object of

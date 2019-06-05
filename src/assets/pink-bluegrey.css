@@ -1453,23 +1453,14 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .orl-svg-accent-stop-color {
   stop-color: #b0bec5; }
 
-.orl-svg-primary-dark-10-fill {
-  fill: #d81557; }
+.orl-svg-primary-dark-40-fill {
+  fill: #900e3a; }
 
-.orl-svg-primary-dark-10-stroke {
-  stroke: #d81557; }
+.orl-svg-primary-dark-40-stroke {
+  stroke: #900e3a; }
 
-.orl-svg-primary-dark-10-stop-color {
-  stop-color: #d81557; }
-
-.orl-svg-primary-dark-20-fill {
-  fill: #c0134e; }
-
-.orl-svg-primary-dark-20-stroke {
-  stroke: #c0134e; }
-
-.orl-svg-primary-dark-20-stop-color {
-  stop-color: #c0134e; }
+.orl-svg-primary-dark-40-stop-color {
+  stop-color: #900e3a; }
 
 .orl-svg-primary-dark-30-fill {
   fill: #a81044; }
@@ -1480,14 +1471,23 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .orl-svg-primary-dark-30-stop-color {
   stop-color: #a81044; }
 
-.orl-svg-primary-dark-40-fill {
-  fill: #900e3a; }
+.orl-svg-primary-dark-20-fill {
+  fill: #c0134e; }
 
-.orl-svg-primary-dark-40-stroke {
-  stroke: #900e3a; }
+.orl-svg-primary-dark-20-stroke {
+  stroke: #c0134e; }
 
-.orl-svg-primary-dark-40-stop-color {
-  stop-color: #900e3a; }
+.orl-svg-primary-dark-20-stop-color {
+  stop-color: #c0134e; }
+
+.orl-svg-primary-dark-10-fill {
+  fill: #d81557; }
+
+.orl-svg-primary-dark-10-stroke {
+  stroke: #d81557; }
+
+.orl-svg-primary-dark-10-stop-color {
+  stop-color: #d81557; }
 
 .orl-svg-primary-light-20-fill {
   fill: #ed4b82; }
@@ -1563,6 +1563,15 @@ app-header {
 
 app-footer .orl-footer-links a {
   color: white; }
+
+orl-page-viewer .orl-header-background {
+  background: #e91e63; }
+
+orl-page-viewer .orl-header-headline {
+  color: white; }
+
+orl-page-viewer .orl-header-start {
+  color: #e91e63; }
 
 app-homepage .orl-header-background {
   background: #e91e63; }

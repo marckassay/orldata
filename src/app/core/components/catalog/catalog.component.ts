@@ -1,7 +1,7 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { CatalogItems } from 'src/app/core/shared/catalog-items/catalog-items';
+import { CatalogItems } from './catalog-items';
 // import { ComponentPageTitle } from '../page-title/page-title';
 
 @Component({
