@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatPaginatorModule, MatProgressSpinnerModule, MatTableModule, MatTabsModule } from '@angular/material';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule } from '@angular/router';
+import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { Observable, Subscription } from 'rxjs';
-import { CatalogItems } from '../../components/catalog/catalog-items';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { TableTabComponent } from './table-tab/table-tab.component';

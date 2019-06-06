@@ -1,4 +1,4 @@
-GET https://data.cityoforlando.net/resource/ryhf-m453.json?$where=processed_date between '2019-06-02T12:00:00' and '2019-06-05T12:00:00' HTTP/1.1
+GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select * where processed_date is not null order by processed_date DESC limit 30 offset 0 HTTP/1.1
 
 Accept: application/json
 X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

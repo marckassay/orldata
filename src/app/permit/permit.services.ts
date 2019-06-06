@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class OrlandoOpenDataService {
+export class PermitService {
   private API_ENDPOINT = environment.endpoint;
   private APP_TOKEN = environment.token || '';
   private httpOptions: {headers: HttpHeaders};
@@ -20,6 +20,21 @@ export class OrlandoOpenDataService {
       })
     };
    }
+
+  getRecentPermits(filter: string, offset: number, limit: number = 30) {
+    const query =
+    'select * ' +
+    'where application_type is ' + filter +
+    'where processed_date is not null ' +
+    'order by processed_date DESC ' +
+    'limit ' + limit + ' offset ' + offset;
+
+    return this.http.get<string[]>(this.getFullQueryExpression(query), this.httpOptions)
+      .pipe(
+        map(types => types),
+        catchError(error => throwError(error))
+      );
+  }
 
   getDistinctApplicationTypes(): Observable<string[]> {
     const query = 'select distinct application_type';
