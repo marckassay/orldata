@@ -5,18 +5,15 @@ import { InjectionToken } from '@angular/core';
  * the state of the reducer plus any selector functions. The `* as`
  * notation packages up all of the exports into a single object.
  */
-import * as fromLayout from '@example-app/core/reducers/layout.reducer';
 import * as fromRouter from '@ngrx/router-store';
-import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
  * our top level state interface is just a map of keys to inner state types.
  */
 export interface State {
-  layout: fromLayout.State;
   router: fromRouter.RouterReducerState<any>;
 }
 
@@ -29,7 +26,6 @@ export const ROOT_REDUCERS = new InjectionToken<
   ActionReducerMap<State, Action>
 >('Root reducers token', {
   factory: () => ({
-    layout: fromLayout.reducer,
     router: fromRouter.routerReducer,
   }),
 });
@@ -56,15 +52,3 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
 export const metaReducers: MetaReducer<State>[] = !environment.production
   ? [logger]
   : [];
-
-/**
- * Layout Reducers
- */
-export const getLayoutState = createFeatureSelector<State, fromLayout.State>(
-  'layout'
-);
-
-export const getShowSidenav = createSelector(
-  getLayoutState,
-  fromLayout.getShowSidenav
-);

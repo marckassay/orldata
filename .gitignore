@@ -48,4 +48,4 @@ testem.log
 Thumbs.db
 
 src/environments/environment.dev.ts
-test-endpoint.http
+*.http

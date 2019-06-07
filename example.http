@@ -1,4 +1,4 @@
-GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select * where processed_date is not null order by processed_date DESC limit 30 offset 0 HTTP/1.1
+GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select processed_date, application_type where processed_date is not null order by processed_date DESC limit 30
 
 Accept: application/json
 X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

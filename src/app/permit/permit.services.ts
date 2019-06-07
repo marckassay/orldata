@@ -16,22 +16,22 @@ export class PermitService {
     this.httpOptions = {
       headers: new HttpHeaders({
          Accept: 'application/json',
+        'Content-type': 'application/json',
         'X-App-Token': this.APP_TOKEN
       })
     };
    }
 
-  getRecentPermits(filter: string, offset: number, limit: number = 30) {
+  getRecentPermits(filter: string, offset: number, limit: number = 30): Observable<object[]> {
     const query =
-    'select * ' +
-    'where application_type is ' + filter +
+    'select processed_date, application_type ' +
+    // 'where application_type is ' + filter +
     'where processed_date is not null ' +
     'order by processed_date DESC ' +
-    'limit ' + limit + ' offset ' + offset;
+    'limit ' + limit; // + ' offset ' + offset;
 
-    return this.http.get<string[]>(this.getFullQueryExpression(query), this.httpOptions)
+    return this.http.get<object[]>(this.getFullQueryExpression(query), this.httpOptions)
       .pipe(
-        map(types => types),
         catchError(error => throwError(error))
       );
   }
@@ -46,7 +46,7 @@ export class PermitService {
         );
   }
 
-  private getFullQueryExpression(query): string {
-    return this.API_ENDPOINT + '?$query = ' + query;
+  private getFullQueryExpression(query: string): string {
+    return this.API_ENDPOINT + '?$query=' + query;
   }
 }

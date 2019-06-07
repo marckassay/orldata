@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 export const searchSuccess = createAction(
   '[Permits/API] Search Success',
-  props<{ permits: object[] }>()
+  props<{ results: object[] }>()
 );
 
 export const searchFailure = createAction(

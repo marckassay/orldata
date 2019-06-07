@@ -1,22 +1,15 @@
-import {
-  Component,
-  ViewEncapsulation,
-  ChangeDetectionStrategy,
-  NgModule,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
-import {StyleManager} from '../style-manager/style-manager';
-import {ThemeStorage, DocsSiteTheme} from './theme-storage/theme-storage';
-import {MatButtonModule} from '@angular/material/button';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatIconModule} from '@angular/material/icon';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {CommonModule} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {map, filter} from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, HostBinding, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { StyleManager } from '../style-manager/style-manager';
+import { DocsSiteTheme, ThemeStorage } from './theme-storage/theme-storage';
 
 
 @Component({
@@ -24,11 +17,12 @@ import {map, filter} from 'rxjs/operators';
   templateUrl: 'theme-picker.html',
   styleUrls: ['theme-picker.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None,
-  host: {'aria-hidden': 'true'},
+  encapsulation: ViewEncapsulation.None
 })
-export class ThemePicker implements OnInit, OnDestroy {
-  private _queryParamSubscription = Subscription.EMPTY;
+export class ThemePickerComponent implements OnInit, OnDestroy {
+  @HostBinding('attr.aria-hidden') hidden = true;
+
+  private queryParamSubscription = Subscription.EMPTY;
   currentTheme: DocsSiteTheme;
 
   themes: DocsSiteTheme[] = [
@@ -61,22 +55,25 @@ export class ThemePicker implements OnInit, OnDestroy {
 
   constructor(
     public styleManager: StyleManager,
-    private _themeStorage: ThemeStorage,
-    private _activatedRoute: ActivatedRoute) {
-    this.installTheme(this._themeStorage.getStoredThemeName());
+    private themeStorage: ThemeStorage,
+    private activatedRoute: ActivatedRoute) {
+    this.installTheme(this.themeStorage.getStoredThemeName());
   }
 
   ngOnInit() {
-    this._queryParamSubscription = this._activatedRoute.queryParamMap
+    this.queryParamSubscription = this.activatedRoute.queryParamMap
       .pipe(map(params => params.get('theme')), filter(Boolean))
       .subscribe(themeName => this.installTheme(themeName));
   }
 
   ngOnDestroy() {
-    this._queryParamSubscription.unsubscribe();
+    this.queryParamSubscription.unsubscribe();
   }
 
-  installTheme(themeName: string) {
+  installTheme(themeName: string | unknown) {
+    if (!themeName) {
+      return;
+    }
     const theme = this.themes.find(currentTheme => currentTheme.name === themeName);
 
     if (!theme) {
@@ -92,7 +89,7 @@ export class ThemePicker implements OnInit, OnDestroy {
     }
 
     if (this.currentTheme) {
-      this._themeStorage.storeTheme(this.currentTheme);
+      this.themeStorage.storeTheme(this.currentTheme);
     }
   }
 }
@@ -106,8 +103,8 @@ export class ThemePicker implements OnInit, OnDestroy {
     MatTooltipModule,
     CommonModule
   ],
-  exports: [ThemePicker],
-  declarations: [ThemePicker],
+  exports: [ThemePickerComponent],
+  declarations: [ThemePickerComponent],
   providers: [StyleManager, ThemeStorage],
 })
 export class ThemePickerModule { }

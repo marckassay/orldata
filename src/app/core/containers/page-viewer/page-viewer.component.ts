@@ -43,13 +43,20 @@ export class PageViewerComponent implements OnInit {
 
   constructor(public router: Router,
               public route: ActivatedRoute,
-              public catalog: CatalogItems) { }
+              public catalog: CatalogItems) {
+
+               }
 
   ngOnInit() {
-    const id = this.router.url.match('(?<=catalog\/)[a-z\-]*(?=([/])|$)')
-    .map(value => (value !== undefined) ? value : '')[0];
+    const id = this.router.url.match('(?<=catalog\/)[a-z\-]*(?=([/])|$)');
 
-    this.title = this.catalog.getItemById(id).name;
+    if (id) {
+      const item = this.catalog.getItemById(id[0]);
+      this.title = (item) ? item.name : '';
+    } else {
+      this.title = '';
+    }
+
   }
 }
 

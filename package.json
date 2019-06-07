@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run build-themes-ps && ng serve",
+
+    "start:dev": "ng serve --configuration=dev",
     "start-jit": "npm run build-themes && ng serve --aot=false",
     "build": "ng build",
     "build-themes": "bash ./tools/build-themes.sh",
@@ -26,6 +27,7 @@
     "@angular/router": "~8.0.0",
     "@ngrx/effects": "^8.0.0",
     "@ngrx/entity": "^8.0.0",
+    "@ngrx/router-store": "^8.0.0",
     "@ngrx/schematics": "^8.0.0",
     "@ngrx/store": "^8.0.0",
     "@ngrx/store-devtools": "^8.0.0",

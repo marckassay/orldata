@@ -28,7 +28,7 @@ export class CatalogItems {
     return CATALOG;
   }
 
-  getItemById(id: string): CatalogItem {
-    return CATALOG.find(i => i.id === id);
+  getItemById(id: string): CatalogItem | undefined {
+    return CATALOG.find(item => item.id === id);
   }
 }

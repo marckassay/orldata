@@ -16,7 +16,7 @@ export class SvgViewerComponent implements OnInit {
     this.fetchAndInlineSvgContent(this.src);
   }
 
-  private inlineSvgContent(template) {
+  private inlineSvgContent(template: string) {
     this.elementRef.nativeElement.innerHTML = template;
 
     if (this.scaleToContainer) {

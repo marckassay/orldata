@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { SearchPermitsActions } from '@app/permit/actions';
+import * as fromSearch from '@app/permit/reducers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'orl-form-tab',
@@ -6,10 +9,13 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@
   templateUrl: 'form-tab.html',
   encapsulation: ViewEncapsulation.None
 })
-export class FormTabComponent implements OnInit {
-  constructor() {
+export class FormTabComponent {
+
+  constructor(private store: Store<fromSearch.State>) {
+
   }
 
-  ngOnInit(): void {
+  search() {
+    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: '', offset: 0 } }));
   }
 }

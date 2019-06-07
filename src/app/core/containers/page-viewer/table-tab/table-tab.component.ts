@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { merge, Observable, of as observableOf } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { SearchPermitsActions } from '@app/permit/actions';
+import * as fromResults from '@app/permit/reducers';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'orl-table-tab',
@@ -12,73 +13,34 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['table-tab.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TableTabComponent implements AfterViewInit {
-  displayedColumns: string[] = ['created', 'state', 'number', 'title'];
-  exampleDatabase: ExampleHttpDatabase | null;
-  data: GithubIssue[] = [];
+export class TableTabComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['processed_date', 'application_type'];
+  dataSource: Observable<object>;
 
   resultsLength = 0;
-  isLoadingResults = true;
+  isLoadingResults: Observable<boolean>;
   isRateLimitReached = false;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  constructor(private _httpClient: HttpClient) { }
+  constructor(public store: Store<fromResults.State>) {
+
+  }
+
+  ngOnInit() {
+    this.dataSource = this.store.pipe(select(fromResults.getPermitEntitiesState));
+    this.isLoadingResults = this.store.pipe(select(fromResults.getSearchLoading));
+/*       .subscribe((next) => {
+          this.dataSource = new MatTableDataSource(next);
+    }); */
+  }
 
   ngAfterViewInit() {
-    this.exampleDatabase = new ExampleHttpDatabase(this._httpClient);
-
-    // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          return this.exampleDatabase!.getRepoIssues(
-            this.sort.active, this.sort.direction, this.paginator.pageIndex);
-        }),
-        map(data => {
-          // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.isRateLimitReached = false;
-          this.resultsLength = data.total_count;
-
-          return data.items;
-        }),
-        catchError(() => {
-          this.isLoadingResults = false;
-          // Catch if the GitHub API has reached its rate limit. Return empty data.
-          this.isRateLimitReached = true;
-          return observableOf([]);
-        })
-      ).subscribe(data => this.data = data);
+    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: '', offset: 0 } }));
   }
-}
 
-export interface GithubApi {
-  items: GithubIssue[];
-  total_count: number;
-}
-
-export interface GithubIssue {
-  created_at: string;
-  number: string;
-  state: string;
-  title: string;
-}
-
-/** An example database that the data source uses to retrieve data for the table. */
-export class ExampleHttpDatabase {
-  constructor(private _httpClient: HttpClient) { }
-
-  getRepoIssues(sort: string, order: string, page: number): Observable<GithubApi> {
-    const href = 'https://api.github.com/search/issues';
-    const requestUrl =
-      `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${page + 1}`;
-
-    return this._httpClient.get<GithubApi>(requestUrl);
+  pageChange(event: PageEvent) {
+   // this.store.dispatch(PermitActions.searchFilteredPermits({payload: {filter: '', offset: event.pageIndex}}));
   }
 }
