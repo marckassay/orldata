@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CatalogComponent } from './core/components/catalog/catalog.component';
-import { HomeComponent } from './core/components/home/home.component';
 
 export const routes: Routes = [
   {
@@ -11,24 +9,31 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent
+    loadChildren: '@app/core/components/home/home.component#HomeModule',
+    data: { title: 'Home' }
   },
   {
     path: 'catalog',
-    component: CatalogComponent,
-    pathMatch: 'full'
+    loadChildren: '@app/core/components/catalog/catalog.component#CatalogModule',
+    pathMatch: 'full',
+    data: { title: 'Catalog' }
   },
   {
     path: 'catalog/permits',
-    loadChildren: '@app/permit/permit.module#PermitModule'
+    loadChildren: '@permits/permits.component#PermitsModule',
+    data: { title: 'Permits' }
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    useHash: true,
-    enableTracing: true // <-- debugging purposes only
-  })],
-  exports: [RouterModule],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      enableTracing: true // <-- debugging purposes only
+    })
+  ],
+  exports: [
+    RouterModule
+  ],
 })
 export class AppRoutingModule { }

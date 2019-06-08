@@ -1,6 +1,7 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { SvgViewerModule } from '@app/core/shared/svg-viewer/svg-viewer';
 // import { ComponentPageTitle } from '../page-title/page-title';
 
 @Component({
@@ -14,13 +15,21 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-  //  this._componentPageTitle.title = '';
+    //  this._componentPageTitle.title = '';
   }
 }
 
 @NgModule({
-  imports: [MatButtonModule, RouterModule],
-  exports: [HomeComponent],
-  declarations: [HomeComponent],
+  imports: [
+    MatButtonModule,
+    SvgViewerModule,
+    RouterModule.forChild([{ path: '', component: HomeComponent }]),
+  ],
+  exports: [
+    HomeComponent
+  ],
+  declarations: [
+    HomeComponent
+  ],
 })
-export class HomepageModule { }
+export class HomeModule { }

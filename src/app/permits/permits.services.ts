@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class PermitService {
+export class PermitsService {
   private API_ENDPOINT = environment.endpoint;
   private APP_TOKEN = environment.token || '';
   private httpOptions: {headers: HttpHeaders};

@@ -17,7 +17,7 @@
 }
 
 // Mixin to apply theme colors for generated API orl.
-@mixin orl-site-svg-theme($theme) {
+@mixin orl-svg-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);

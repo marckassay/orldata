@@ -2,8 +2,6 @@
 // https://github.com/angular/material.angular.io/blob/master/src/main.scss
 @import '~@angular/material/theming';
 @import './app-theme';
-@import './styles/api';
-@import './styles/markdown';
 @import './styles/tables';
 @import './styles/general';
 
@@ -18,4 +16,4 @@ $accent:  mat-palette($mat-pink, A200, A100, A400);
 
 $theme: mat-light-theme($primary, $accent);
 @include angular-material-theme($theme);
-@include material-orl-app-theme($theme);
+@include orl-material-theme($theme);

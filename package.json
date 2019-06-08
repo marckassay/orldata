@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-
+    "start:sass:dev": "npm run build-themes-ps && ng serve --configuration=dev",
     "start:dev": "ng serve --configuration=dev",
     "start-jit": "npm run build-themes && ng serve --aot=false",
     "build": "ng build",

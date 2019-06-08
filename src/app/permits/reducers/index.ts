@@ -1,37 +1,37 @@
-import * as fromResults from '@app/permit/reducers/results.reducer';
-import * as fromSearch from '@app/permit/reducers/search.reducer';
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
+import * as fromResults from '@permits/reducers/results.reducer';
+import * as fromSearch from '@permits/reducers/search.reducer';
 
-export interface PermitState {
+export interface PermitsState {
   results: fromResults.State;
   search: fromSearch.State;
 }
 
 export interface State extends fromRoot.State {
-  results: PermitState;
+  results: PermitsState;
 }
 
 /** Provide reducer in AoT-compilation happy way */
-export function reducers(state: PermitState | undefined, action: Action) {
+export function reducers(state: PermitsState | undefined, action: Action) {
   return combineReducers({
     results: fromResults.reducer,
     search: fromSearch.reducer,
   })(state, action);
 }
 
-export const getPermitState = createFeatureSelector<State, PermitState>('results');
+export const getPermitsState = createFeatureSelector<State, PermitsState>('results');
 
 export const getPermitEntitiesState = createSelector(
-  getPermitState,
+  getPermitsState,
   (state) => {
     return state.results.results;
   }
 );
 
 export const getSearchState = createSelector(
-  getPermitState,
-  (state: PermitState) => state.search
+  getPermitsState,
+  (state: PermitsState) => state.search
 );
 
 export const getSearchLoading = createSelector(

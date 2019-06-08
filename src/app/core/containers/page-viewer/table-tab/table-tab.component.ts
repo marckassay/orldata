@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { SearchPermitsActions } from '@app/permit/actions';
-import * as fromResults from '@app/permit/reducers';
 import { select, Store } from '@ngrx/store';
+import { SearchPermitsActions } from '@permits/actions';
+import * as fromResults from '@permits/reducers';
 import { Observable } from 'rxjs';
 
 @Component({

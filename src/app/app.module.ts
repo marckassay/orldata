@@ -58,7 +58,7 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
      * See: https://github.com/zalmoxisus/redux-devtools-extension
      */
     StoreDevtoolsModule.instrument({
-      name: 'NgRx Orlando Open Data App',
+      name: 'NgRx - OrlData',
     }),
     EffectsModule.forRoot([RouterEffects]),
     CoreModule,

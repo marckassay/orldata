@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { SearchPermitsActions } from '@app/permit/actions';
-import * as fromSearch from '@app/permit/reducers';
 import { Store } from '@ngrx/store';
+import { SearchPermitsActions } from '@permits/actions';
+import * as fromSearch from '@permits/reducers';
 
 @Component({
   selector: 'orl-form-tab',

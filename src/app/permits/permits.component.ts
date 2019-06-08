@@ -1,16 +1,31 @@
-import { NgModule } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgModule, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PageViewerModule } from '@app/core/containers/page-viewer/page-viewer.component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { PermitRoutingModule } from './permit-routing.module';
-import { PermitComponent } from './permit.component';
-import { PermitEffects } from './permit.effects';
+import { PermitsEffects } from './permits.effects';
 import { reducers } from './reducers';
+
+@Component({
+  selector: 'orl-permit-viewer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <app-page-viewer></app-page-viewer>
+  `,
+  encapsulation: ViewEncapsulation.None
+})
+export class PermitsComponent {
+
+  constructor(public router: Router,
+              public route: ActivatedRoute) {
+
+  }
+}
 
 @NgModule({
   imports: [
     PageViewerModule,
-    PermitRoutingModule,
+    RouterModule.forChild([{ path: '', component: PermitsComponent }]),
 
     /**
      * StoreModule.forFeature is used for composing state
@@ -28,9 +43,13 @@ import { reducers } from './reducers';
      * All Effects will only be instantiated once regardless of
      * whether they are registered once or multiple times.
      */
-    EffectsModule.forFeature([PermitEffects]),
+    EffectsModule.forFeature([PermitsEffects]),
   ],
-  exports: [PermitComponent],
-  declarations: [PermitComponent]
+  exports: [
+    PermitsComponent
+  ],
+  declarations: [
+    PermitsComponent
+  ]
 })
-export class PermitModule { }
+export class PermitsModule { }

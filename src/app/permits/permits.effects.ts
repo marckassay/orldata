@@ -3,10 +3,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { PermitsApiActions, SearchPermitsActions } from './actions';
-import { PermitService } from './permit.services';
+import { PermitsService } from './permits.services';
 
 @Injectable()
-export class PermitEffects {
+export class PermitsEffects {
 
   search$ = createEffect(() => this.actions$.pipe(
     ofType(SearchPermitsActions.queryPermits),
@@ -21,6 +21,6 @@ export class PermitEffects {
 
   constructor(
     private actions$: Actions,
-    private service: PermitService
+    private service: PermitsService
   ) { }
 }

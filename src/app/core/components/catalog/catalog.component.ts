@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { CatalogItems } from './catalog-items';
 // import { ComponentPageTitle } from '../page-title/page-title';
@@ -20,9 +22,20 @@ export class CatalogComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [MatButtonModule, RouterModule],
-  exports: [CatalogComponent],
-  declarations: [CatalogComponent],
-  providers: [CatalogItems]
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatListModule,
+    RouterModule.forChild([{ path: '', component: CatalogComponent }]),
+  ],
+  exports: [
+    CatalogComponent
+  ],
+  declarations: [
+    CatalogComponent
+  ],
+  providers: [
+    CatalogItems
+  ]
 })
 export class CatalogModule { }

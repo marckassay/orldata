@@ -18,8 +18,10 @@ export class RouterEffects {
           return route;
         }),
         mergeMap(route => route.data),
-        map(data => `Permits - ${data.title}`),
-        tap(title => this.titleService.setTitle(title))
+        // TODO: add subtitle when and if rows can expand for detail
+        // map(data => `Permits - ${data.title}`),
+        map(data => (data.title) ? data.title : ''),
+        tap(title => (title) ? this.titleService.setTitle(title) : '')
       ),
     {
       dispatch: false,

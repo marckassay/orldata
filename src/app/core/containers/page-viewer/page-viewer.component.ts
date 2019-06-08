@@ -4,7 +4,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { Observable, Subscription } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
@@ -60,13 +60,27 @@ export class PageViewerComponent implements OnInit {
   }
 }
 
+export const routes: Routes = [
+  {
+    path: '',
+    component: PageViewerComponent,
+    children: [
+      { path: '', redirectTo: 'table', pathMatch: 'full' },
+      { path: 'table', component: TableTabComponent, pathMatch: 'full' },
+      { path: 'form', component: FormTabComponent, pathMatch: 'full' },
+      // { path: 'options', component: OptionsTabComponent, pathMatch: 'full' },
+      { path: '**', redirectTo: 'table' },
+    ],
+  }
+];
+
 @NgModule({
   imports: [
     MatTabsModule,
     MatProgressSpinnerModule,
     MatTableModule,
     MatPaginatorModule,
-    RouterModule,
+    RouterModule.forChild(routes),
     CommonModule
   ],
   exports: [
@@ -76,6 +90,10 @@ export class PageViewerComponent implements OnInit {
     PageViewerComponent,
     TableTabComponent,
     FormTabComponent,
-    OptionsTabComponent]
+    OptionsTabComponent
+  ],
+  providers: [
+    CatalogItems
+  ]
 })
 export class PageViewerModule { }

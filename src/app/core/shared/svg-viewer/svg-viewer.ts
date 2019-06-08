@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, NgModule, OnInit } from '@angular/core';
 
 
 @Component({
@@ -39,8 +39,8 @@ function getAbsolutePathFromSrc(src: string) {
   return src.slice(src.indexOf('assets/') - 1);
 }
 
-/* @NgModule({
+@NgModule({
   exports: [SvgViewerComponent],
   declarations: [SvgViewerComponent],
 })
-export class SvgViewerModule { } */
+export class SvgViewerModule { }
