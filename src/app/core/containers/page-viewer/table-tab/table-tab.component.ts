@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { select, Store } from '@ngrx/store';
 import { SearchPermitsActions } from '@permits/actions';
 import * as fromResults from '@permits/reducers';
@@ -15,32 +15,35 @@ import { Observable } from 'rxjs';
 })
 export class TableTabComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['processed_date', 'application_type'];
-  dataSource: Observable<object>;
+  dataSource = new MatTableDataSource();
 
-  resultsLength = 0;
+  pageIndex: Observable<number>;
   isLoadingResults: Observable<boolean>;
+  // TODO: prepare to present issues to user
   isRateLimitReached = false;
 
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(public store: Store<fromResults.State>) {
 
   }
 
   ngOnInit() {
-    this.dataSource = this.store.pipe(select(fromResults.getPermitEntitiesState));
+    this.store.pipe(
+      select(fromResults.getPermitEntitiesState)
+    ).subscribe(data => this.dataSource.data = data);
+
     this.isLoadingResults = this.store.pipe(select(fromResults.getSearchLoading));
-/*       .subscribe((next) => {
-          this.dataSource = new MatTableDataSource(next);
-    }); */
+    this.pageIndex = this.store.pipe(select(fromResults.getSearchPage));
   }
 
   ngAfterViewInit() {
-    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: '', offset: 0 } }));
+    this.dataSource.paginator = this.paginator;
+
+    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: 'Building Permit', offset: this.paginator.pageIndex } }));
   }
 
-  pageChange(event: PageEvent) {
-   // this.store.dispatch(PermitActions.searchFilteredPermits({payload: {filter: '', offset: event.pageIndex}}));
+  pageIndexChange(event: PageEvent) {
+    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: 'Building Permit', offset: event.pageIndex }}));
   }
 }

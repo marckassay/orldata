@@ -11,8 +11,7 @@
 /* stylelint-disable material/no-prefixes */
 /* stylelint-enable */
 /* For desktop, the content should be aligned with the page title. */
-.orl-api table,
-.orl-markdown-table {
+table {
   border-collapse: collapse;
   border-radius: 2px;
   border-spacing: 0;
@@ -20,27 +19,22 @@
   width: 100%;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12); }
 
-.orl-api th,
-.orl-markdown-th {
+th {
   font-weight: 400;
   max-width: 100px;
   padding: 13px 32px;
   text-align: left; }
 
-.orl-api td,
-.orl-markdown-td {
+td {
   font-weight: 400;
   padding: 8px 16px; }
 
 @media (max-width: 720px) {
-  .orl-api table,
-  .orl-markdown-table {
+  table {
     margin: 0 0 32px 0; }
-  .orl-api th,
-  .orl-markdown-th {
+  th {
     padding: 6px 16px; }
-  .orl-api td,
-  .orl-markdown-td {
+  td {
     padding: 4px 8px; } }
 
 .mat-ripple-element {
@@ -1533,16 +1527,13 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .orl-svg-primary-light-85-stop-color {
   stop-color: #e8e0f5; }
 
-.orl-api table,
-.orl-markdown-table {
+table {
   color: rgba(0, 0, 0, 0.87); }
 
-.orl-api th,
-.orl-markdown-th {
+th {
   background: whitesmoke; }
 
-.orl-api td,
-.orl-markdown-td {
+td {
   border: 1px solid rgba(0, 0, 0, 0.03); }
 
 app-header {

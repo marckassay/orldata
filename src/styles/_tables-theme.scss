@@ -10,18 +10,15 @@
   $is-dark-theme: map-get($theme, is-dark);
   $tableBorderOpacity: if($is-dark-theme, 0.08, 0.03);
 
-  .orl-api table,
-  .orl-markdown-table {
+  table {
     color: mat-color($foreground, text);
   }
 
-  .orl-api th,
-  .orl-markdown-th {
+  th {
     background: mat-color($background, app-bar);
   }
 
-  .orl-api td,
-  .orl-markdown-td {
+  td{
     border: 1px solid rgba(mat-color($foreground, secondary-text), $tableBorderOpacity);
   }
 }

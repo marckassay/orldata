@@ -1,15 +1,10 @@
-<div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+<div class="orl-container">
+  <div class="orl-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
     <mat-spinner *ngIf="isLoadingResults | async"></mat-spinner>
-    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
-      GitHub's API rate limit has been reached. It will be reset in one minute.
-    </div>
   </div>
 
-  <div class="example-table-container">
-
-    <table mat-table [dataSource]="dataSource" class="example-table" matSort matSortActive="processed_date" matSortDisableClear
-      matSortDirection="desc">
+  <div class="orl-table-container">
+    <table mat-table [dataSource]="dataSource">
       <!-- processed_date Column -->
       <ng-container matColumnDef="processed_date">
         <th mat-header-cell *matHeaderCellDef>Processed Date</th>
@@ -27,5 +22,5 @@
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="30" (page)="pageChange($event)"></mat-paginator>
+  <mat-paginator [pageIndex]="pageIndex | async" [pageSize]="50" (page)="pageIndexChange($event)"></mat-paginator>
 </div>

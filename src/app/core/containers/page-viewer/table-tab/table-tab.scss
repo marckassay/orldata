@@ -1,20 +1,9 @@
-/* Structure */
-.example-container {
+.orl-container {
   position: relative;
   min-height: 200px;
 }
 
-.example-table-container {
-  position: relative;
-  max-height: 400px;
-  overflow: auto;
-}
-
-table {
-  width: 100%;
-}
-
-.example-loading-shade {
+.orl-loading-shade {
   position: absolute;
   top: 0;
   left: 0;
@@ -27,10 +16,10 @@ table {
   justify-content: center;
 }
 
-.example-rate-limit-reached {
-  color: #980000;
-  max-width: 360px;
-  text-align: center;
+.orl-table-container {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
 }
 
 /* Column Widths */

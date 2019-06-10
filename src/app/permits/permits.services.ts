@@ -25,10 +25,10 @@ export class PermitsService {
   getRecentPermits(filter: string, offset: number, limit: number = 30): Observable<object[]> {
     const query =
     'select processed_date, application_type ' +
-    // 'where application_type is ' + filter +
-    'where processed_date is not null ' +
+    'where application_type = ' + `'${filter}'` + ' AND ' +
+    'processed_date is not null ' +
     'order by processed_date DESC ' +
-    'limit ' + limit; // + ' offset ' + offset;
+    'limit ' + limit + ' offset ' + offset;
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.httpOptions)
       .pipe(

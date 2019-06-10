@@ -38,3 +38,16 @@ export const getSearchLoading = createSelector(
   getSearchState,
   fromSearch.getLoading
 );
+
+export const getSearchOffset = createSelector(
+  getSearchState,
+  fromSearch.getOffset
+);
+
+export const getSearchPage = createSelector(
+  getSearchOffset,
+  (offset) => {
+    console.log(offset + 1);
+    return offset + 1;
+  }
+);

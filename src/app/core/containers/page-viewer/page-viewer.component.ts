@@ -18,14 +18,14 @@ import { TableTabComponent } from './table-tab/table-tab.component';
     <div class="orl-primary-header">
       <h1>Catalog / {{ title }} </h1>
     </div>
-    <nav mat-tab-nav-bar class="docs-component-viewer-tabbed-content">
-      <a mat-tab-link class="docs-component-viewer-section-tab"
+    <nav mat-tab-nav-bar class="orl-component-viewer-tabbed-content">
+      <a mat-tab-link class="orl-component-viewer-section-tab"
           *ngFor="let section of sections"
           [routerLink]="section.toLowerCase()"
           routerLinkActive #rla="routerLinkActive"
           [active]="rla.isActive">{{section}}</a>
     </nav>
-    <div class="docs-component-viewer-content">
+    <div class="orl-component-viewer-content">
       <router-outlet></router-outlet>
     </div>
   `,
