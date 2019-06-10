@@ -1,0 +1,77 @@
+.mat-icon-36 {
+  width: 36px;
+  height: 36px;
+}
+
+.orl-angular-logo {
+  height: 38px;
+  margin: 0 4px 3px 0;
+  vertical-align: middle;
+}
+
+.orl-github-logo {
+  height: 21px;
+  margin: 0 7px 2px 0;
+  vertical-align: middle;
+}
+
+.orl-footer {
+  padding: 12px;
+  font-size: 12px;
+  margin-top: 40px;
+}
+
+.orl-footer-list {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 8px;
+}
+
+.orl-footer-logo {
+  flex: 1;
+}
+
+.orl-footer-angular-logo {
+  height: 50px;
+}
+
+.orl-footer-version {
+  flex: 1;
+  text-align: center;
+}
+
+.orl-footer-copyright {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  flex-direction: column;
+  min-width: 225px;
+  text-align: center;
+}
+
+.orl-footer-logo span {
+  display: inline-block;
+  margin: 0 40px;
+  vertical-align: bottom;
+
+  a {
+    font-size: 16px;
+    padding: 0;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media screen and (max-width: 884px){
+  .orl-footer-list {
+    flex-direction: column;
+  }
+}

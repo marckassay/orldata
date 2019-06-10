@@ -1,0 +1,18 @@
+@import '../../../../styles/constants';
+
+app-page-viewer {
+  flex-grow: 1;
+}
+
+.orl-component-viewer-section-tab {
+  text-transform: uppercase;
+}
+
+.orl-component-viewer-tabbed-content {
+  margin-bottom: 25px;
+}
+
+.orl-component-viewer-content {
+  position: relative;
+  min-height: 500px;
+}
