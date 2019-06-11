@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
-import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRouteStrategy } from './app-route-strategy';
@@ -48,6 +48,7 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
      */
     StoreRouterConnectingModule.forRoot({
       routerState: RouterState.Minimal,
+      navigationActionTiming: NavigationActionTiming.PreActivation,
     }),
 
     /**
@@ -63,7 +64,11 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
     StoreDevtoolsModule.instrument({
       name: 'NgRx - OrlData',
     }),
-    EffectsModule.forRoot([RouterEffects, CoreEffects]),
+
+    EffectsModule.forRoot(
+      [RouterEffects, CoreEffects]
+    ),
+
     CoreModule,
     ThemePickerModule
   ],

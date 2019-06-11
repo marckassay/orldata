@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { CatalogActions } from '@app/core/actions';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
 import { merge } from 'rxjs';
@@ -45,15 +44,15 @@ export class CatalogComponent implements OnInit {
   ngOnInit() {
      merge(
       this.store.pipe(select(fromCore.getPermitsMetadata)),
-      this.store.pipe(select(fromCore.getCrimesMetadata)),
+     // this.store.pipe(select(fromCore.getCrimesMetadata)),
     ).pipe(
       filter(metadata => metadata !== undefined)
     ).subscribe((metadata) => {
       this.updateCatalogItem(metadata as CatalogItem);
     });
 
-     this.store.dispatch(CatalogActions.permitsDatasetStartup());
-     this.store.dispatch(CatalogActions.crimesDatasetStartup());
+    // this.store.dispatch(CatalogActions.permitsDatasetStartup());
+    // this.store.dispatch(CatalogActions.crimesDatasetStartup());
   }
 
   updateCatalogItem = (metadata: CatalogItem) => {

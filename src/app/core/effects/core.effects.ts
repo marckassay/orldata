@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CoreService } from '@app/app.service';
-import { AppApiActions, CatalogActions } from '@core/actions';
+import { AppApiActions, CatalogActions, RouterActions } from '@core/actions';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -9,8 +9,8 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 export class CoreEffects {
 
   permitsMetadata$ = createEffect(() => this.actions$.pipe(
-    ofType(CatalogActions.permitsDatasetStartup),
-    mergeMap((action) => this.service.getPermitsMetadata().pipe(
+    ofType(CatalogActions.permitsDatasetStartup, RouterActions.permitsDatasetStartup),
+    mergeMap(() => this.service.getPermitsMetadata().pipe(
       map((metadata: object[]) => AppApiActions.permitsMetadata({ metadata })),
     )),
     catchError(err =>
@@ -19,8 +19,8 @@ export class CoreEffects {
   ));
 
   crimesMetadata$ = createEffect(() => this.actions$.pipe(
-    ofType(CatalogActions.crimesDatasetStartup),
-    mergeMap((action) => this.service.getCrimesMetadata().pipe(
+    ofType(CatalogActions.crimesDatasetStartup, RouterActions.crimesDatasetStartup),
+    mergeMap(() => this.service.getCrimesMetadata().pipe(
       map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
     )),
     catchError(err =>

@@ -7,7 +7,8 @@ import * as fromCore from '@core/reducers';
  * notation packages up all of the exports into a single object.
  */
 import * as fromRouter from '@ngrx/router-store';
-import { Action, ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
+import { getSelectors } from '@ngrx/router-store';
+import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 
 /**
@@ -55,3 +56,15 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
 export const metaReducers: MetaReducer<State>[] = !environment.production
   ? [logger]
   : [];
+
+export const selectRouter = createFeatureSelector<
+  State,
+  fromRouter.RouterReducerState<any>
+>('router');
+
+export const {
+  selectQueryParams,    // select the current route query params
+  selectRouteParams,    // select the current route params
+  selectRouteData,      // select the current route data
+  selectUrl,            // select the current url
+} = getSelectors(selectRouter);
