@@ -1,3 +1,0 @@
-GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select * where application_type = 'Electrical' AND processed_date is not null order by processed_date DESC limit 30 offset 4
-Accept: application/json
-X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

@@ -24,6 +24,9 @@
       "@app/*": [
         "./src/app/*"
       ],
+      "@core/*": [
+        "./src/app/core/*"
+      ],
       "@permits/*": [
         "./src/app/permits/*"
       ]

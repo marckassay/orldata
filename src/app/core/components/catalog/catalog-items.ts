@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 export interface CatalogItem {
   id: string;
   name: string;
-  updated: Date;
+  updated: Date | undefined;
   disabled?: boolean;
 }
 
@@ -11,12 +11,12 @@ const CATALOG = [
   {
     id: 'permits',
     name: 'Permit Applications',
-    updated: new Date('6/3/19')
+    updated: undefined
   },
   {
     id: 'crimes',
     name: 'City of Orlando Crimes',
-    updated: new Date('2/17/19'),
+    updated: undefined,
     disabled: true
   }
 ];

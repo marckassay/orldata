@@ -15,7 +15,8 @@ import { ThemePickerModule } from './shared/theme-picker';
     MatIconModule,
     MatButtonModule,
     RouterModule,
-    ThemePickerModule
+    ThemePickerModule,
+
   ],
   declarations: [
     AppComponent,

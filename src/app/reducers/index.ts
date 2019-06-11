@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import * as fromCore from '@core/reducers';
 /**
  * Every reducer module's default export is the reducer function itself. In
  * addition, each module should export a type or interface that describes
@@ -15,6 +16,7 @@ import { environment } from '../../environments/environment';
  */
 export interface State {
   router: fromRouter.RouterReducerState<any>;
+  core: fromCore.CoreState;
 }
 
 /**
@@ -27,6 +29,7 @@ export const ROOT_REDUCERS = new InjectionToken<
 >('Root reducers token', {
   factory: () => ({
     router: fromRouter.routerReducer,
+    core: fromCore.reducers
   }),
 });
 

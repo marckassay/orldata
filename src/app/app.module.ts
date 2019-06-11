@@ -3,14 +3,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouteReuseStrategy } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
-import { RouterEffects } from './core/effects/router-effects';
+import { CoreEffects } from './core/effects/core.effects';
+import { RouterEffects } from './core/effects/router.effects';
 import { StyleManager } from './core/shared/style-manager';
 import { ThemePickerModule } from './core/shared/theme-picker';
 import { metaReducers, ROOT_REDUCERS } from './reducers';
@@ -60,11 +63,13 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
     StoreDevtoolsModule.instrument({
       name: 'NgRx - OrlData',
     }),
-    EffectsModule.forRoot([RouterEffects]),
+    EffectsModule.forRoot([RouterEffects, CoreEffects]),
     CoreModule,
     ThemePickerModule
   ],
-  providers: [StyleManager],
+  providers: [StyleManager,
+    { provide: RouteReuseStrategy, useClass: AppRouteStrategy }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

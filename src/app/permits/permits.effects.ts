@@ -16,8 +16,7 @@ export class PermitsEffects {
     catchError(err =>
       of(PermitsApiActions.searchFailure({ errorMsg: err }))
     )
-  )
-  );
+  ));
 
   constructor(
     private actions$: Actions,

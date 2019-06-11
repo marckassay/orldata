@@ -33,7 +33,7 @@ export class PermitsComponent {
      * eagerly or lazily and will be dynamically added to
      * the existing state.
      */
-    StoreModule.forFeature('results', reducers),
+    StoreModule.forFeature('permits', reducers),
 
     /**
      * Effects.forFeature is used to register effects

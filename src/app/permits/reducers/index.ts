@@ -9,10 +9,9 @@ export interface PermitsState {
 }
 
 export interface State extends fromRoot.State {
-  results: PermitsState;
+  permits: PermitsState;
 }
 
-/** Provide reducer in AoT-compilation happy way */
 export function reducers(state: PermitsState | undefined, action: Action) {
   return combineReducers({
     results: fromResults.reducer,
@@ -20,8 +19,12 @@ export function reducers(state: PermitsState | undefined, action: Action) {
   })(state, action);
 }
 
-export const getPermitsState = createFeatureSelector<State, PermitsState>('results');
+export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
 
+
+/*
+ Results selectors
+*/
 export const getPermitEntitiesState = createSelector(
   getPermitsState,
   (state) => {
@@ -29,6 +32,10 @@ export const getPermitEntitiesState = createSelector(
   }
 );
 
+
+/*
+ Search selectors
+*/
 export const getSearchState = createSelector(
   getPermitsState,
   (state: PermitsState) => state.search

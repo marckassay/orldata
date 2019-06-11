@@ -9,3 +9,4 @@ export const searchFailure = createAction(
   '[Permits/API] Search Failure',
   props<{ errorMsg: string }>()
 );
+

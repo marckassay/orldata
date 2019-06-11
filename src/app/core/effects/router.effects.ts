@@ -5,7 +5,6 @@ import { createEffect } from '@ngrx/effects';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
 
 
-
 @Injectable()
 export class RouterEffects {
   updateTitle$ = createEffect(
@@ -32,5 +31,5 @@ export class RouterEffects {
     private router: Router,
     private titleService: Title,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) { }
 }
