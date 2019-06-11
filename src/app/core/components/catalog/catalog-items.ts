@@ -11,12 +11,17 @@ export interface CatalogItem {
   disabled?: boolean;
 }
 
+export enum DatasetNames {
+  PERMITS = 'permits',
+  CRIMES = 'crimes'
+}
+
 @Injectable()
 export class CatalogItems {
 
   CATALOG: CatalogItem[] = [
-    { id: DatasetIDs.PERMITS, routeLink: 'permits' },
-    { id: DatasetIDs.CRIMES, routeLink: 'crimes' }
+    { id: DatasetIDs.PERMITS, routeLink: DatasetNames.PERMITS },
+    { id: DatasetIDs.CRIMES, routeLink: DatasetNames.CRIMES }
   ];
 
   getAllItems(): CatalogItem[] {
@@ -27,6 +32,14 @@ export class CatalogItems {
     // try to match this app's dataset IDs to the id from services.
     try {
       return this.CATALOG.find(item => item.id === id) as CatalogItem;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getItemByName(name: DatasetNames | string): CatalogItem {
+    try {
+      return this.CATALOG.find(item => item.routeLink === name) as CatalogItem;
     } catch (error) {
       throw error;
     }

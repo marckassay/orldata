@@ -7,7 +7,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { Observable, Subscription } from 'rxjs';
-import { DatasetIDs } from 'src/environments/environment';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
@@ -17,7 +16,7 @@ import { TableTabComponent } from './table-tab/table-tab.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="orl-primary-header">
-      <h1>Catalog / {{ title }} </h1>
+      <h1>Catalog / {{ title | titlecase }} </h1>
     </div>
     <nav mat-tab-nav-bar class="orl-component-viewer-tabbed-content">
       <a mat-tab-link class="orl-component-viewer-section-tab"
@@ -45,17 +44,15 @@ export class PageViewerComponent implements OnInit {
   constructor(public router: Router,
               public route: ActivatedRoute,
               public catalog: CatalogItems) {
-
+    this.title = '';
                }
 
   ngOnInit() {
     const id = this.router.url.match('(?<=catalog\/)[a-z\-]*(?=([/])|$)');
 
-    this.title = '';
-
     if (id) {
-      const item = this.catalog.getItemById(id[0] as DatasetIDs);
-      this.title = (item) ? item.name as string : '';
+      const item = this.catalog.getItemByName(id[0]);
+      this.title = (item) ? item.routeLink : '';
     }
   }
 }

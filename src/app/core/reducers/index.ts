@@ -1,6 +1,6 @@
 import * as fromCatalog from '@app/core/reducers/catalog.reducer';
 import * as fromRoot from '@app/reducers';
-import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
+import { Action, combineReducers, createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
 
 export interface CoreState {
   datasets: fromCatalog.State;
@@ -23,19 +23,19 @@ const getCoreState = createFeatureSelector<State, CoreState>('core');
  Dataset Metadata selectors
 */
 
-export const getDatasetsMetas = createSelector(
+export const getDatasetsMetas: MemoizedSelector<State, fromCatalog.State> = createSelector(
   getCoreState,
   (state: CoreState) => {
     return state.datasets;
   }
 );
 
-export const getPermitsMetadata = createSelector(
+export const getPermitsMetadata: MemoizedSelector<State, object | undefined> = createSelector(
   getDatasetsMetas,
   (datasets) => datasets.permitsMetadata
 );
 
-export const getCrimesMetadata = createSelector(
+export const getCrimesMetadata: MemoizedSelector<State, object | undefined > = createSelector(
   getDatasetsMetas,
   (datasets) => datasets.crimesMetadata
 );

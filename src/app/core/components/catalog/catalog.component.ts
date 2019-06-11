@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CatalogActions } from '@app/core/actions';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
-import { merge } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { CatalogItem, CatalogItems } from './catalog-items';
 
@@ -42,17 +42,18 @@ export class CatalogComponent implements OnInit {
               public store: Store<fromCore.State>) { }
 
   ngOnInit() {
-     merge(
-      this.store.pipe(select(fromCore.getPermitsMetadata)),
-     // this.store.pipe(select(fromCore.getCrimesMetadata)),
-    ).pipe(
+    this.store.pipe(
+      select(fromCore.getPermitsMetadata),
       filter(metadata => metadata !== undefined)
-    ).subscribe((metadata) => {
-      this.updateCatalogItem(metadata as CatalogItem);
-    });
+    ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
 
-    // this.store.dispatch(CatalogActions.permitsDatasetStartup());
-    // this.store.dispatch(CatalogActions.crimesDatasetStartup());
+    this.store.pipe(
+      select(fromCore.getCrimesMetadata),
+      filter(metadata => metadata !== undefined)
+    ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
+
+    // permits dataset is prefetch by RouterEffects
+    this.store.dispatch(CatalogActions.crimesDatasetStartup());
   }
 
   updateCatalogItem = (metadata: CatalogItem) => {
