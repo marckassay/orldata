@@ -1,34 +1,34 @@
 import { Injectable } from '@angular/core';
+import { DatasetIDs } from 'src/environments/environment';
 
 export interface CatalogItem {
-  id: string;
-  name: string;
-  updated: Date | undefined;
+  readonly id: DatasetIDs;
+  readonly routeLink: string;
+  name?: string;
+  category?: string;
+  description?: string;
+  dataUpdatedAt?: Date | undefined;
   disabled?: boolean;
 }
-
-const CATALOG = [
-  {
-    id: 'permits',
-    name: 'Permit Applications',
-    updated: undefined
-  },
-  {
-    id: 'crimes',
-    name: 'City of Orlando Crimes',
-    updated: undefined,
-    disabled: true
-  }
-];
 
 @Injectable()
 export class CatalogItems {
 
+  CATALOG: CatalogItem[] = [
+    { id: DatasetIDs.PERMITS, routeLink: 'permits' },
+    { id: DatasetIDs.CRIMES, routeLink: 'crimes' }
+  ];
+
   getAllItems(): CatalogItem[] {
-    return CATALOG;
+    return this.CATALOG;
   }
 
-  getItemById(id: string): CatalogItem | undefined {
-    return CATALOG.find(item => item.id === id);
+  getItemById(id: DatasetIDs): CatalogItem {
+    // try to match this app's dataset IDs to the id from services.
+    try {
+      return this.CATALOG.find(item => item.id === id) as CatalogItem;
+    } catch (error) {
+      throw error;
+    }
   }
 }

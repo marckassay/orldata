@@ -2,16 +2,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { DatasetIDs, environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 /**
+ * Calls the API for Permits only.
+ *
  * @ref https://dev.socrata.com/foundry/data.cityoforlando.net/ryhf-m453
  */
 export class PermitsService {
-  private API_ENDPOINT = environment.endpoint;
+  private PERMITS_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
   private APP_TOKEN = environment.token || '';
 
   constructor(private http: HttpClient) {
@@ -42,8 +44,7 @@ export class PermitsService {
       );
   }
 
-  private getHttpHeader(fullResponse = false): { headers: HttpHeaders } {
-    if (fullResponse === false) {
+  private getHttpHeader(): { headers: HttpHeaders } {
       return {
         headers: new HttpHeaders({
           Accept: 'application/json',
@@ -51,19 +52,9 @@ export class PermitsService {
           'X-App-Token': this.APP_TOKEN
         })
       };
-    } else {
-      return {
-        headers: new HttpHeaders({
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-          'X-App-Token': this.APP_TOKEN,
-          observe: 'response'
-        })
-      };
-    }
   }
 
   private getFullQueryExpression(query: string): string {
-    return this.API_ENDPOINT + '?$query=' + query;
+    return this.PERMITS_ENDPOINT + '?$query=' + query;
   }
 }

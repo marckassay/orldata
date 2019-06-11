@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { Observable, Subscription } from 'rxjs';
+import { DatasetIDs } from 'src/environments/environment';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
@@ -50,13 +51,12 @@ export class PageViewerComponent implements OnInit {
   ngOnInit() {
     const id = this.router.url.match('(?<=catalog\/)[a-z\-]*(?=([/])|$)');
 
-    if (id) {
-      const item = this.catalog.getItemById(id[0]);
-      this.title = (item) ? item.name : '';
-    } else {
-      this.title = '';
-    }
+    this.title = '';
 
+    if (id) {
+      const item = this.catalog.getItemById(id[0] as DatasetIDs);
+      this.title = (item) ? item.name as string : '';
+    }
   }
 }
 

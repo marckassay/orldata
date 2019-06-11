@@ -1,18 +1,15 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+export enum DatasetIDs {
+  PERMITS = 'ryhf-m453',
+  CRIMES = '4y9m-jbmz'
+}
 
+/**
+ * To specify what environment setup to be used, append either suffix to `ng` commands:
+ * `--configuration=dev` or `--configuration=production` for development and production, respectively.
+ */
 export const environment = {
   production: false,
   token: 'SODA_APP_TOKEN',
-  endpoint: 'https://data.cityoforlando.net/resource/ryhf-m453.json'
+  endpoint: (id: DatasetIDs) => `https://data.cityoforlando.net/resource/${id}.json`,
+  metadata_endpoint: (id: DatasetIDs) => `https://data.cityoforlando.net/api/views/metadata/v1/${id}`
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

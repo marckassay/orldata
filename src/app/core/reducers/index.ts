@@ -1,9 +1,9 @@
-import * as fromHeader from '@app/core/reducers/header.reducer';
+import * as fromCatalog from '@app/core/reducers/catalog.reducer';
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface CoreState {
-  header: fromHeader.State;
+  datasets: fromCatalog.State;
 }
 
 export interface State extends fromRoot.State {
@@ -12,30 +12,30 @@ export interface State extends fromRoot.State {
 
 export function reducers(state: CoreState | undefined, action: Action) {
   return combineReducers({
-    header: fromHeader.reducer,
+    datasets: fromCatalog.reducer,
   })(state, action);
 }
 
-export const getCoreState = createFeatureSelector<State, CoreState>('core');
+const getCoreState = createFeatureSelector<State, CoreState>('core');
 
 
 /*
- Header selectors
+ Dataset Metadata selectors
 */
-export const geHeaderState = createSelector(
+
+export const getDatasetsMetas = createSelector(
   getCoreState,
   (state: CoreState) => {
-    return state.header;
+    return state.datasets;
   }
 );
 
-/*
-export const getSearchState = createSelector(
-  getPermitsState,
-  (state: PermitsState) => state.search
+export const getPermitsMetadata = createSelector(
+  getDatasetsMetas,
+  (datasets) => datasets.permitsMetadata
 );
 
-export const getSearchLoading = createSelector(
-  getSearchState,
-  fromSearch.getLoading
-); */
+export const getCrimesMetadata = createSelector(
+  getDatasetsMetas,
+  (datasets) => datasets.crimesMetadata
+);

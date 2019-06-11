@@ -1,6 +1,10 @@
 import { createAction } from '@ngrx/store';
 
 
-export const requestForLastModifiedDate = createAction(
-  '[Catalog] Last Modified Date',
+export const permitsDatasetStartup = createAction(
+  '[Catalog Page] Permits Dataset Startup',
+);
+
+export const crimesDatasetStartup = createAction(
+  '[Catalog Page] Crimes Dataset Startup',
 );

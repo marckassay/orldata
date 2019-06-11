@@ -6,6 +6,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CatalogActions } from '@app/core/actions';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
+import { merge } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { CatalogItem, CatalogItems } from './catalog-items';
 
 
@@ -20,10 +22,11 @@ import { CatalogItem, CatalogItems } from './catalog-items';
     <h3 mat-subheader>Datasets</h3>
 
     <a mat-list-item class="orl-catalog-item" *ngFor="let item of catalogItems.getAllItems()"
-      [routerLink]="['/catalog', item.id]">
+      [routerLink]="['/catalog', item.routeLink]">
       <mat-icon matListIcon color="primary">folder</mat-icon>
-      <h4 mat-line>{{item.name}}</h4>
-      <p mat-line *ngIf="item.updated">Last Updated: {{item.updated | date}} </p>
+      <h3 mat-line>{{item.name}}</h3>
+      <h4 mat-line *ngIf="item.dataUpdatedAt">Last Updated: {{item.dataUpdatedAt | date}}</h4>
+      <p mat-line>{{item.description}}</p>
     </a>
 
   </mat-nav-list>
@@ -37,23 +40,33 @@ export class CatalogComponent implements OnInit {
               private ref: ChangeDetectorRef,
               public router: Router,
               public route: ActivatedRoute,
-              public store: Store<fromCore.State>) {
-
-  }
+              public store: Store<fromCore.State>) { }
 
   ngOnInit() {
-    this.store.pipe(
-      select(fromCore.geHeaderState)
-    ).subscribe(data => {
-      data.header.map((entry: any) => {
-        const permitItem = this.catalogItems.getItemById('permits') as CatalogItem;
-        permitItem.updated = new Date(entry.processed_date);
-        this.ref.markForCheck();
-      });
-  });
+     merge(
+      this.store.pipe(select(fromCore.getPermitsMetadata)),
+      this.store.pipe(select(fromCore.getCrimesMetadata)),
+    ).pipe(
+      filter(metadata => metadata !== undefined)
+    ).subscribe((metadata) => {
+      this.updateCatalogItem(metadata as CatalogItem);
+    });
 
-    this.store.dispatch(CatalogActions.requestForLastModifiedDate());
+     this.store.dispatch(CatalogActions.permitsDatasetStartup());
+     this.store.dispatch(CatalogActions.crimesDatasetStartup());
+  }
 
+  updateCatalogItem = (metadata: CatalogItem) => {
+    const item = this.catalogItems.getItemById(metadata.id);
+    if (item) {
+      item.name = metadata.name;
+      item.category = metadata.category;
+      item.description = metadata.description;
+      if (metadata.dataUpdatedAt) {
+        item.dataUpdatedAt = new Date(metadata.dataUpdatedAt);
+      }
+      this.ref.markForCheck();
+    }
   }
 }
 
