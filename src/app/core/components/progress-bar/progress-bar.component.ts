@@ -9,7 +9,7 @@ import { delayWhen, distinctUntilChanged, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'orl-progress-bar',
   template: `
-  <div class="super-host-progress-bar>
+  <div class="super-host-progress-bar">
   <div class="host-progress-bar" *ngIf="visibility$ | async">
     <mat-progress-bar
       color="accent"
