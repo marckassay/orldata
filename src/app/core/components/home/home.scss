@@ -12,7 +12,11 @@ $margin-promotion-sections-small: 15px;
 }
 
 .orl-header-background {
-  // background-image: url('../assets/img/homepage/orlando-lake-eola.jpg');
+  background-position: center;
+  background-position-y: bottom;
+  background-blend-mode: darken;
+  background-size: cover;
+  background-image: url('../../../../assets/img/homepage/orlando-lake-eola-2.jpg');
   overflow: hidden;
 }
 
