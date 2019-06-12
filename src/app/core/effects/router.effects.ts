@@ -1,31 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { CoreService } from '@app/app.service';
 import * as fromCore from '@core/reducers';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { RouterNavigationAction, ROUTER_NAVIGATION } from '@ngrx/router-store';
+import { Actions, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, filter, map, mergeMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { AppApiActions } from '../actions';
 
 
 @Injectable()
 export class RouterEffects {
 
-  /*
-    This works for now, althought I'm not sure what to make out of it. Resources are gathered from
-    these two links:
-    https://dev.to/jonrimmer/where-to-initiate-data-load-in-ngrx-358l
-    https://github.com/ngrx/platform/issues/467
-  */
-  prefetchPermitsMetadata$ = createEffect(() => this.actions$.pipe(
-    ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
+  /**
+   * This works for now, althought I'm not sure what to make out of it. Resources are gathered from
+   * the 1st and 2nd links (listed below). The 3rd link, discusses about an Angular limitation
+   * (UI rendering during active routing) which seems to not apply IF acted during the NavigationStart
+   * event. So the current form of these 2 prefetch effects are from that information. See the 3rd
+   * link.
+   * - https://dev.to/jonrimmer/where-to-initiate-data-load-in-ngrx-358l
+   * - https://github.com/ngrx/platform/issues/467
+   * - https://stackoverflow.com/questions/37069609/show-loading-screen-when-navigating-between-routes-in-angular-2
+   */
+  prefetchPermitsMetadata$ = createEffect(() => this.router.events.pipe(
+    filter(event => event instanceof NavigationStart),
+    filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
-    filter(([action, loaded]) =>
-      action.payload.routerState.url.includes('/catalog') && !loaded
-    ),
     take(1),
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
@@ -40,30 +41,27 @@ export class RouterEffects {
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
   ));
 
-  prefetchCrimesMetadata$ = createEffect(() => this.actions$.pipe(
-    ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
+  prefetchCrimesMetadata$ = createEffect(() => this.router.events.pipe(
+    filter(event => event instanceof NavigationStart),
+    filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
-    filter(([action, loaded]) =>
-      action.payload.routerState.url.includes('/catalog') && !loaded
-    ),
     take(1),
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Crimes metadata for Catalog page.')),
     switchMap(() => this.service.getCrimesMetadata().pipe(
-        map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
-        catchError(err =>
-          of(AppApiActions.crimesMetadataFailure({ errorMsg: err }))
-        )
+      map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
+      catchError(err =>
+        of(AppApiActions.crimesMetadataFailure({ errorMsg: err }))
       )
+    )
     ),
     tap(() => console.log('[RouterEffects] Prefetched Crimes metadata.')),
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
   ));
 
-  updateTitle$ = createEffect(
-    () =>
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
+  updateTitle$ = createEffect(() => this.router.events.pipe(
+        filter(event => event instanceof NavigationStart),
+        /*
         map(() => {
           let route = this.activatedRoute;
           while (route.firstChild) { route = route.firstChild; }
@@ -73,12 +71,8 @@ export class RouterEffects {
         // TODO: add subtitle when and if rows can expand for detail
         // map(data => `Permits - ${data.title}`),
         map(data => (data.title) ? data.title : ''),
-        tap(title => (title) ? this.titleService.setTitle(title) : '')
-      ),
-    {
-      dispatch: false,
-    }
-  );
+        tap(title => (title) ? this.titleService.setTitle(title) : '') */
+      ), { dispatch: false });
 
   constructor(
     private router: Router,

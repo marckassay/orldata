@@ -1536,7 +1536,7 @@ th {
 td {
   border: 1px solid rgba(0, 0, 0, 0.03); }
 
-.host-progress-bar {
+.super-host-progress-bar {
   background: #3f51b5; }
 
 app-header {

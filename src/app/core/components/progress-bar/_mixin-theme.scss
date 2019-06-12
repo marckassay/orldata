@@ -5,7 +5,7 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  .host-progress-bar {
+  .super-host-progress-bar {
     background: mat-color($primary);
   }
 }
