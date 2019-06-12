@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { CatalogActions } from '@app/core/actions';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
@@ -52,8 +51,7 @@ export class CatalogComponent implements OnInit {
       filter(metadata => metadata !== undefined)
     ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
 
-    // permits dataset is prefetch by RouterEffects
-    this.store.dispatch(CatalogActions.crimesDatasetStartup());
+    // datasets are prefetched by RouterEffects
   }
 
   updateCatalogItem = (metadata: CatalogItem) => {

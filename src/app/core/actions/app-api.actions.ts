@@ -19,3 +19,11 @@ export const crimesMetadataFailure = createAction(
   '[App API] Crimes Metadata Failure',
    props<{ errorMsg: string }>()
 );
+
+export const serviceCurrentlyCommunicating = createAction(
+  '[App API] Services Currently Communicating'
+);
+
+export const serviceCurrentlyCompleted = createAction(
+  '[App API] Services Currently Completed'
+);

@@ -1540,6 +1540,9 @@ th {
 td {
   border: 1px solid rgba(255, 255, 255, 0.08); }
 
+.host-progress-bar {
+  background: #e91e63; }
+
 app-header {
   color: white; }
   app-header .orl-navbar,

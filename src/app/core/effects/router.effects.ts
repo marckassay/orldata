@@ -20,22 +20,44 @@ export class RouterEffects {
     https://dev.to/jonrimmer/where-to-initiate-data-load-in-ngrx-358l
     https://github.com/ngrx/platform/issues/467
   */
-  prefetchCatalogMetadata$ = createEffect(() => this.actions$.pipe(
+  prefetchPermitsMetadata$ = createEffect(() => this.actions$.pipe(
     ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
     filter(([action, loaded]) =>
       action.payload.routerState.url.includes('/catalog') && !loaded
     ),
     take(1),
-    tap(() => console.log('[RouterEffects] Prefetching permit data for catalog page.')),
-    switchMap(() => {
-      return this.service.getPermitsMetadata().pipe(
+    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
+    tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
+    switchMap(() => this.service.getPermitsMetadata().pipe(
         map((metadata: object[]) => AppApiActions.permitsMetadata({ metadata })),
         catchError(err =>
           of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
         )
-      );
-    })
+      )
+    ),
+    tap(() => console.log('[RouterEffects] Prefetched Permits metadata.')),
+    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
+  ));
+
+  prefetchCrimesMetadata$ = createEffect(() => this.actions$.pipe(
+    ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
+    withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
+    filter(([action, loaded]) =>
+      action.payload.routerState.url.includes('/catalog') && !loaded
+    ),
+    take(1),
+    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
+    tap(() => console.log('[RouterEffects] Prefetching Crimes metadata for Catalog page.')),
+    switchMap(() => this.service.getCrimesMetadata().pipe(
+        map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
+        catchError(err =>
+          of(AppApiActions.crimesMetadataFailure({ errorMsg: err }))
+        )
+      )
+    ),
+    tap(() => console.log('[RouterEffects] Prefetched Crimes metadata.')),
+    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
   ));
 
   updateTitle$ = createEffect(

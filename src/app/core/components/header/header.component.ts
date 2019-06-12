@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-header',
@@ -6,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.scss']
 })
 export class HeaderComponent {
-
+  @ViewChild(MatProgressBar, {static: true})
+  progressBar: MatProgressBar;
 }
