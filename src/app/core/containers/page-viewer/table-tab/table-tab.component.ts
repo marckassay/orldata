@@ -18,8 +18,8 @@ export class TableTabComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource();
 
   pageIndex: Observable<number>;
-  isLoadingResults: Observable<boolean>;
-  // TODO: prepare to present issues to user
+
+  // TODO: prepare to present issues to user when it occurs
   isRateLimitReached = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -33,17 +33,16 @@ export class TableTabComponent implements OnInit, AfterViewInit {
       select(fromResults.getPermitEntitiesState)
     ).subscribe(data => this.dataSource.data = data);
 
-    this.isLoadingResults = this.store.pipe(select(fromResults.getSearchLoading));
     this.pageIndex = this.store.pipe(select(fromResults.getSearchPage));
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
 
-    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: 'Building Permit', offset: this.paginator.pageIndex } }));
+    this.store.dispatch(SearchPermitsActions.search({ payload: { query: 'Building Permit', offset: this.paginator.pageIndex } }));
   }
 
   pageIndexChange(event: PageEvent) {
-    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: 'Building Permit', offset: event.pageIndex }}));
+    this.store.dispatch(SearchPermitsActions.search({ payload: { query: 'Building Permit', offset: event.pageIndex }}));
   }
 }

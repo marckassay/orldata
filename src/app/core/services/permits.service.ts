@@ -13,11 +13,23 @@ import { DatasetIDs, environment } from 'src/environments/environment';
  * @ref https://dev.socrata.com/foundry/data.cityoforlando.net/ryhf-m453
  */
 export class PermitsService {
-  private PERMITS_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
+  private METADATA_ENDPOINT = environment.metadata_endpoint(DatasetIDs.PERMITS);
+  private API_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
   private APP_TOKEN = environment.token || '';
 
   constructor(private http: HttpClient) {
 
+  }
+
+  /**
+   * Calls the following:
+   * `https://data.cityoforlando.net/api/views/metadata/v1/ryhf-m453`
+   */
+  getMetadata(): Observable<object[]> {
+    return this.http.get<object[]>(this.METADATA_ENDPOINT, this.getHttpHeader())
+      .pipe(
+        catchError(error => throwError(error))
+      );
   }
 
   /**
@@ -30,7 +42,7 @@ export class PermitsService {
    * @param offset index value indicating page number. works with limit
    * @param limit maximum limit for items to fetch
    */
-  getRecentPermits(filter: string, offset: number, limit = 30): Observable<object[]> {
+  search(filter: string, offset: number, limit = 30): Observable<object[]> {
     const query =
       'select processed_date, application_type ' +
       'where application_type = ' + `'${filter}'` + ' AND ' +
@@ -54,17 +66,27 @@ export class PermitsService {
       );
   }
 
+  getDistinctWorkTypes(): Observable<string[]> {
+    const query = 'select distinct worktype';
+
+    return this.http.get<string[]>(this.getFullQueryExpression(query), this.getHttpHeader())
+      .pipe(
+        map(types => types),
+        catchError(error => throwError(error))
+      );
+  }
+
   private getHttpHeader(): { headers: HttpHeaders } {
-      return {
-        headers: new HttpHeaders({
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-          'X-App-Token': this.APP_TOKEN
-        })
-      };
+    return {
+      headers: new HttpHeaders({
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+        'X-App-Token': this.APP_TOKEN
+      })
+    };
   }
 
   private getFullQueryExpression(query: string): string {
-    return this.PERMITS_ENDPOINT + '?$query=' + query;
+    return this.API_ENDPOINT + '?$query=' + query;
   }
 }

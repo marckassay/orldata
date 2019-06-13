@@ -1,10 +1,10 @@
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
-import * as fromResults from '@permits/reducers/results.reducer';
 import * as fromSearch from '@permits/reducers/search.reducer';
+import * as fromTable from '@permits/reducers/table.reducer';
 
 export interface PermitsState {
-  results: fromResults.State;
+  table: fromTable.State;
   search: fromSearch.State;
 }
 
@@ -14,13 +14,12 @@ export interface State extends fromRoot.State {
 
 export function reducers(state: PermitsState | undefined, action: Action) {
   return combineReducers({
-    results: fromResults.reducer,
+    table: fromTable.reducer,
     search: fromSearch.reducer,
   })(state, action);
 }
 
 export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
-
 
 /*
  Results selectors
@@ -28,7 +27,7 @@ export const getPermitsState = createFeatureSelector<State, PermitsState>('permi
 export const getPermitEntitiesState = createSelector(
   getPermitsState,
   (state) => {
-    return state.results.results;
+    return state.table.entities;
   }
 );
 
@@ -41,11 +40,6 @@ export const getSearchState = createSelector(
   (state: PermitsState) => state.search
 );
 
-export const getSearchLoading = createSelector(
-  getSearchState,
-  fromSearch.getLoading
-);
-
 export const getSearchOffset = createSelector(
   getSearchState,
   fromSearch.getOffset
@@ -54,7 +48,6 @@ export const getSearchOffset = createSelector(
 export const getSearchPage = createSelector(
   getSearchOffset,
   (offset) => {
-    console.log(offset + 1);
     return offset + 1;
   }
 );

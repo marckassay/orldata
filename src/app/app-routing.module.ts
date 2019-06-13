@@ -9,12 +9,12 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: '@app/core/components/home/home.component#HomeModule',
+    loadChildren: '@core/components/home/home.component#HomeModule',
     data: { title: 'Home' }
   },
   {
     path: 'catalog',
-    loadChildren: '@app/core/components/catalog/catalog.component#CatalogModule',
+    loadChildren: '@core/components/catalog/catalog.component#CatalogModule',
     pathMatch: 'full',
     data: { title: 'Catalog' }
   },

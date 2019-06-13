@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { CoreService } from '@app/app.service';
+import { CrimesService } from '@app/core/services/crimes.service';
+import { PermitsService } from '@app/core/services/permits.service';
 import * as fromCore from '@core/reducers';
 import { Actions, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -30,7 +31,7 @@ export class RouterEffects {
     take(1),
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
-    switchMap(() => this.service.getPermitsMetadata().pipe(
+    switchMap(() => this.permitsSvc.getMetadata().pipe(
         map((metadata: object[]) => AppApiActions.permitsMetadata({ metadata })),
         catchError(err =>
           of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
@@ -48,7 +49,7 @@ export class RouterEffects {
     take(1),
     tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Crimes metadata for Catalog page.')),
-    switchMap(() => this.service.getCrimesMetadata().pipe(
+    switchMap(() => this.crimesSvc.getMetadata().pipe(
       map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
       catchError(err =>
         of(AppApiActions.crimesMetadataFailure({ errorMsg: err }))
@@ -79,7 +80,8 @@ export class RouterEffects {
     private titleService: Title,
     private activatedRoute: ActivatedRoute,
     private actions$: Actions,
-    private service: CoreService,
+    private permitsSvc: PermitsService,
+    private crimesSvc: CrimesService,
     private store: Store<fromCore.State>
   ) { }
 }

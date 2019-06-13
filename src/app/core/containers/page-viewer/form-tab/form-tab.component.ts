@@ -16,6 +16,6 @@ export class FormTabComponent {
   }
 
   search() {
-    this.store.dispatch(SearchPermitsActions.queryPermits({ payload: { query: '', offset: 0 } }));
+    this.store.dispatch(SearchPermitsActions.search({ payload: { query: '', offset: 0 } }));
   }
 }

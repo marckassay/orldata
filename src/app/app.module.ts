@@ -12,7 +12,6 @@ import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
-import { CoreEffects } from './core/effects/core.effects';
 import { RouterEffects } from './core/effects/router.effects';
 import { StyleManager } from './core/shared/style-manager';
 import { ThemePickerModule } from './core/shared/theme-picker';
@@ -66,7 +65,7 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
     }),
 
     EffectsModule.forRoot(
-      [RouterEffects, CoreEffects]
+      [RouterEffects]
     ),
 
     CoreModule,

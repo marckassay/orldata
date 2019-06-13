@@ -8,13 +8,13 @@ import { DatasetIDs, environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 /**
- * Retrieves metadata for datasets.
+ * Calls the API for Crimes only.
  *
- * @ref https://socratametadataapi.docs.apiary.io/#introduction/endpoints
+ * @ref https://dev.socrata.com/foundry/data.cityoforlando.net/ryhf-m453
  */
-export class CoreService {
-  private PERMITS_ENDPOINT = environment.metadata_endpoint(DatasetIDs.PERMITS);
-  private CRIMES_ENDPOINT = environment.metadata_endpoint(DatasetIDs.CRIMES);
+export class CrimesService {
+  private METADATA_ENDPOINT = environment.metadata_endpoint(DatasetIDs.CRIMES);
+  // private API_ENDPOINT = environment.endpoint(DatasetIDs.CRIMES);
   private APP_TOKEN = environment.token || '';
 
   constructor(private http: HttpClient) {
@@ -23,21 +23,10 @@ export class CoreService {
 
   /**
    * Calls the following:
-   * `https://data.cityoforlando.net/api/views/metadata/v1/ryhf-m453`
-   */
-  getPermitsMetadata(): Observable<object[]> {
-    return this.http.get<object[]>(this.PERMITS_ENDPOINT, this.getHttpHeader())
-      .pipe(
-        catchError(error => throwError(error))
-      );
-  }
-
-  /**
-   * Calls the following:
    * `https://data.cityoforlando.net/api/views/metadata/v1/4y9m-jbmz`
    */
-  getCrimesMetadata(): Observable<object[]> {
-    return this.http.get<object[]>(this.CRIMES_ENDPOINT, this.getHttpHeader())
+  getMetadata(): Observable<object[]> {
+    return this.http.get<object[]>(this.METADATA_ENDPOINT, this.getHttpHeader())
       .pipe(
         catchError(error => throwError(error))
       );
@@ -48,8 +37,12 @@ export class CoreService {
       headers: new HttpHeaders({
         Accept: 'application/json',
         'Content-type': 'application/json',
-        'X-App-Token': this.APP_TOKEN,
+        'X-App-Token': this.APP_TOKEN
       })
     };
   }
+  /*
+  private getFullQueryExpression(query: string): string {
+    return this.API_ENDPOINT + '?$query=' + query;
+  } */
 }

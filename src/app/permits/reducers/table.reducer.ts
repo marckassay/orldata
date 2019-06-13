@@ -2,12 +2,12 @@ import { createReducer, on } from '@ngrx/store';
 import { PermitsApiActions } from '@permits/actions';
 
 export interface State {
-  results: object[];
+  entities: object[];
   error: string;
 }
 
 const initialState: State = {
-  results: [{ processed_date: '', application_type: ''}],
+  entities: [{ processed_date: '', application_type: ''}],
   error: ''
 };
 
@@ -15,7 +15,7 @@ export const reducer = createReducer(
   initialState,
   on(PermitsApiActions.searchSuccess, (state, { results }) => ({
     ...state,
-    results
+    entities: results
   })),
   on(PermitsApiActions.searchFailure, (state, { errorMsg }) => ({
     ...state,
