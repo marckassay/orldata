@@ -2,30 +2,58 @@ import { createReducer, on } from '@ngrx/store';
 import { PermitsApiActions, SearchPermitsActions } from '@permits/actions';
 
 export interface State {
-  query: string;
-  offset: number;
+  /**
+   * Maxiumum number of entities rendered in table.
+   */
+  limit: 20 | 40 | 80 | 160;
+
+  selectedApplicationTypes: string[];
+  applicationTypes: Array<{ name: string, checked: boolean }>;
+
+  selectedWorkTypes: string[];
+  workTypes: string[];
+
+  processedDate: Date | undefined;
+  processedDateOperator: string;
+  secondaryProcessedDate: Date | undefined;
 }
 
 const initialState: State = {
-  query: '',
-  offset: 0
+  limit: 40,
+  selectedApplicationTypes: [],
+  applicationTypes: [],
+
+  selectedWorkTypes: [],
+  workTypes: [],
+
+  processedDate: undefined,
+  processedDateOperator: '',
+  secondaryProcessedDate: undefined
 };
 
 export const reducer = createReducer(
   initialState,
-  on(SearchPermitsActions.search, (state, { payload: { query, offset } }) => ({
+  on(SearchPermitsActions.search, (state, {
+    selectedApplicationTypes,
+    selectedWorkTypes,
+    processedDate,
+    processedDateOperator,
+    secondaryProcessedDate
+  }) => ({
     ...state,
-    query,
-    offset
+    selectedApplicationTypes,
+    selectedWorkTypes,
+    processedDate,
+    processedDateOperator,
+    secondaryProcessedDate
   })),
-  on(PermitsApiActions.searchSuccess, (state) => ({
+  on(PermitsApiActions.distinctApplicationTypes, (state, {results}) => {
+    const fresults = (results).map((value) => {
+      return { name: value.application_type, checked: false};
+    });
+    return {
     ...state,
-  })),
-  on(PermitsApiActions.searchFailure, (state) => ({
-    ...state,
-  }))
+      applicationTypes: fresults
+    };
+  })
 );
-
-export const getQuery = (state: State) => state.query;
-
-export const getOffset = (state: State) => state.offset;

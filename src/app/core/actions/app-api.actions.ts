@@ -20,10 +20,10 @@ export const crimesMetadataFailure = createAction(
    props<{ errorMsg: string }>()
 );
 
-export const serviceCurrentlyCommunicating = createAction(
-  '[App API] Services Currently Communicating'
+export const serviceActive = createAction(
+  '[App API] Service Active'
 );
 
-export const serviceCurrentlyCompleted = createAction(
-  '[App API] Services Currently Completed'
+export const serviceInactive = createAction(
+  '[App API] Service Inactive'
 );

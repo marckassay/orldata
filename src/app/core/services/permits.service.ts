@@ -42,13 +42,13 @@ export class PermitsService {
    * @param offset index value indicating page number. works with limit
    * @param limit maximum limit for items to fetch
    */
-  search(filter: string, offset: number, limit = 30): Observable<object[]> {
-    const query =
-      'select processed_date, application_type ' +
+  search(action: object): Observable<object[]> {
+    const query = '';
+/*       'select processed_date, application_type ' +
       'where application_type = ' + `'${filter}'` + ' AND ' +
       'processed_date is not null ' +
       'order by processed_date DESC ' +
-      'limit ' + limit + ' offset ' + offset;
+      'limit ' + limit + ' offset ' + offset; */
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
@@ -56,20 +56,21 @@ export class PermitsService {
       );
   }
 
-  getDistinctApplicationTypes(): Observable<string[]> {
+  getDistinctApplicationTypes(): Observable<Array<{ application_type: string }>> {
     const query = 'select distinct application_type';
 
-    return this.http.get<string[]>(this.getFullQueryExpression(query), this.getHttpHeader())
+    return this.http.get<Array<{ application_type: string }>>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
-        map(types => types),
+        map(types =>
+          types),
         catchError(error => throwError(error))
       );
   }
 
-  getDistinctWorkTypes(): Observable<string[]> {
+  getDistinctWorkTypes(): Observable<object[]> {
     const query = 'select distinct worktype';
 
-    return this.http.get<string[]>(this.getFullQueryExpression(query), this.getHttpHeader())
+    return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
         map(types => types),
         catchError(error => throwError(error))

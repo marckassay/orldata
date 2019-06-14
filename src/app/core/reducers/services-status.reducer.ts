@@ -13,11 +13,11 @@ const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  on(AppApiActions.serviceCurrentlyCommunicating, (state) => ({
+  on(AppApiActions.serviceActive, (state) => ({
     current: state.current + 1,
     servicesCommunicating: true
   })),
-  on(AppApiActions.serviceCurrentlyCompleted, (state) => ({
+  on(AppApiActions.serviceInactive, (state) => ({
     current: state.current - 1,
     servicesCommunicating: state.current === 0
   }))

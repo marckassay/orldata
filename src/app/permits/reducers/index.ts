@@ -1,5 +1,5 @@
 import * as fromRoot from '@app/reducers';
-import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
+import { Action, combineReducers, createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
 import * as fromSearch from '@permits/reducers/search.reducer';
 import * as fromTable from '@permits/reducers/table.reducer';
 
@@ -20,34 +20,75 @@ export function reducers(state: PermitsState | undefined, action: Action) {
 }
 
 export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
-
-/*
- Results selectors
-*/
-export const getPermitEntitiesState = createSelector(
+export const getTableState = createSelector(
   getPermitsState,
-  (state) => {
-    return state.table.entities;
-  }
+  (state) => state.table
 );
-
-
-/*
- Search selectors
-*/
 export const getSearchState = createSelector(
   getPermitsState,
-  (state: PermitsState) => state.search
+  (state) => state.search
 );
 
-export const getSearchOffset = createSelector(
+/*
+ Table Selectors
+*/
+
+export const getPermitEntitiesState: MemoizedSelector<State, object[]> = createSelector(
+  getPermitsState,
+  (state) => state.table.entities
+);
+
+export const getOffset: MemoizedSelector<State, number> = createSelector(
+  getPermitsState,
+  (state) => state.table.offset
+);
+
+export const getCount: MemoizedSelector<State, number> = createSelector(
+  getPermitsState,
+  (state) => state.table.count
+);
+
+
+/*
+ Search Selectors
+*/
+
+export const getApplicationTypes = createSelector(
   getSearchState,
-  fromSearch.getOffset
+  (state) => state.applicationTypes
 );
 
-export const getSearchPage = createSelector(
-  getSearchOffset,
-  (offset) => {
-    return offset + 1;
-  }
+export const getSelectedApplicationTypes = createSelector(
+  getSearchState,
+  (state) => state.selectedApplicationTypes
+);
+
+export const getWorkTypes = createSelector(
+  getSearchState,
+  (state) => state.workTypes
+);
+
+export const getSelectedWorkTypes = createSelector(
+  getSearchState,
+  (state) => state.selectedWorkTypes
+);
+
+export const getProcessedDate = createSelector(
+  getSearchState,
+  (state) => state.processedDate
+);
+
+export const getProcessedDateOperator = createSelector(
+  getSearchState,
+  (state) => state.processedDateOperator
+);
+
+export const getSecondaryProcessedDate = createSelector(
+  getSearchState,
+  (state) => state.secondaryProcessedDate
+);
+
+export const getSearchLimit = createSelector(
+  getSearchState,
+  (state) => state.limit
 );

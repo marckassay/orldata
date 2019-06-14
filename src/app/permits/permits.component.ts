@@ -3,8 +3,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PageViewerModule } from '@app/core/containers/page-viewer/page-viewer.component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { PermitsEffects } from './permits.effects';
-import { reducers } from './reducers';
+import { PermitsEffects } from '@permits/permits.effects';
+import { reducers } from '@permits/reducers';
 
 @Component({
   selector: 'orl-permit-viewer',

@@ -1,4 +1,24 @@
-<h3>Search Form</h3>
-<div>
-  <button mat-flat-button color="primary" (click)="search()">Search</button>
+<div class="orl-search-container">
+  <!--   <mat-form-field>
+    <input matInput placeholder="Input">
+  </mat-form-field> -->
+
+  <!--   <mat-form-field>
+    <mat-select placeholder="Select">
+      <mat-option value="option">Option</mat-option>
+    </mat-select>
+  </mat-form-field> -->
+
+  <mat-card class="result">
+    <mat-card-content>
+      <span>APPLICATION TYPES</span>
+          <mat-grid-list cols="4" rowHeight="20px">
+            <mat-grid-tile *ngFor="let item of applicationTypes;let i=index" [colspan]="1" [rowspan]="1">
+              <mat-checkbox [(ngModel)]="applicationTypes[i].checked" name="item-{{i}}">{{item.name}}</mat-checkbox>
+            </mat-grid-tile>
+          </mat-grid-list>
+    </mat-card-content>
+  </mat-card>
+
+
 </div>

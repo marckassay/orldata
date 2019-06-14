@@ -15,6 +15,10 @@ import { AppApiActions } from '../actions';
 export class RouterEffects {
 
   /**
+   * Prefetches metadata on datasets to retrieve last updated, description, name, etc values.
+   * Although this does retrieve and startup the progress-bar immediately, it *doesn't* halt Angular's
+   * routing until its completed. Not sure if that is possible or not.
+   *
    * This works for now, althought I'm not sure what to make out of it. Resources are gathered from
    * the 1st and 2nd links (listed below). The 3rd link, discusses about an Angular limitation
    * (UI rendering during active routing) which seems to not apply IF acted during the NavigationStart
@@ -29,17 +33,18 @@ export class RouterEffects {
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
     take(1),
-    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
+    tap(() => this.store.dispatch(AppApiActions.serviceActive) ),
     switchMap(() => this.permitsSvc.getMetadata().pipe(
-        map((metadata: object[]) => AppApiActions.permitsMetadata({ metadata })),
+        map((metadata: object[]) =>
+        AppApiActions.permitsMetadata({ metadata })),
         catchError(err =>
           of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
         )
       )
     ),
     tap(() => console.log('[RouterEffects] Prefetched Permits metadata.')),
-    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
+    tap(() => this.store.dispatch(AppApiActions.serviceInactive) )
   ));
 
   prefetchCrimesMetadata$ = createEffect(() => this.router.events.pipe(
@@ -47,8 +52,8 @@ export class RouterEffects {
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
     take(1),
-    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCommunicating); }),
     tap(() => console.log('[RouterEffects] Prefetching Crimes metadata for Catalog page.')),
+    tap(() => { this.store.dispatch(AppApiActions.serviceActive); }),
     switchMap(() => this.crimesSvc.getMetadata().pipe(
       map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
       catchError(err =>
@@ -57,7 +62,7 @@ export class RouterEffects {
     )
     ),
     tap(() => console.log('[RouterEffects] Prefetched Crimes metadata.')),
-    tap(() => { this.store.dispatch(AppApiActions.serviceCurrentlyCompleted); })
+    tap(() => { this.store.dispatch(AppApiActions.serviceInactive); })
   ));
 
   updateTitle$ = createEffect(() => this.router.events.pipe(

@@ -1,15 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
+import { PermitViewerActions } from '@app/permits/actions';
+import { Store } from '@ngrx/store';
+import * as fromPermits from '@permits/reducers';
 import { Observable, Subscription } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
+
 
 @Component({
   selector: 'app-page-viewer',
@@ -43,6 +52,7 @@ export class PageViewerComponent implements OnInit {
 
   constructor(public router: Router,
               public route: ActivatedRoute,
+              public store: Store<fromPermits.State>,
               public catalog: CatalogItems) {
     this.title = '';
                }
@@ -54,6 +64,8 @@ export class PageViewerComponent implements OnInit {
       const item = this.catalog.getItemByName(id[0]);
       this.title = (item) ? item.routeLink : '';
     }
+
+    this.store.dispatch(PermitViewerActions.getSearchFormData());
   }
 }
 
@@ -73,10 +85,15 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [
+    FormsModule,
     MatTabsModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSelectModule,
+    MatGridListModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
     RouterModule.forChild(routes),
     CommonModule
   ],

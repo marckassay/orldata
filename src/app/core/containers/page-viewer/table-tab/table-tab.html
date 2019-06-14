@@ -19,4 +19,4 @@
   </table>
 </div>
 
-<mat-paginator [pageIndex]="pageIndex | async" [pageSize]="50" (page)="pageIndexChange($event)"></mat-paginator>
+<mat-paginator [pageIndex]="pageIndex | async" [pageSize]="limit | async" [length]="count | async" (page)="pageIndexChange($event)"></mat-paginator>
