@@ -1,3 +1,5 @@
+@import './form-tab/mixin-theme';
+
 @mixin page-viewer-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -18,4 +20,6 @@
       color: mat-color($primary);
     }
   }
+
+  @include form-tab-theme($theme);
 }

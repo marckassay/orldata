@@ -8,7 +8,7 @@ export interface State {
   limit: 20 | 40 | 80 | 160;
 
   selectedApplicationTypes: string[];
-  applicationTypes: Array<{ name: string, checked: boolean }>;
+  applicationTypes: Array<{ application_type: string }>;
 
   selectedWorkTypes: string[];
   workTypes: string[];
@@ -47,13 +47,9 @@ export const reducer = createReducer(
     processedDateOperator,
     secondaryProcessedDate
   })),
-  on(PermitsApiActions.distinctApplicationTypes, (state, {results}) => {
-    const fresults = (results).map((value) => {
-      return { name: value.application_type, checked: false};
-    });
-    return {
+  on(PermitsApiActions.distinctApplicationTypes, (state, {results}) => ({
     ...state,
-      applicationTypes: fresults
-    };
-  })
+      applicationTypes: results
+  }))
 );
+

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
+import { FlexGridModule } from '@app/core/shared/flex-grid/flex-grid.module';
 import { PermitViewerActions } from '@app/permits/actions';
 import { Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
@@ -86,19 +88,22 @@ export const routes: Routes = [
 @NgModule({
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSelectModule,
-    MatGridListModule,
     MatCardModule,
+    MatGridListModule,
     MatCheckboxModule,
     MatFormFieldModule,
+    MatButtonModule,
+    FlexGridModule,
     RouterModule.forChild(routes),
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    PageViewerComponent
+    PageViewerComponent,
   ],
   declarations: [
     PageViewerComponent,

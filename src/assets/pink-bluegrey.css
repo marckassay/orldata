@@ -1561,6 +1561,9 @@ orl-page-viewer .orl-header-headline {
 orl-page-viewer .orl-header-start {
   color: #e91e63; }
 
+orl-form-tab .orl-valid-div > p {
+  color: #f44336; }
+
 app-homepage .orl-header-background {
   background: #e91e63; }
 

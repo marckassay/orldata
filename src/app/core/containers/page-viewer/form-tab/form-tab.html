@@ -8,17 +8,29 @@
       <mat-option value="option">Option</mat-option>
     </mat-select>
   </mat-form-field> -->
+  <!--   <form [formGroup]="form"> -->
+  <mat-card>
+    <mat-card-title>Application Types</mat-card-title>
+    <div class="orl-valid-div" >
+      <p mat-line *ngIf="!form.valid">* At least one type must be selected</p>
+    </div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-grid-list cols="3"
+    rowHeight="20px">
+        <div formArrayName="application_types">
+        <mat-grid-tile *ngFor="let null of form.controls.application_types.controls; let i = index" [colspan]="1" [rowspan]="1">
+          <mat-checkbox [formControlName]="i">
+            {{application_types[i].application_type | titlecase}}
+          </mat-checkbox>
+        </mat-grid-tile>
+      </div>
+    </mat-grid-list>
 
-  <mat-card class="result">
-    <mat-card-content>
-      <span>APPLICATION TYPES</span>
-          <mat-grid-list cols="4" rowHeight="20px">
-            <mat-grid-tile *ngFor="let item of applicationTypes;let i=index" [colspan]="1" [rowspan]="1">
-              <mat-checkbox [(ngModel)]="applicationTypes[i].checked" name="item-{{i}}">{{item.name}}</mat-checkbox>
-            </mat-grid-tile>
-          </mat-grid-list>
-    </mat-card-content>
+    <div class="orl-button-row">
+      <a mat-stroked-button [disabled]="!form.valid" class="orl-button" color="primary" routerLink="table">Search</a>
+      <button mat-stroked-button color="primary" (click)="clearAll()">Clear All</button>
+      <button mat-stroked-button color="primary" (click)="selectAll()">Select All</button>
+    </div>
+  </form>
   </mat-card>
-
-
 </div>

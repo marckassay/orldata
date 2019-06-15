@@ -1,8 +1,26 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+interface FlexGridItem {
+  id: string;
+  checked: boolean;
+  application_type: string;
+}
+
+export function minSelectedCheckboxes(min = 1) {
+  const validator: ValidatorFn | any = (formArray: FormArray) => {
+    const totalSelected = formArray.controls
+      .map(control => control.value)
+      .reduce((prev, next) => next ? prev + next : prev, 0);
+
+    return totalSelected >= min ? null : { required: true };
+  };
+
+  return validator;
+}
 
 @Component({
   selector: 'orl-form-tab',
@@ -18,7 +36,12 @@ import { catchError } from 'rxjs/operators';
   .orl-search-container > * {
 
   }
-
+  .orl-valid-div {
+    margin: 14px 0;
+    p {
+      font-weight: bold;
+    }
+  }
   .orl-search-section {
     display: flex;
     align-content: center;
@@ -29,9 +52,20 @@ import { catchError } from 'rxjs/operators';
     margin: 0 10px;
   }
 
+  .orl-button-row button,
+  .orl-button-row a {
+    margin-top: 16px;
+    margin-right: 8px;
+  }
+
   p {
     font-size: 14px;
   }
+
+  .mat-grid-tile {
+    font-weight: unset;
+  }
+
   .mat-grid-tile .mat-figure {
     justify-content: start;
   }
@@ -39,17 +73,42 @@ import { catchError } from 'rxjs/operators';
 })
 export class FormTabComponent implements OnInit, AfterViewInit {
 
-  applicationTypes: string[] | any;
+  /*  @ViewChild(FlexGridComponent, { static: false })
+   applicationTypeGrid: FlexGridComponent<FlexGridItem>; */
+  form: FormGroup | undefined;
+  // tslint:disable-next-line: variable-name
+  application_types: FlexGridItem[];
 
-  constructor(private store: Store<fromPermits.State>) { }
+
+  constructor(private store: Store<fromPermits.State>,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.store.pipe(
-      select(fromPermits.getApplicationTypes),
-      catchError(error => throwError(error))
-    ).subscribe((types) => {
-      this.applicationTypes = types;
+    this.form = this.fb.group({
+      application_types: this.fb.array([], minSelectedCheckboxes(1))
     });
+
+    /*     this.store.pipe(
+          select(fromPermits.getApplicationTypes),
+          catchError(error => throwError(error))
+        ) */
+
+    of([
+      { application_type: 'Building Permit' },
+      { application_type: 'Gas' },
+      { application_type: 'FloodPlan' },
+      { application_type: 'Alcohol' },
+    ]).subscribe((types) => {
+      const building: FlexGridItem[] = [];
+      types.forEach((type: { application_type: string }) => {
+        const part = Object.assign({ id: '', checked: (type.application_type === 'Building Permit'), application_type: '' }, type);
+        part.id = part.application_type.toLowerCase().replace(/ /gi, '_');
+        building.push(part);
+      });
+      this.application_types = building;
+      this.addCheckboxes();
+    });
+
     /*
     this.store.pipe(select(fromPermits.getSelectedApplicationTypes));
 
@@ -66,7 +125,45 @@ export class FormTabComponent implements OnInit, AfterViewInit {
 
   }
 
-  search() {
-   // this.store.dispatch(SearchPermitsActions.search({}));
+  private addCheckboxes() {
+    this.application_types.forEach((o, i) => {
+      if (this.form) {
+        const control = new FormControl(o.checked === true);
+        (this.form.controls.application_types as FormArray).push(control);
+      }
+    });
+  }
+
+  selectAll() {
+    if (this.form) {
+      const ctrlsArray = this.form.get('application_types') as FormArray;
+      if (ctrlsArray) {
+        (ctrlsArray.controls as FormControl[]).forEach((control) => {
+          control.setValue(true);
+        });
+      }
+    }
+  }
+
+  clearAll() {
+    if (this.form) {
+      const ctrlsArray = this.form.get('application_types') as FormArray;
+      if (ctrlsArray) {
+        (ctrlsArray.controls as FormControl[]).forEach((control) => {
+          control.setValue(false);
+        });
+      }
+    }
+  }
+
+  submit() {
+    if (this.form) {
+      const values = this.form.value.application_types
+        .map((value: boolean, i: number) => value ? this.application_types[i].id : null)
+        .filter((id: string) => id !== null);
+      console.log(values);
+    }
+
+    // this.store.dispatch(SearchPermitsActions.search({}));
   }
 }

@@ -1,3 +1,4 @@
+import { LayoutModule } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -22,6 +23,7 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
+    LayoutModule,
     HttpClientModule,
     AppRoutingModule,
 
