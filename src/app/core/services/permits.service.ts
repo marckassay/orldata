@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
+import { QueryBuilder } from './query-builder';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class PermitsService {
   private API_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
   private APP_TOKEN = environment.token || '';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private qb: QueryBuilder) {
 
   }
 
@@ -42,9 +44,14 @@ export class PermitsService {
    * @param offset index value indicating page number. works with limit
    * @param limit maximum limit for items to fetch
    */
-  search(action: object): Observable<object[]> {
-    const query = '';
-/*       'select processed_date, application_type ' +
+  search(action: {selectedApplicationTypes: { application_type: string[] }}): Observable<object[]> {
+    const query = 'select * ' +
+    this.qb.where(action.selectedApplicationTypes) + ' AND ' +
+    `starts_with(permit_number, 'BLD____-') ` +
+    `order by permit_number DESC ` +
+    'limit 10';
+
+/*    'select processed_date, application_type ' +
       'where application_type = ' + `'${filter}'` + ' AND ' +
       'processed_date is not null ' +
       'order by processed_date DESC ' +

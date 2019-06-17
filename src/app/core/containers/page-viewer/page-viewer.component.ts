@@ -12,7 +12,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
-import { FlexGridModule } from '@app/core/shared/flex-grid/flex-grid.module';
+import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
+import { FieldTitleCasePipe } from '@app/core/shared/fieldtitlecase.pipe';
 import { PermitViewerActions } from '@app/permits/actions';
 import { Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
@@ -89,6 +90,7 @@ export const routes: Routes = [
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    MatButtonModule,
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
@@ -97,8 +99,7 @@ export const routes: Routes = [
     MatGridListModule,
     MatCheckboxModule,
     MatFormFieldModule,
-    MatButtonModule,
-    FlexGridModule,
+    CheckboxGridModule,
     RouterModule.forChild(routes),
     CommonModule,
   ],
@@ -106,6 +107,7 @@ export const routes: Routes = [
     PageViewerComponent,
   ],
   declarations: [
+    FieldTitleCasePipe,
     PageViewerComponent,
     TableTabComponent,
     FormTabComponent,

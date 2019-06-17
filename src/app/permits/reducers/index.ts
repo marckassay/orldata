@@ -63,7 +63,7 @@ export const getSelectedApplicationTypes = createSelector(
   (state) => state.selectedApplicationTypes
 );
 
-export const getWorkTypes = createSelector(
+/* export const getWorkTypes = createSelector(
   getSearchState,
   (state) => state.workTypes
 );
@@ -86,7 +86,7 @@ export const getProcessedDateOperator = createSelector(
 export const getSecondaryProcessedDate = createSelector(
   getSearchState,
   (state) => state.secondaryProcessedDate
-);
+); */
 
 export const getSearchLimit = createSelector(
   getSearchState,

@@ -7,45 +7,45 @@ export interface State {
    */
   limit: 20 | 40 | 80 | 160;
 
-  selectedApplicationTypes: string[];
+  selectedApplicationTypes: { application_type: string[]};
   applicationTypes: Array<{ application_type: string }>;
 
-  selectedWorkTypes: string[];
+/*   selectedWorkTypes: string[];
   workTypes: string[];
 
   processedDate: Date | undefined;
   processedDateOperator: string;
-  secondaryProcessedDate: Date | undefined;
+  secondaryProcessedDate: Date | undefined; */
 }
 
 const initialState: State = {
   limit: 40,
-  selectedApplicationTypes: [],
+  selectedApplicationTypes: {application_type: ['']},
   applicationTypes: [],
 
-  selectedWorkTypes: [],
+/*   selectedWorkTypes: [],
   workTypes: [],
 
   processedDate: undefined,
   processedDateOperator: '',
-  secondaryProcessedDate: undefined
+  secondaryProcessedDate: undefined */
 };
 
 export const reducer = createReducer(
   initialState,
   on(SearchPermitsActions.search, (state, {
     selectedApplicationTypes,
-    selectedWorkTypes,
+/*     selectedWorkTypes,
     processedDate,
     processedDateOperator,
-    secondaryProcessedDate
+    secondaryProcessedDate */
   }) => ({
     ...state,
     selectedApplicationTypes,
-    selectedWorkTypes,
+   /*  selectedWorkTypes,
     processedDate,
     processedDateOperator,
-    secondaryProcessedDate
+    secondaryProcessedDate */
   })),
   on(PermitsApiActions.distinctApplicationTypes, (state, {results}) => ({
     ...state,

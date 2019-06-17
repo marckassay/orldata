@@ -1,6 +1,12 @@
 <div class="orl-table-container">
   <table mat-table [dataSource]="dataSource">
 
+    <!-- permit_number Column -->
+    <ng-container matColumnDef="permit_number">
+      <th mat-header-cell *matHeaderCellDef>Permit Number</th>
+      <td mat-cell *matCellDef="let row">{{row.permit_number}}</td>
+    </ng-container>
+
     <!-- processed_date Column -->
     <ng-container matColumnDef="processed_date">
       <th mat-header-cell *matHeaderCellDef>Processed Date</th>
