@@ -13,15 +13,15 @@ import { PermitsService } from '../core/services/permits.service';
 export class PermitsEffects {
 
   /**
-   * Dispatches `AppApiActions.serviceActive` and `AppApiActions.serviceInactive`
+   * Side-effect is dispatch of: `AppApiActions.serviceActive` and `AppApiActions.serviceInactive`
    */
   search$ = createEffect(() => this.actions$.pipe(
     ofType(SearchPermitsActions.search),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
-    mergeMap((action) => this.service.search(action).pipe(
-      map((results: object[]) => {
+    mergeMap((action) => this.service.search(action, action.offset).pipe(
+      map((results) => {
         this.store.dispatch(AppApiActions.serviceInactive);
-        return PermitsApiActions.searchSuccess({ results, count: (results as any).count });
+        return PermitsApiActions.searchSuccess(results);
       }),
     )),
     catchError((err) => {
@@ -30,6 +30,9 @@ export class PermitsEffects {
     }),
   ));
 
+  /**
+   * Queries for fields that are defined collections, specifically: `application_type` and `worktype`.
+   */
   getSearchFormData$ = createEffect(() => this.actions$.pipe(
     ofType(PermitViewerActions.getSearchFormData),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
@@ -44,17 +47,7 @@ export class PermitsEffects {
       return of(PermitsApiActions.searchFailure({ errorMsg: err }));
     }),
   ));
-  /*
-  metadata$ = createEffect(() => this.actions$.pipe(
-    ofType(RouterActions.permitsDatasetStartup),
-    mergeMap(() => this.service.getMetadata().pipe(
-      map((metadata: object[]) => AppApiActions.permitsMetadata({ metadata })),
-    )),
-    catchError(err =>
-      of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
-    )
-  ));
-  */
+
   constructor(
     private router: Router,
     private actions$: Actions,

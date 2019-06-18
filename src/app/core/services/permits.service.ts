@@ -5,6 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
 import { QueryBuilder } from './query-builder';
 
+export const QUERY_LIMIT = 40;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,21 +46,27 @@ export class PermitsService {
    * @param offset index value indicating page number. works with limit
    * @param limit maximum limit for items to fetch
    */
-  search(action: {selectedApplicationTypes: { application_type: string[] }}): Observable<object[]> {
-    const query = 'select * ' +
+  search(action: { selectedApplicationTypes: { application_type: string[] } },
+         offset: number,
+         limit = QUERY_LIMIT): Observable<{ results: object[], offset: number, count: number }> {
+    let query = 'select * ' +
     this.qb.where(action.selectedApplicationTypes) + ' AND ' +
-    `starts_with(permit_number, 'BLD____-') ` +
-    `order by permit_number DESC ` +
-    'limit 10';
+    `starts_with(permit_number, 'BLD____-') `;
 
-/*    'select processed_date, application_type ' +
-      'where application_type = ' + `'${filter}'` + ' AND ' +
-      'processed_date is not null ' +
-      'order by processed_date DESC ' +
-      'limit ' + limit + ' offset ' + offset; */
+    if (offset > 0) {
+      query += 'order by permit_number DESC ' +
+        'limit ' + limit +
+        'offset ' + offset;
+    } else {
+      query += '|> SELECT COUNT(*)';
+    }
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
+        map((value) => {
+          const countValue = (offset > -1) ? -1 : parseInt((value[0] as any).COUNT, 10);
+          return { results: (countValue === -1) ? value : [], offset, count: countValue };
+        }),
         catchError(error => throwError(error))
       );
   }
@@ -66,10 +74,9 @@ export class PermitsService {
   getDistinctApplicationTypes(): Observable<Array<{ application_type: string }>> {
     const query = 'select distinct application_type';
 
-    return this.http.get<Array<{ application_type: string }>>(this.getFullQueryExpression(query), this.getHttpHeader())
+    return this.http.get<{ application_type: string }[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
-        map(types =>
-          types),
+        map(types => types),
         catchError(error => throwError(error))
       );
   }

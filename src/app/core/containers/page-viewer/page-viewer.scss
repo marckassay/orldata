@@ -10,3 +10,9 @@ app-page-viewer {
 .orl-component-viewer-section-tab {
   text-transform: uppercase;
 }
+
+.mat-tab-link {
+  span > span  {
+    font-size: 9px;
+  }
+}

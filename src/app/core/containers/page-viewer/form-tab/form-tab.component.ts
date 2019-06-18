@@ -138,6 +138,7 @@ export class FormTabComponent implements OnInit {
       return { application_type: types};
     };
 
-    this.store.dispatch(SearchPermitsActions.search({ selectedApplicationTypes: selectApplicationTypes()}));
+    this.store.dispatch(SearchPermitsActions.search({ offset: 0, selectedApplicationTypes: selectApplicationTypes()}));
+    this.store.dispatch(SearchPermitsActions.search({ offset: -1, selectedApplicationTypes: selectApplicationTypes()}));
   }
 }
