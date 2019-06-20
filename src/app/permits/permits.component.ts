@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, NgModule, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PageViewerModule } from '@app/core/containers/page-viewer/page-viewer.component';
+import { PageViewerModule } from '@app/core/containers/page-viewer/page-viewer.module';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { PermitsEffects } from '@permits/permits.effects';

@@ -29,3 +29,7 @@
 .orl-catalog-item, .orl-catalog-item:hover {
   text-decoration: none;
 }
+
+a.disabled {
+  cursor: not-allowed;
+}

@@ -86,6 +86,7 @@ export class FormTabComponent implements OnInit {
       application_types: this.fb.control(this.fb.array([])),
     });
 
+    this.onFormChanges();
   }
 
   get application_types() {
@@ -93,7 +94,16 @@ export class FormTabComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
     this.observeApplicationTypes();
+  }
+
+  onFormChanges() {
+      this.form.valueChanges.subscribe(val => {
+        console.log('-->>', val);
+        // this.store.dispatch(SearchPermitsActions.search({ offset: -1, selectedApplicationTypes: selectApplicationTypes() }));
+      });
   }
 
   private observeApplicationTypes() {
@@ -138,7 +148,6 @@ export class FormTabComponent implements OnInit {
       return { application_type: types};
     };
 
-    this.store.dispatch(SearchPermitsActions.search({ offset: 0, selectedApplicationTypes: selectApplicationTypes()}));
-    this.store.dispatch(SearchPermitsActions.search({ offset: -1, selectedApplicationTypes: selectApplicationTypes()}));
+    this.store.dispatch(SearchPermitsActions.search({ offset: 0, selectedApplicationTypes: selectApplicationTypes() }));
   }
 }

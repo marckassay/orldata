@@ -1419,6 +1419,18 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .is-next-version {
   background: #b71c1c !important; }
 
+app-catalog .orl-header-background {
+  background: #3f51b5; }
+
+app-catalog .orl-header-headline {
+  color: white; }
+
+app-catalog .orl-header-start {
+  color: #3f51b5; }
+
+app-catalog a.disabled .mat-list-item-content {
+  color: rgba(0, 0, 0, 0.38); }
+
 .orl-svg-primary-fill {
   fill: #3f51b5; }
 

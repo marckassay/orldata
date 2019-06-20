@@ -4,6 +4,9 @@
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
+  $disabled: mat-color($foreground, disabled);
+  $disabled-87: mat-color($foreground, disabled, .87);
+
 
   app-catalog {
     .orl-header-background {
@@ -16,6 +19,12 @@
 
     .orl-header-start {
       color: mat-color($primary);
+    }
+
+    a.disabled {
+      .mat-list-item-content {
+        color: $disabled
+      }
     }
   }
 }

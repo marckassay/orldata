@@ -19,9 +19,11 @@ import { CatalogItem, CatalogItems } from './catalog-items';
   <mat-nav-list class="orl-catalog-list">
     <h3 mat-subheader>Datasets</h3>
 
-    <a mat-list-item class="orl-catalog-item" *ngFor="let item of catalogItems.getAllItems()"
-      [routerLink]="['/catalog', item.routeLink]">
-      <mat-icon matListIcon color="primary">folder</mat-icon>
+    <a *ngFor="let item of catalogItems.getAllItems()"
+      mat-list-item class="orl-catalog-item"
+      [routerLink]="item.disabled ? null : ['/catalog', item.routeLink]"
+      [class.disabled]="item.disabled ? true : false" >
+      <mat-icon matListIcon [color]="item.disabled ? 'disabled-87' : 'primary'" >folder</mat-icon>
       <h3 mat-line>{{item.name}}</h3>
       <h4 mat-line *ngIf="item.dataUpdatedAt">Last Updated: {{item.dataUpdatedAt | date}}</h4>
       <p mat-line>{{item.description}}</p>
@@ -65,6 +67,10 @@ export class CatalogComponent implements OnInit {
       }
       this.ref.markForCheck();
     }
+  }
+
+  onClick(item: CatalogItem) {
+    this.router.navigate(['/catalog', item.routeLink]);
   }
 }
 

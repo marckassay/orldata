@@ -20,8 +20,8 @@ export enum DatasetNames {
 export class CatalogItems {
 
   CATALOG: CatalogItem[] = [
-    { id: DatasetIDs.PERMITS, routeLink: DatasetNames.PERMITS },
-    { id: DatasetIDs.CRIMES, routeLink: DatasetNames.CRIMES }
+    { id: DatasetIDs.PERMITS, routeLink: DatasetNames.PERMITS, disabled: false },
+    { id: DatasetIDs.CRIMES, routeLink: DatasetNames.CRIMES, disabled: true }
   ];
 
   getAllItems(): CatalogItem[] {

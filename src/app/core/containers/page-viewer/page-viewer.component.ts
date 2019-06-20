@@ -1,33 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterModule, Routes } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
-import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
-import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
 import { PermitViewerActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subscription } from 'rxjs';
-import { FormTabComponent } from './form-tab/form-tab.component';
-import { OptionsTabComponent } from './options-tab/options-tab.component';
-import { TableTabComponent } from './table-tab/table-tab.component';
 
-
-/*       <a disabled mat-tab-link class="orl-component-viewer-section-tab"
-          [routerLink]="options"
-          routerLinkActive #rla="routerLinkActive"
-          [active]="rla.isActive">Options</a> */
 @Component({
   selector: 'app-page-viewer',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,14 +17,21 @@ import { TableTabComponent } from './table-tab/table-tab.component';
     <nav mat-tab-nav-bar class="orl-component-viewer-tabbed-content">
       <a mat-tab-link class="orl-component-viewer-section-tab"
           routerLink="table"
-          routerLinkActive #rla="routerLinkActive"
-          [active]="rla.isActive">
+          routerLinkActive #tableRla="routerLinkActive"
+          [active]="tableRla.isActive">
             <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">Table</span>
           </a>
+
       <a mat-tab-link class="orl-component-viewer-section-tab"
           routerLink="form"
-          routerLinkActive #rla="routerLinkActive"
-          [active]="rla.isActive">Form</a>
+          routerLinkActive #formRla="routerLinkActive"
+          [active]="formRla.isActive">Form</a>
+
+      <a mat-tab-link class="orl-component-viewer-section-tab"
+          [attr.disabled]="true"
+          routerLink="form"
+          routerLinkActive #optionsRla="routerLinkActive"
+          [active]="optionsRla.isActive">Form</a>
     </nav>
 
     <div class="orl-component-viewer-content">
@@ -83,51 +68,3 @@ export class PageViewerComponent implements OnInit {
     this.store.dispatch(PermitViewerActions.getSearchFormData());
   }
 }
-
-export const routes: Routes = [
-  {
-    path: '',
-    component: PageViewerComponent,
-    children: [
-      { path: '', redirectTo: 'table', pathMatch: 'full' },
-      { path: 'table', component: TableTabComponent, pathMatch: 'full' },
-      { path: 'form', component: FormTabComponent, pathMatch: 'full' },
-      // { path: 'options', component: OptionsTabComponent, pathMatch: 'full' },
-      { path: '**', redirectTo: 'table' },
-    ],
-  }
-];
-
-@NgModule({
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatBadgeModule,
-    MatTabsModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatCardModule,
-    MatGridListModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    CheckboxGridModule,
-    RouterModule.forChild(routes),
-    CommonModule,
-  ],
-  exports: [
-    PageViewerComponent,
-  ],
-  declarations: [
-    NumericLimitPipe,
-    PageViewerComponent,
-    TableTabComponent,
-    FormTabComponent,
-    OptionsTabComponent
-  ],
-  providers: [
-    CatalogItems
-  ]
-})
-export class PageViewerModule { }
