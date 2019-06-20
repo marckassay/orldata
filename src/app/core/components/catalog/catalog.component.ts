@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
 import { CatalogItem, CatalogItems } from './catalog-items';
-
 
 @Component({
   selector: 'app-catalog',
@@ -16,23 +16,39 @@ import { CatalogItem, CatalogItems } from './catalog-items';
     <h1>Catalog</h1>
   </div>
 
+  <! --
+    Attempted to change tooltip background color in the mixin-theme file but wasn't able to. In the
+    catalog.sass I was able to. Form material doc's example, I used: [matTooltipClass]="orl-tooltip-color"
+  -->
   <mat-nav-list class="orl-catalog-list">
     <h3 mat-subheader>Datasets</h3>
+    <ng-container *ngFor="let item of catalogItems.getAllItems()">
+    <a *ngIf="item.disabled !== true"
+        mat-list-item
+        class="orl-catalog-item"
+        [matTooltip]="item.description"
+        [routerLink]="['/catalog', item.routeLink]">
 
-    <a *ngFor="let item of catalogItems.getAllItems()"
-      mat-list-item class="orl-catalog-item"
-      [routerLink]="item.disabled ? null : ['/catalog', item.routeLink]"
-      [class.disabled]="item.disabled ? true : false" >
-      <mat-icon matListIcon [color]="item.disabled ? 'disabled-87' : 'primary'" >folder</mat-icon>
+      <mat-icon matListIcon color="primary">folder</mat-icon>
       <h3 mat-line>{{item.name}}</h3>
       <h4 mat-line *ngIf="item.dataUpdatedAt">Last Updated: {{item.dataUpdatedAt | date}}</h4>
       <p mat-line>{{item.description}}</p>
     </a>
 
+    <a *ngIf="item.disabled === true"
+        mat-list-item
+        class="orl-catalog-item disabled" >
+      <mat-icon matListIcon>folder</mat-icon>
+      <h3 mat-line>{{item.name}}</h3>
+      <h4 mat-line *ngIf="item.dataUpdatedAt">Last Updated: {{item.dataUpdatedAt | date}}</h4>
+      <p mat-line>{{item.description}}</p>
+    </a>
+    </ng-container>
   </mat-nav-list>
   `,
   styleUrls: ['./catalog.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
+  encapsulation: ViewEncapsulation.None
 })
 export class CatalogComponent implements OnInit {
 
@@ -77,6 +93,7 @@ export class CatalogComponent implements OnInit {
 @NgModule({
   imports: [
     CommonModule,
+    MatTooltipModule,
     MatIconModule,
     MatListModule,
     RouterModule.forChild([{ path: '', component: CatalogComponent }]),

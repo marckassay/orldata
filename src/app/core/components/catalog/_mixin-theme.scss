@@ -5,7 +5,6 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
   $disabled: mat-color($foreground, disabled);
-  $disabled-87: mat-color($foreground, disabled, .87);
 
 
   app-catalog {

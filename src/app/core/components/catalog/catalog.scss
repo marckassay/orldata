@@ -31,5 +31,6 @@
 }
 
 a.disabled {
-  cursor: not-allowed;
+  // to override mat-list-item
+  cursor: not-allowed !important;
 }
