@@ -48,7 +48,8 @@ import { CatalogItem, CatalogItems } from './catalog-items';
   `,
   styleUrls: ['./catalog.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
-  encapsulation: ViewEncapsulation.None
+  // if set to 'None' as recommended by ang-mat docs, footer raises to away from bottom edge
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class CatalogComponent implements OnInit {
 

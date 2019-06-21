@@ -38,8 +38,8 @@ export const reducer = createReducer(
   on(PermitsApiActions.searchSuccess, (state, { results, offset, count }) => ({
     ...state,
     entities: results,
-    offset,
-    count
+    offset: (offset !== -1) ? offset : state.offset,
+    count: (count !== -1) ? count : state.count
   })),
   on(PermitsApiActions.searchFailure, (state, { errorMsg }) => ({
     ...state,

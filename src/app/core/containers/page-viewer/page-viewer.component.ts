@@ -29,9 +29,9 @@ import { Observable, Subscription } from 'rxjs';
 
       <a mat-tab-link class="orl-component-viewer-section-tab"
           [attr.disabled]="true"
-          routerLink="form"
+          routerLink="options"
           routerLinkActive #optionsRla="routerLinkActive"
-          [active]="optionsRla.isActive">Form</a>
+          [active]="optionsRla.isActive">Options</a>
     </nav>
 
     <div class="orl-component-viewer-content">

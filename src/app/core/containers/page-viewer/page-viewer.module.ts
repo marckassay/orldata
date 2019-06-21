@@ -11,24 +11,27 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
+// tslint:disable-next-line: max-line-length
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
 
-@Injectable()
-class CanActivateTab implements OnInit, CanActivateChild {
+@Injectable({
+  providedIn: 'root',
+})
+class CanActivateTab implements OnInit, CanActivate {
 
   count: number;
 
-  constructor(public store: Store<fromPermits.State>, public router: Router) { }
+  constructor(public store: Store<fromPermits.State>, public router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.store.pipe(
@@ -36,11 +39,17 @@ class CanActivateTab implements OnInit, CanActivateChild {
     ).subscribe(count => this.count = count);
   }
 
-  canActivateChild(
+  canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return (this.count > 0) ? true : of(this.router.parseUrl('form'));
+
+    // src: https://stackoverflow.com/a/49822971/648789
+    const redirectTo = route.pathFromRoot
+      .filter(p => p !== route && p.url !== null && p.url.length > 0)
+      .reduce((arr, p) => arr.concat(p.url.map(u => u.path)), new Array<string>());
+
+    return (this.count > 0) ? true : this.router.navigate(redirectTo.concat('form'), { relativeTo: this.activatedRoute });
   }
 }
 
@@ -49,13 +58,13 @@ export const routes: Routes = [
   {
     path: '',
     component: PageViewerComponent,
-   /*  canActivateChild: [CanActivateTab], */
     children: [
       { path: '', redirectTo: 'table', pathMatch: 'full' },
-      { path: 'table', component: TableTabComponent, pathMatch: 'full' },
+      { path: 'table', component: TableTabComponent, pathMatch: 'full', canActivate: [CanActivateTab] },
       { path: 'form', component: FormTabComponent, pathMatch: 'full' },
 /*       { path: 'options', component: OptionsTabComponent, pathMatch: 'full', redirectTo: 'table' }, */
-      { path: '**', redirectTo: 'table' },
+     /*   { path: '/form', redirectTo: 'table' }, */
+      { path: '**', redirectTo: 'table' }
     ],
   }
 ];
@@ -89,6 +98,7 @@ export const routes: Routes = [
     OptionsTabComponent
   ],
   providers: [
+    CanActivateTab,
     CatalogItems
   ]
 })
