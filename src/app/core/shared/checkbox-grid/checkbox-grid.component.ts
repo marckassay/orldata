@@ -23,9 +23,9 @@ import { takeUntil } from 'rxjs/operators';
       <mat-card-title>{{title}}</mat-card-title>
       <form [formGroup]="form">
         <mat-grid-list cols="3" rowHeight="20px">
-          <mat-grid-tile *ngFor="let route of form.controls; let routeIndex = index;" [colspan]="1" [rowspan]="1">
+          <mat-grid-tile *ngFor="let control of form.controls; let controlIndex = index;" [colspan]="1" [rowspan]="1">
 
-            <mat-checkbox [formControlName]="routeIndex">{{dataProvider[routeIndex].name | titlecase}}</mat-checkbox>
+            <mat-checkbox [formControlName]="controlIndex">{{dataProvider[controlIndex].name | titlecase}}</mat-checkbox>
 
           </mat-grid-tile>
         </mat-grid-list>
@@ -48,7 +48,7 @@ import { takeUntil } from 'rxjs/operators';
     }
   `]
 })
-export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor  {
+export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   @Input()
   title: string;
@@ -57,6 +57,7 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
   dataProvider: Array<CheckGridItem>;
 
   form: FormArray;
+
   onChange: any;
 
   private unsubscribe$ = new Subject<void>();
@@ -83,7 +84,7 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit(): void {
-  //  throw new Error("Method not implemented.");
+    //  throw new Error("Method not implemented.");
   }
 
   ngOnDestroy(): void {
@@ -91,22 +92,19 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.unsubscribe$.complete();
   }
 
-  onSubmit(value: any) {
-    console.log('Checkbox - onSubmit(form.value)', value);
-  }
-
-  writeValue(v: any) {
+  writeValue(value: any) {
     if (this.form === undefined) {
-      this.form = v;
+      this.form = value;
     }
 
-    if (v && v.length) {
-      this.form.valueChanges.subscribe(res => {
-        if (this.onChange) {
-          this.onChange(this.form);
-        }
-      });
-    }
+    // subscribe to any changes in FormArray
+    this.form.valueChanges.subscribe((res: any) => {
+      console.log('Checkbox - valueChanges(res)', res);
+      if (this.onChange) {
+        this.onChange(this.form);
+        this.ref.markForCheck();
+      }
+    });
   }
 
   registerOnChange(fn: (v: any) => void) {
@@ -132,7 +130,7 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
   clearAll() {
     if (this.form) {
       (this.form.controls as FormControl[]).forEach((control) => {
-          control.setValue(false);
+        control.setValue(false);
       });
     }
   }

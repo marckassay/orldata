@@ -62,8 +62,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'table', pathMatch: 'full' },
       { path: 'table', component: TableTabComponent, pathMatch: 'full', canActivate: [CanActivateTab] },
       { path: 'form', component: FormTabComponent, pathMatch: 'full' },
-/*       { path: 'options', component: OptionsTabComponent, pathMatch: 'full', redirectTo: 'table' }, */
-     /*   { path: '/form', redirectTo: 'table' }, */
+      // { path: 'options', component: OptionsTabComponent, pathMatch: 'full', redirectTo: 'table' },
       { path: '**', redirectTo: 'table' }
     ],
   }
