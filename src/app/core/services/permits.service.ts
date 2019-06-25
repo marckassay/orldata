@@ -57,9 +57,7 @@ export class PermitsService {
         query += ' AND ';
       }
 
-      query += 'order by processed_date DESC ' +
-        'limit ' + limit +
-        'offset ' + offset;
+      query += 'order by processed_date DESC limit ' + limit + ' offset ' + offset;
     } else {
       query += '|> SELECT COUNT(*)';
     }

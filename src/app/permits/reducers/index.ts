@@ -1,5 +1,6 @@
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
+import { DefaultProjectorFn } from '@ngrx/store/src/selector';
 import * as fromSearch from '@permits/reducers/search.reducer';
 import * as fromTable from '@permits/reducers/table.reducer';
 
@@ -19,7 +20,8 @@ export function reducers(state: PermitsState | undefined, action: Action) {
   })(state, action);
 }
 
-export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
+// tslint:disable-next-line: max-line-length
+export const getPermitsState: MemoizedSelector<State, PermitsState, DefaultProjectorFn<PermitsState>> = createFeatureSelector<State, PermitsState>('permits');
 export const getTableState = createSelector(
   getPermitsState,
   (state) => state.table
