@@ -2,12 +2,8 @@ import { createReducer, on } from '@ngrx/store';
 import { PermitsApiActions, SearchPermitsActions } from '@permits/actions';
 
 export interface State {
-  /**
-   * Maxiumum number of entities rendered in table.
-   */
-  limit: 20 | 40 | 80 | 160;
-
-  selectedApplicationTypes: { application_type: string[]};
+  // TODO: urgent; remove this nested object; application_type
+  selectedApplicationTypes: string[];
   applicationTypes: Array<{ application_type: string }>;
 
 /*   selectedWorkTypes: string[];
@@ -19,8 +15,7 @@ export interface State {
 }
 
 const initialState: State = {
-  limit: 40,
-  selectedApplicationTypes: {application_type: ['']},
+  selectedApplicationTypes: [''],
   applicationTypes: [],
 
 /*   selectedWorkTypes: [],
@@ -41,6 +36,7 @@ export const reducer = createReducer(
     secondaryProcessedDate */
   }) => ({
     ...state,
+    selectedState: selectedApplicationTypes,
     selectedApplicationTypes,
    /*  selectedWorkTypes,
     processedDate,
@@ -53,3 +49,4 @@ export const reducer = createReducer(
   }))
 );
 
+export const getSelected = (state: State) => ({ selectedApplicationTypes: state.selectedApplicationTypes });

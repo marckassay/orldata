@@ -46,3 +46,5 @@ export const reducer = createReducer(
     error: errorMsg
   }))
 );
+
+export const getSelected = (state: State) => ({offset: state.offset});

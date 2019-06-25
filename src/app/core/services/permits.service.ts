@@ -46,15 +46,18 @@ export class PermitsService {
    * @param offset index value indicating page number. works with limit
    * @param limit maximum limit for items to fetch
    */
-  search(action: { selectedApplicationTypes: { application_type: string[] } },
+  search(action: { selectedApplicationTypes: { application_type: string }[] },
          offset: number,
          limit = QUERY_LIMIT): Observable<{ results: object[], offset: number, count: number }> {
-    let query = 'select * ' +
-    this.qb.where(action.selectedApplicationTypes) + ' AND ' +
-    `starts_with(permit_number, 'BLD____-') `;
+    let query = 'select * ' + this.qb.where(action.selectedApplicationTypes);
+    // `starts_with(permit_number, 'BLD____-') `;
 
-    if (offset > 0) {
-      query += 'order by permit_number DESC ' +
+    if (offset >= 0) {
+      if (query.includes(' where (') === false) {
+        query += ' AND ';
+      }
+
+      query += 'order by processed_date DESC ' +
         'limit ' + limit +
         'offset ' + offset;
     } else {
@@ -63,6 +66,8 @@ export class PermitsService {
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
+        // simulates network latency
+        // delayWhen(() => (offset === 0) ? timer(5000) : timer(500)),
         map((value) => {
           const countValue = (offset > -1) ? -1 : parseInt((value[0] as any).COUNT, 10);
           return { results: (countValue === -1) ? value : [], offset, count: countValue };

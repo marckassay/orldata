@@ -22,7 +22,10 @@ h1, h2 {
   }
 }
 
-// These styles are for controlling SVGs without using the /deep/ selector
+a.disabled {
+  // to override mat-list-item
+  cursor: not-allowed !important;
+}
 
 .orl-component-category-list-card-image svg {
   width: 100%;

@@ -3,7 +3,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'orl-table-tab',
@@ -23,9 +23,6 @@ export class TableTabComponent implements OnInit, AfterViewInit {
   pageIndex: Observable<number>;
   limit: Observable<number>;
 
-  // TODO: prepare to present issues to user when it occurs
-  isRateLimitReached = false;
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   // TODO: Have `PageViewerComponent` accept a generic that extends from a common subject type. This
@@ -40,7 +37,8 @@ export class TableTabComponent implements OnInit, AfterViewInit {
 
     this.pageIndex = this.store.pipe(select(fromPermits.getOffset));
     this.count = this.store.pipe(select(fromPermits.getCount));
-    this.limit = this.store.pipe(select(fromPermits.getSearchLimit));
+    // TODO: this limit variable for searching will most likely reside in the Options Tab.
+    this.limit =  of(40); // this.store.pipe(select(fromPermits.getSearchLimit));
   }
 
   ngAfterViewInit() {

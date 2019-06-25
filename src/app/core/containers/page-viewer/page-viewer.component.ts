@@ -5,7 +5,6 @@ import { PermitViewerActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subscription } from 'rxjs';
-
 @Component({
   selector: 'app-page-viewer',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,11 +14,17 @@ import { Observable, Subscription } from 'rxjs';
     </div>
 
     <nav mat-tab-nav-bar class="orl-component-viewer-tabbed-content">
-      <a mat-tab-link class="orl-component-viewer-section-tab"
+      <a mat-tab-link *ngIf="(count$ | async) > 0"
+          class="orl-component-viewer-section-tab"
           routerLink="table"
           routerLinkActive #tableRla="routerLinkActive"
           [active]="tableRla.isActive">
-            <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">Table</span>
+            <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">TABLE</span>
+          </a>
+      <a mat-tab-link *ngIf="(count$ | async) <= 0"
+          class="orl-component-viewer-section-tab disabled"
+          class="disabled">
+            <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">TABLE</span>
           </a>
 
       <a mat-tab-link class="orl-component-viewer-section-tab"

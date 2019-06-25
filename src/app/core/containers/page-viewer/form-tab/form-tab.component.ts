@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SearchPermitsActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { interval, throwError } from 'rxjs';
-import { catchError, debounce } from 'rxjs/operators';
+import { interval, Subject, throwError } from 'rxjs';
+import { catchError, debounce, takeUntil } from 'rxjs/operators';
 
 export interface CheckGridItem {
   id: string;
@@ -74,8 +74,9 @@ export interface CheckGridItem {
   }
   `]
 })
-export class FormTabComponent implements OnInit {
+export class FormTabComponent implements OnInit, OnDestroy {
   applicationTypesEntities: CheckGridItem[] = [];
+  private unsubscribe$ = new Subject<void>();
 
   form: FormGroup;
   submitValue: any;
@@ -97,17 +98,24 @@ export class FormTabComponent implements OnInit {
     this.observeApplicationTypes();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
   onFormChanges() {
     this.form.valueChanges.pipe(
-      debounce(() => interval(1000))
+      debounce(() => interval(1000)),
+      takeUntil(this.unsubscribe$)
     ).subscribe(val => {
-      this.store.dispatch(SearchPermitsActions.search({ offset: -1, selectedApplicationTypes: this.selectApplicationTypes() }));
+      this.store.dispatch(SearchPermitsActions.search({ selectedApplicationTypes: this.selectApplicationTypes(), offset: -1 }));
     });
   }
 
   private observeApplicationTypes() {
     this.store.pipe(
       select(fromPermits.getApplicationTypes),
+      takeUntil(this.unsubscribe$),
       catchError(error => throwError(error))
     ).subscribe((types) => {
       if (types && types.length) {
@@ -133,12 +141,11 @@ export class FormTabComponent implements OnInit {
   }
 
   private selectApplicationTypes() {
-    const types = this.application_types.value.value
+    const results = this.application_types.value.value
       .flatMap(
         (currentValue: boolean, index: number) => (currentValue === true) ? this.applicationTypesEntities[index].name : []
       );
-
-    return { application_type: types };
+    return results;
   }
   /*
   this.store.pipe(select(fromPermits.getSelectedApplicationTypes));

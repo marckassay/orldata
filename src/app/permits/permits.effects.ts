@@ -12,13 +12,20 @@ import { PermitsService } from '../core/services/permits.service';
 @Injectable()
 export class PermitsEffects {
 
+  constructor(
+    private router: Router,
+    private actions$: Actions,
+    private service: PermitsService,
+    private store: Store<fromPermits.State>
+  ) { }
+
   /**
    * Side-effect is dispatch of: `AppApiActions.serviceActive` and `AppApiActions.serviceInactive`
    */
   search$ = createEffect(() => this.actions$.pipe(
-    ofType(SearchPermitsActions.search),
+    ofType(SearchPermitsActions.search, PermitViewerActions.getSelectedSearch),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
-    mergeMap((action) => this.service.search(action, action.offset).pipe(
+    mergeMap((action) => this.service.search({selectedApplicationTypes: this.mapTo(action) }, action.offset).pipe(
       map((results) => {
         this.store.dispatch(AppApiActions.serviceInactive);
         return PermitsApiActions.searchSuccess(results);
@@ -48,10 +55,5 @@ export class PermitsEffects {
     }),
   ));
 
-  constructor(
-    private router: Router,
-    private actions$: Actions,
-    private service: PermitsService,
-    private store: Store<fromPermits.State>
-  ) { }
+  mapTo = (action: any) =>  action.selectedApplicationTypes.map((value: any) => ({application_type: value}));
 }

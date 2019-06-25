@@ -88,7 +88,41 @@ export const getSecondaryProcessedDate = createSelector(
   (state) => state.secondaryProcessedDate
 ); */
 
-export const getSearchLimit = createSelector(
+/* export const getSearchLimit = createSelector(
   getSearchState,
   (state) => state.limit
 );
+ */
+
+export const getSearchSelectedState = createSelector(
+  getSearchState,
+  fromSearch.getSelected
+);
+
+export const getTableSelectedState = createSelector(
+  getTableState,
+  fromTable.getSelected
+);
+
+
+export const getPermitSelectedState: MemoizedSelector<State,
+{ selectedApplicationTypes: string[], offset: number}> = createSelector(
+  getSearchSelectedState,
+  getTableSelectedState,
+  (search, table) => {
+    return Object.assign({}, search, table);
+  }
+);
+
+// https://stackoverflow.com/a/53025968/648789
+/* let deepClone = <T>(source: T): { [k: string]: any } => {
+  const results: { [k: string]: any } = {};
+  for (let P in source) {
+    if (source[P] !== null && typeof source[P] === 'object') {
+      results[P] = deepClone(source[P]);
+    } else {
+      results[P] = source[P];
+    }
+  }
+  return results;
+}; */

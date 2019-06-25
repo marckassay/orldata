@@ -9,20 +9,20 @@ export class QueryBuilder {
    *
    * @param value string value from a reduced array.
    */
-  where(value: any): string {
-    const key = Object.keys(value);
-    const keysValue: string[] | string = value[key[0]];
+  where(value: object[]): string {
+    if (value.length) {
+      let whereclause = 'where (';
+      value.forEach((entry) => {
+        const key = Object.keys(entry).toString();
+        const val = Object.values(entry).toString();
 
-    if (Array.isArray(keysValue)) {
-      return keysValue.reduce(
-      (accumulator: string, currentValue: string, index: number, src: string[]) => {
-          if (index > 0) {
-            const entry = (index + 1 !== src.length) ? `${key} = '${currentValue}' OR ` : `${key} = '${currentValue}')`;
-            return accumulator.concat(entry);
-          } else {
-            return accumulator;
-          }
-      }, 'where (');
+        if (whereclause.includes(' = ')) {
+          whereclause = whereclause.concat(' OR ');
+        }
+        whereclause = whereclause.concat(key, ` = '${val}'`);
+      });
+      whereclause = whereclause.concat(' AND processed_date IS NOT NULL)');
+      return whereclause;
     } else {
       return '';
     }
