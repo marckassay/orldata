@@ -45,7 +45,7 @@ export class TableTabResolver implements Resolve<any> {
     return this.store.select(fromPermits.getPermitSelectedState).pipe(
       take(1),
       map(selectedState =>
-        this.store.dispatch(PermitViewerActions.getSelectedSearch({...selectedState, offset: 0})),
+        this.store.dispatch(PermitViewerActions.getSelectedSearch({...selectedState, pageIndex: 0})),
       ),
       switchMap(() =>
         this.store.select(fromPermits.getPermitEntitiesState).pipe(

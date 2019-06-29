@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { PermitViewerActions } from '@app/permits/actions';
+import { PaginatePermits } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { Observable, of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'orl-table-tab',
@@ -37,17 +36,12 @@ export class TableTabComponent implements OnInit {
         this.dataSource.data = data;
       });
 
-    this.pageIndex = this.store.pipe(select(fromPermits.getOffset));
+    this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));
     this.count = this.store.pipe(select(fromPermits.getCount));
-    // TODO: this limit variable for searching will most likely reside in the Options Tab.
-    this.limit =  of(40); // this.store.pipe(select(fromPermits.getSearchLimit));
+    this.limit = this.store.pipe(select(fromPermits.getSearchLimit));
   }
 
   pageIndexChange(event: PageEvent) {
-    this.store.pipe(select(fromPermits.getPermitSelectedState)).pipe(
-      take(1),
-    ).subscribe((val) => {
-      this.store.dispatch(PermitViewerActions.getSelectedSearch({ ...val, offset: event.pageIndex * 40 }));
-    });
+    this.store.dispatch(PaginatePermits.getSelectedPage({ pageIndex: event.pageIndex }));
   }
 }

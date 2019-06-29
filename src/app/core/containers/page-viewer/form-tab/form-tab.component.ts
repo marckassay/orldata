@@ -108,7 +108,7 @@ export class FormTabComponent implements OnInit, OnDestroy {
       debounce(() => interval(1000)),
       takeUntil(this.unsubscribe$)
     ).subscribe(val => {
-      this.store.dispatch(SearchPermitsActions.search({ selectedApplicationTypes: this.selectApplicationTypes(), offset: -1 }));
+      this.store.dispatch(SearchPermitsActions.search({ selectedApplicationTypes: this.selectApplicationTypes() }));
     });
   }
 
@@ -140,7 +140,7 @@ export class FormTabComponent implements OnInit, OnDestroy {
     });
   }
 
-  private selectApplicationTypes() {
+  private selectApplicationTypes(): string[] {
     const results = this.application_types.value.value
       .flatMap(
         (currentValue: boolean, index: number) => (currentValue === true) ? this.applicationTypesEntities[index].name : []
@@ -159,6 +159,6 @@ export class FormTabComponent implements OnInit, OnDestroy {
   */
 
   onSubmit(value: any) {
-    // this.store.dispatch(SearchPermitsActions.search({ offset: 0, selectedApplicationTypes: selectApplicationTypes() }));
+    // this.store.dispatch(SearchPermitsActions.search({ pageIndex: 0, selectedApplicationTypes: selectApplicationTypes() }));
   }
 }

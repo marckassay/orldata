@@ -6,8 +6,5 @@ export const getSearchFormData = createAction(
 
 export const getSelectedSearch = createAction(
   '[PermitViewer - Route Resolve] Selected Search',
-  props<{
-      selectedApplicationTypes: string[];
-      offset: number;
-  }>(),
+  props<{ pageIndex: number }>(),
 );

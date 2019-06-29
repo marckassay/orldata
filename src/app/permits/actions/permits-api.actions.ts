@@ -2,7 +2,12 @@ import { createAction, props } from '@ngrx/store';
 
 export const searchSuccess = createAction(
   '[Permits API] Search Success',
-  props<{ results: object[], offset: number, count: number }>()
+  props < { entities: object[], pagination: { pageIndex: number, count: number } }>()
+);
+
+export const searchSubmitSuccess = createAction(
+  '[Permits API] Search Submit Success',
+  props<{ count: number }>()
 );
 
 export const searchFailure = createAction(

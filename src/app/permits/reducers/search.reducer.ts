@@ -49,4 +49,7 @@ export const reducer = createReducer(
   }))
 );
 
+/**
+ * As with other `getSelected()`, returns all variables that the user can adjust on this page.
+ */
 export const getSelected = (state: State) => ({ selectedApplicationTypes: state.selectedApplicationTypes });

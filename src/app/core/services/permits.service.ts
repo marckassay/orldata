@@ -7,6 +7,23 @@ import { QueryBuilder } from './query-builder';
 
 export const QUERY_LIMIT = 40;
 
+export interface SearchRequest {
+  selected: { selectedApplicationTypes: Array<{application_type: string}> };
+  pagination?: {
+    pageIndex: number;
+    offset: number;
+    limit: number;
+  };
+}
+
+export interface SearchResponse {
+  entities: object[];
+  pagination: {
+    pageIndex: number;
+    count: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -40,24 +57,21 @@ export class PermitsService {
    * This service does 2 calls that return: number of results and the results themselves
    *
    * The first call is a value to be passed into Mat-Paginator. With this value we know how many
-   * items are in this search. Second call gets the first batch, thats if `offset` is 0.
+   * items are in this search. Second call gets the first batch, thats if `pageIndex` is 0.
    *
    * @param filter OData expression
-   * @param offset index value indicating page number. works with limit
-   * @param limit maximum limit for items to fetch
+   * @param pageIndex index value indicating page number. works with limit
+   * @param offset maximum limit for items to fetch
    */
-  search(action: { selectedApplicationTypes: { application_type: string }[] },
-         offset: number,
-         limit = QUERY_LIMIT): Observable<{ results: object[], offset: number, count: number }> {
-    let query = 'select * ' + this.qb.where(action.selectedApplicationTypes);
-    // `starts_with(permit_number, 'BLD____-') `;
+  search(request: SearchRequest): Observable<SearchResponse> {
+    let query = 'select * ' + this.qb.where(request.selected.selectedApplicationTypes);
 
-    if (offset >= 0) {
+    if (request.pagination) {
       if (query.includes(' where (') === false) {
         query += ' AND ';
       }
 
-      query += 'order by processed_date DESC limit ' + limit + ' offset ' + offset;
+      query += 'order by processed_date DESC limit ' + request.pagination.limit + ' offset ' + request.pagination.offset;
     } else {
       query += '|> SELECT COUNT(*)';
     }
@@ -65,10 +79,13 @@ export class PermitsService {
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
         // simulates network latency
-        // delayWhen(() => (offset === 0) ? timer(5000) : timer(500)),
+        // delayWhen(() => (pageIndex === 0) ? timer(5000) : timer(500)),
         map((value) => {
-          const countValue = (offset > -1) ? -1 : parseInt((value[0] as any).COUNT, 10);
-          return { results: (countValue === -1) ? value : [], offset, count: countValue };
+          const countValue = (request.pagination === undefined) ? parseInt((value[0] as any).COUNT, 10) : -1;
+          return {
+            entities: (countValue === -1) ? value : [],
+            pagination: { pageIndex: (request.pagination !== undefined) ? request.pagination.pageIndex : -1, count: countValue}
+          };
         }),
         catchError(error => throwError(error))
       );

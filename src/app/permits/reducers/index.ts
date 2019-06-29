@@ -1,6 +1,5 @@
 import * as fromRoot from '@app/reducers';
-import { Action, combineReducers, createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
-import { DefaultProjectorFn } from '@ngrx/store/src/selector';
+import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromSearch from '@permits/reducers/search.reducer';
 import * as fromTable from '@permits/reducers/table.reducer';
 
@@ -21,7 +20,7 @@ export function reducers(state: PermitsState | undefined, action: Action) {
 }
 
 // tslint:disable-next-line: max-line-length
-export const getPermitsState: MemoizedSelector<State, PermitsState, DefaultProjectorFn<PermitsState>> = createFeatureSelector<State, PermitsState>('permits');
+export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
 export const getTableState = createSelector(
   getPermitsState,
   (state) => state.table
@@ -35,21 +34,25 @@ export const getSearchState = createSelector(
  Table Selectors
 */
 
-export const getPermitEntitiesState: MemoizedSelector<State, object[]> = createSelector(
+export const getPermitEntitiesState = createSelector(
   getPermitsState,
   (state) => state.table.entities
 );
 
-export const getOffset: MemoizedSelector<State, number> = createSelector(
+export const getPageIndex = createSelector(
   getPermitsState,
-  (state) => state.table.offset
+  (state) => state.table.pagination.pageIndex
 );
 
-export const getCount: MemoizedSelector<State, number> = createSelector(
+export const getCount = createSelector(
   getPermitsState,
-  (state) => state.table.count
+  (state) => state.table.pagination.count
 );
-
+// TODO: this limit variable for searching will most likely reside in the Options Tab.
+export const getSearchLimit = createSelector<State, PermitsState, number>(
+  getPermitsState,
+  (state) => state.table.pagination.limit
+);
 
 /*
  Search Selectors
@@ -107,8 +110,7 @@ export const getTableSelectedState = createSelector(
 );
 
 
-export const getPermitSelectedState: MemoizedSelector<State,
-{ selectedApplicationTypes: string[], offset: number}> = createSelector(
+export const getPermitSelectedState = createSelector(
   getSearchSelectedState,
   getTableSelectedState,
   (search, table) => {
