@@ -16,12 +16,12 @@ import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Resolve, Router, R
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
+import { PermitViewerActions } from '@app/permits/actions';
 import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { PermitViewerActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
-import { Observable, throwError } from 'rxjs';
-import { catchError, delay, map, switchMap, take } from 'rxjs/operators';
+import { EMPTY, Observable, throwError } from 'rxjs';
+import { catchError, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -42,21 +42,11 @@ export class TableTabResolver implements Resolve<any> {
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this.store.select(fromPermits.getPermitSelectedState).pipe(
+    return this.store.select(fromPermits.getLastResponseTime).pipe(
+      tap(() => this.store.dispatch(PermitViewerActions.getSelectedSearch({ pageIndex: 0 }))),
+      distinctUntilChanged(),
       take(1),
-      map(selectedState =>
-        this.store.dispatch(PermitViewerActions.getSelectedSearch({...selectedState, pageIndex: 0})),
-      ),
-      switchMap(() =>
-        this.store.select(fromPermits.getPermitEntitiesState).pipe(
-          // TODO: issue attempting to resolve when skip is used instead of take
-          // this delay is a hack, but works as desired *if* the service call takes just as long as
-          // this delay call is set to.
-          delay(2000),
-          take(1),
-          // skip(1)
-        )
-      ),
+      map(() => EMPTY),
       catchError(error => throwError(error))
     );
   }

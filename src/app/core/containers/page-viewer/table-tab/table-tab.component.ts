@@ -33,7 +33,9 @@ export class TableTabComponent implements OnInit {
   ngOnInit() {
     this.store.pipe(select(fromPermits.getPermitEntitiesState))
       .subscribe((data) => {
-        this.dataSource.data = data;
+        if (data !== undefined) {
+          this.dataSource.data = data;
+        }
       });
 
     this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));

@@ -6,7 +6,7 @@ export interface State {
   /**
    * The collection of entities for table from `PermitViewerActions.getSelectedSearch` action.
    */
-  entities: object[];
+  entities: object[] | undefined;
 
   pagination: {
     /**
@@ -33,29 +33,36 @@ export interface State {
     limit: 40 | 80 | 160;
   };
 
+  /**
+   * The last response time from services. This is set regardless if any data changed.
+   */
+  lastResponseTime: number;
+
   error: string;
 }
 
 const initialState: State = {
-  entities: [],
+  entities: undefined,
   pagination: {
     pageIndex: 0,
     count: 0,
     limit: 40,
   },
+  lastResponseTime: 0,
   error: ''
 };
 
 export const reducer = createReducer(
   initialState,
-  on(PermitsApiActions.searchSuccess, (state, { entities, pagination: { pageIndex, count }}) => ({
+  on(PermitsApiActions.searchSuccess, (state, { entities, pagination: { pageIndex, count }, lastResponseTime}) => ({
     ...state,
     entities,
     pagination: {
       pageIndex: (pageIndex !== -1) ? pageIndex : state.pagination.pageIndex,
       count: (count !== -1) ? count : state.pagination.count,
       limit: state.pagination.limit
-    }
+    },
+    lastResponseTime
   })),
   on(PermitsApiActions.searchFailure, (state, { errorMsg }) => ({
     ...state,

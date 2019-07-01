@@ -7,7 +7,7 @@ import { PaginatePermits, PermitsApiActions, PermitViewerActions, SearchPermitsA
 import * as fromPermits from '@permits/reducers';
 import { combineLatest, of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
-import { PermitsService, SearchRequest } from '../core/services/permits.service';
+import { PermitsService, SearchRequest, SearchResponse } from '../core/services/permits.service';
 
 @Injectable()
 export class PermitsEffects {
@@ -48,18 +48,24 @@ export class PermitsEffects {
       }
     }),
 
-    mergeMap((action) => this.service.search(action).pipe(
-      map((results: {
-        entities: object[];
-        pagination: {
-          pageIndex: number;
-          count: number;
-        }
-      }) => {
+    mergeMap((action) => {
+      if (action.selected.selectedApplicationTypes.length !== 0) {
+        return this.service.search(action).pipe(
+          map((results: SearchResponse) => {
+            this.store.dispatch(AppApiActions.serviceInactive);
+            return PermitsApiActions.searchSuccess(results);
+          }),
+        );
+      } else {
         this.store.dispatch(AppApiActions.serviceInactive);
-        return PermitsApiActions.searchSuccess(results);
-      }),
-    )),
+        // TODO: this gives no ts errors but the of up-above does?
+        return of(PermitsApiActions.searchSuccess({
+          entities: undefined,
+          pagination: { pageIndex: -1, count: 0 },
+          lastResponseTime: Date.now()
+        }));
+      }
+    }),
 
     catchError((err) => {
       this.store.dispatch(AppApiActions.serviceInactive);

@@ -109,6 +109,11 @@ export const getTableSelectedState = createSelector(
   fromTable.getSelected
 );
 
+export const getLastResponseTime = createSelector(
+  getTableState,
+  (state) => state.lastResponseTime
+);
+
 
 export const getPermitSelectedState = createSelector(
   getSearchSelectedState,
@@ -117,6 +122,7 @@ export const getPermitSelectedState = createSelector(
     return Object.assign({}, search, table);
   }
 );
+
 
 // https://stackoverflow.com/a/53025968/648789
 /* let deepClone = <T>(source: T): { [k: string]: any } => {

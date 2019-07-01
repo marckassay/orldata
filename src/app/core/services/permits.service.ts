@@ -17,11 +17,12 @@ export interface SearchRequest {
 }
 
 export interface SearchResponse {
-  entities: object[];
+  entities: object[] | undefined;
   pagination: {
     pageIndex: number;
     count: number;
   };
+  lastResponseTime: number;
 }
 
 @Injectable({
@@ -83,8 +84,9 @@ export class PermitsService {
         map((value) => {
           const countValue = (request.pagination === undefined) ? parseInt((value[0] as any).COUNT, 10) : -1;
           return {
-            entities: (countValue === -1) ? value : [],
-            pagination: { pageIndex: (request.pagination !== undefined) ? request.pagination.pageIndex : -1, count: countValue}
+            entities: (countValue === -1) ? value : undefined,
+            pagination: { pageIndex: (request.pagination !== undefined) ? request.pagination.pageIndex : -1, count: countValue},
+            lastResponseTime: Date.now()
           };
         }),
         catchError(error => throwError(error))
