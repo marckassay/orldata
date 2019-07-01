@@ -17,11 +17,10 @@ import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
 import { PermitViewerActions } from '@app/permits/actions';
-import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, take, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -33,20 +32,20 @@ import { TableTabComponent } from './table-tab/table-tab.component';
 /**
  * @source https://angular.io/guide/router#resolve-pre-fetching-component-data
  */
-export class TableTabResolver implements Resolve<any> {
+export class TableTabResolver implements Resolve<number> {
   constructor(
     protected router: Router,
-    private actions$: Actions,
     protected route: ActivatedRoute,
     protected store: Store<fromPermits.State>
   ) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
+    this.store.dispatch(PermitViewerActions.getSelectedSearch({ pageIndex: 0 }));
+
+    // dispatch action above, and take 2 emissions in this stream; first prior to response of action
+    // and second post from response
     return this.store.select(fromPermits.getLastResponseTime).pipe(
-      tap(() => this.store.dispatch(PermitViewerActions.getSelectedSearch({ pageIndex: 0 }))),
-      distinctUntilChanged(),
-      take(1),
-      map(() => EMPTY),
+      take(2),
       catchError(error => throwError(error))
     );
   }

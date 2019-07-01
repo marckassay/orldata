@@ -80,7 +80,7 @@ export class PermitsService {
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
         // simulates network latency
-        // delayWhen(() => (pageIndex === 0) ? timer(5000) : timer(500)),
+        // delayWhen(() => (request.pagination && request.pagination.pageIndex === 34) ? timer(5000) : timer(500)),
         map((value) => {
           const countValue = (request.pagination === undefined) ? parseInt((value[0] as any).COUNT, 10) : -1;
           return {
