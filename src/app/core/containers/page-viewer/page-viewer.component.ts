@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
-import { PermitViewerActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subscription } from 'rxjs';
@@ -70,6 +69,5 @@ export class PageViewerComponent implements OnInit {
     }
 
     this.count$ = this.store.pipe(select(fromPermits.getCount));
-    this.store.dispatch(PermitViewerActions.getSearchFormData());
   }
 }

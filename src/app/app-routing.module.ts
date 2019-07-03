@@ -1,4 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
+// tslint:disable-next-line: max-line-length
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import * as fromCore from '@core/reducers';
 import { Store } from '@ngrx/store';
@@ -26,16 +27,18 @@ export class CatalogResolver implements Resolve<CatalogResolverType> {
     return merge(
       this.store.select(fromCore.getPermitsMetadata).pipe(
         filter((value) => value !== undefined),
-        mapTo({permits: true})
+        mapTo({ permits: true })
       ),
       this.store.select(fromCore.getCrimesMetadata).pipe(
         filter((value) => value !== undefined),
-        mapTo({crimes: true})
+        mapTo({ crimes: true })
       )
     ).pipe(
-        scan((acc, curr) => Object.assign(seed, acc, curr), seed),
-        filter((value: { permits: boolean, crimes: boolean }) => (value.permits === true && value.crimes === true)),
-        take(1)
+      scan((acc, curr) => Object.assign(seed, acc, curr), seed),
+      filter((value: CatalogResolverType) => {
+        return (value.permits === true && value.crimes === true);
+      }),
+      take(1)
     );
   }
 }
@@ -44,7 +47,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'home',
@@ -70,7 +73,7 @@ export const routes: Routes = [
     RouterModule.forRoot(routes, {
       useHash: true,
       enableTracing: false, // <-- debugging purposes only
-      relativeLinkResolution: 'corrected'
+      relativeLinkResolution: 'corrected',
     })
   ],
   exports: [

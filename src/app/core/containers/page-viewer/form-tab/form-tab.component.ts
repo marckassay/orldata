@@ -136,6 +136,10 @@ export class FormTabComponent implements OnInit, OnDestroy {
           this.applicationTypesEntities.push(part);
           (this.application_types.value as FormArray).push(control);
         });
+
+        // since using a resolver that dispatches an action, this is needed to
+        // dispatch SearchPermitsActions.search
+        this.form.updateValueAndValidity();
       }
     });
   }

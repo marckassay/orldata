@@ -4,7 +4,7 @@ import { PermitsApiActions, SearchPermitsActions } from '@permits/actions';
 export interface State {
   // TODO: urgent; remove this nested object; application_type
   selectedApplicationTypes: string[];
-  applicationTypes: Array<{ application_type: string }>;
+  applicationTypes: Array<{ application_type: string }> | undefined;
 
 /*   selectedWorkTypes: string[];
   workTypes: string[];
@@ -16,7 +16,7 @@ export interface State {
 
 const initialState: State = {
   selectedApplicationTypes: [''],
-  applicationTypes: [],
+  applicationTypes: undefined,
 
 /*   selectedWorkTypes: [],
   workTypes: [],

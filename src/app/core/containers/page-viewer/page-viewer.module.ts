@@ -20,7 +20,7 @@ import { PermitViewerActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, filter, mapTo, scan, take } from 'rxjs/operators';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -47,6 +47,39 @@ export class TableTabResolver implements Resolve<number> {
     return this.store.select(fromPermits.getLastResponseTime).pipe(
       take(2),
       catchError(error => throwError(error))
+    );
+  }
+}
+
+export interface FormTabResolverType {
+  applicationTypes: boolean;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+/**
+ * @source https://angular.io/guide/router#resolve-pre-fetching-component-data
+ */
+export class FormTabResolver implements Resolve<FormTabResolverType> {
+  constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
+    protected store: Store<fromPermits.State>
+  ) { }
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FormTabResolverType> | Observable<never> {
+    const seed: FormTabResolverType = { applicationTypes: false };
+
+    this.store.dispatch(PermitViewerActions.getSearchFormData());
+
+    return this.store.select(fromPermits.getApplicationTypes).pipe(
+      filter((value) => value !== undefined),
+      mapTo({ applicationTypes: true })
+    ).pipe(
+      scan((acc, curr) => Object.assign(seed, acc, curr), seed),
+      filter((value: FormTabResolverType) => (value.applicationTypes === true)),
+      take(1)
     );
   }
 }
@@ -99,7 +132,8 @@ export const routes: Routes = [
       {
         path: 'form',
         component: FormTabComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        resolve: { subject: FormTabResolver }
       },
       // { path: 'options', component: OptionsTabComponent, pathMatch: 'full', redirectTo: 'table' },
       {
