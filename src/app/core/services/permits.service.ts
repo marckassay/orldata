@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError, timer } from 'rxjs';
-import { catchError, delayWhen, map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
 import { QueryBuilder } from './query-builder';
 
@@ -50,7 +50,6 @@ export class PermitsService {
   getMetadata(): Observable<object[]> {
     return this.http.get<object[]>(this.METADATA_ENDPOINT, this.getHttpHeader())
       .pipe(
-        delayWhen((value) => (value !== undefined) ? timer(5000) : timer(500)),
         catchError(error => throwError(error))
       );
   }

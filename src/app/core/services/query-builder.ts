@@ -28,39 +28,3 @@ export class QueryBuilder {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // map
-
-  /* return (value).reduce(
-    (accumulator: any, currentValue: string, index: number, src: []) =>
-      accumulator.concat(currentValue, (index + 1 !== src.length) ? `${key} = '${currentValue}' OR ` : `${key} = '${currentValue}') AND`)
-    , 'where ('); */
-     /*
-    // where (application_type = 'Building Permit' OR application_type = 'GAS') AND
-    return (value).reduce(
-      (accumulator: any, currentValue: string, index: number, src: []) =>
-       accumulator.concat(currentValue, (index + 1 !== src.length) ? `${key} = '${currentValue}' OR ` : `${key} = '${currentValue}') AND`)
-    , 'where (');
- */
-    // const    =  + key + ' = ';
-
-
-/*     for (let [key, value] of Object.entries()) {
-      console.log(`where ${key} = '${value}'`);
-    } */
-
-  // }
