@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { PaginatePermits } from '@app/permits/actions';
+import { PermitsTableTabActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable } from 'rxjs';
@@ -15,8 +15,8 @@ import { Observable } from 'rxjs';
 })
 export class TableTabComponent implements OnInit {
 
-// tslint:disable-next-line: max-line-length
-/*   displayedColumns: string[] = ['permit_number', 'application_type', 'parcel_number', 'worktype', 'final_date', 'temp_coo_date', 'coo_date', 'coc_date', 'permit_address', 'property_owner_name', 'parcel_owner_name', 'contractor', 'contractor_name', 'contractor_address', 'contractor_phone_number', 'plan_review_type', 'estimated_cost', 'processed_date', 'under_review_date', 'prescreen_completed_date', 'review_started_date_excluding', 'review_started_including', 'of_cycles', 'of_pdoxwkflw', 'collect_permit_fees_date', 'geocoded_column', 'pending_issuance_date', 'issue_permit_date', 'pdoxbatch_date', 'day_to_issuance']; */
+  // tslint:disable-next-line: max-line-length
+  /*   displayedColumns: string[] = ['permit_number', 'application_type', 'parcel_number', 'worktype', 'final_date', 'temp_coo_date', 'coo_date', 'coc_date', 'permit_address', 'property_owner_name', 'parcel_owner_name', 'contractor', 'contractor_name', 'contractor_address', 'contractor_phone_number', 'plan_review_type', 'estimated_cost', 'processed_date', 'under_review_date', 'prescreen_completed_date', 'review_started_date_excluding', 'review_started_including', 'of_cycles', 'of_pdoxwkflw', 'collect_permit_fees_date', 'geocoded_column', 'pending_issuance_date', 'issue_permit_date', 'pdoxbatch_date', 'day_to_issuance']; */
   displayedColumns: string[] = ['permit_number', 'application_type', 'processed_date'];
   dataSource = new MatTableDataSource<object>();
 
@@ -26,24 +26,22 @@ export class TableTabComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  // TODO: Have `PageViewerComponent` accept a generic that extends from a common subject type. This
-  // likely will need to be specified in the RoutingModule.
   constructor(public store: Store<fromPermits.State>) { }
 
   ngOnInit() {
-    this.store.pipe(select(fromPermits.getPermitEntitiesState))
+    this.store.pipe(select(fromPermits.getEntities))
       .subscribe((data) => {
         if (data !== undefined) {
           this.dataSource.data = data;
         }
       });
 
-    this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));
     this.count = this.store.pipe(select(fromPermits.getCount));
-    this.limit = this.store.pipe(select(fromPermits.getSearchLimit));
+    this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));
+    this.limit = this.store.pipe(select(fromPermits.getPageSize));
   }
 
   pageIndexChange(event: PageEvent) {
-    this.store.dispatch(PaginatePermits.getSelectedPage({ pageIndex: event.pageIndex }));
+    this.store.dispatch(PermitsTableTabActions.paginate({ pageIndex: event.pageIndex }));
   }
 }

@@ -21,7 +21,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, filter, mapTo, scan, take } from 'rxjs/operators';
 import { PageViewerActions } from './actions';
 import { FormTabComponent } from './form-tab/form-tab.component';
-import { OptionsTabComponent } from './options-tab/options-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
 
@@ -43,12 +42,12 @@ export class TableTabResolver implements Resolve<number> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
-    const page = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-    this.store.dispatch(PageViewerActions.getSelectedSearch({ page }));
+    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
+    this.store.dispatch(PageViewerActions.preloadEntities({ content }));
 
     // dispatch action above, and take 2 emissions in this stream; first prior to response of action
     // and second post from response
-    return this.store.select(fromRoot.getSelectedLastResponseTime(page)).pipe(
+    return this.store.select(fromRoot.getLastResponseTime(content)).pipe(
       take(2),
       catchError(error => throwError(error))
     );
@@ -79,10 +78,10 @@ export class FormTabResolver implements Resolve<FormTabResolverType> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FormTabResolverType> | Observable<never> {
     const seed: FormTabResolverType = { applicationTypes: false };
 
-    const page = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-    this.store.dispatch(PageViewerActions.getSelectedFormSearch({ page }));
+    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
+    this.store.dispatch(PageViewerActions.preloadDistincts({ content }));
 
-    return this.store.select(fromRoot.getPredefinedData(page)).pipe(
+    return this.store.select(fromRoot.getDistinctData(content)).pipe(
       filter((value) => value !== undefined),
       mapTo({ applicationTypes: true })
     ).pipe(
@@ -116,7 +115,7 @@ class CanActivateTab implements CanActivate {
     const page = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
 
     /**
-     * Converts for instance:
+     * Converts the following route below, if table doesn't have a `count` greater than 0.
      *
      * `'/catalogs/permits/table'` to `'/catalogs/permits/form'`
      */
@@ -139,7 +138,6 @@ class CanActivateTab implements CanActivate {
     return (count > 0) ? true : this.router.navigate(getRedirectLink(), { relativeTo: this.activatedRoute });
   }
 }
-
 
 export const routes: Routes = [
   {
@@ -164,7 +162,6 @@ export const routes: Routes = [
         pathMatch: 'full',
         resolve: { subject: FormTabResolver }
       },
-      // { path: 'options', component: OptionsTabComponent, pathMatch: 'full', redirectTo: 'table' },
       {
         path: '**',
         redirectTo: 'table'
@@ -199,7 +196,6 @@ export const routes: Routes = [
     PageViewerComponent,
     TableTabComponent,
     FormTabComponent,
-    OptionsTabComponent
   ],
   providers: [
     CanActivateTab,

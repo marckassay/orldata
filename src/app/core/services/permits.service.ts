@@ -1,29 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SearchRequest, SearchResponse } from '@permits/permits.effects';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
 import { QueryBuilder } from './query-builder';
 
-export const QUERY_LIMIT = 40;
-
-export interface SearchRequest {
-  selected: { selectedApplicationTypes: Array<{application_type: string}> };
-  pagination?: {
-    pageIndex: number;
-    offset: number;
-    limit: number;
-  };
-}
-
-export interface SearchResponse {
-  entities: object[] | undefined;
-  pagination: {
-    pageIndex: number;
-    count: number;
-  };
-  lastResponseTime: number;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -38,9 +20,9 @@ export class PermitsService {
   private API_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
   private APP_TOKEN = environment.token || '';
 
-  constructor(private http: HttpClient,
-              private qb: QueryBuilder) {
-
+  constructor(
+    private http: HttpClient,
+    private qb: QueryBuilder) {
   }
 
   /**
@@ -55,14 +37,11 @@ export class PermitsService {
   }
 
   /**
-   * This service does 2 calls that return: number of results and the results themselves
+   * This service forms a query statement to: retrieve entities or the number of entities
    *
-   * The first call is a value to be passed into Mat-Paginator. With this value we know how many
-   * items are in this search. Second call gets the first batch, thats if `pageIndex` is 0.
-   *
-   * @param filter OData expression
-   * @param pageIndex index value indicating page number. works with limit
-   * @param offset maximum limit for items to fetch
+   * @param request.selected values that have been selected in the `FormTab`.
+   * @param request.pagination the trio of variables for the `TableTab`. If its `undefined`,
+   * then request is requesting *a count only* on query.
    */
   search(request: SearchRequest): Observable<SearchResponse> {
     let query = 'select * ' + this.qb.where(request.selected.selectedApplicationTypes);
@@ -82,10 +61,11 @@ export class PermitsService {
         // simulates network latency
         // delayWhen(() => (request.pagination && request.pagination.pageIndex === 34) ? timer(5000) : timer(500)),
         map((value) => {
-          const countValue = (request.pagination === undefined) ? parseInt((value[0] as any).COUNT, 10) : -1;
+          const count = ('COUNT' in value[0]) ? parseInt((value[0] as any).COUNT, 10) : undefined;
+          const pageIndex = (request.pagination !== undefined) ? request.pagination.pageIndex : undefined;
           return {
-            entities: (countValue === -1) ? value : undefined,
-            pagination: { pageIndex: (request.pagination !== undefined) ? request.pagination.pageIndex : -1, count: countValue},
+            entities: (typeof count === 'undefined') ? value : undefined,
+            pagination: { pageIndex, count },
             lastResponseTime: Date.now()
           };
         }),

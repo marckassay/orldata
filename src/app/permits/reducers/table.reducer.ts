@@ -9,18 +9,16 @@ export interface State {
   entities: object[] | undefined;
 
   pagination: {
+
     /**
-     * Used for table pagination feature. `QUERY_LIMIT` is of consequence to this value.
+     * Used for table pagination feature that is set post service queries.
      *
-     * A value of `-1` means that the table has no entities to show as the application is still in
-     * "search mode" (user is interacting in Form tab). Any value above `-1` indicates entities should
-     * be shown.
+     * `pagination.limit` is a consequence to this value. Index starts at `0`.
      */
     pageIndex: number;
 
     /**
-     * Total number of entities from last query that was done in the `Form-Tab`. This property is only
-     * set when `pageIndex` is `-1`.
+     * Total number of entities from last query that was done in the `Form-Tab`.
      */
     count: number;
 
@@ -54,17 +52,17 @@ const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  on(PermitsApiActions.searchSuccess, (state, { entities, pagination: { pageIndex, count }, lastResponseTime}) => ({
+  on(PermitsApiActions.querySuccess, (state, { entities, pagination: { pageIndex, count }, lastResponseTime }) => ({
     ...state,
     entities,
     pagination: {
-      pageIndex: (pageIndex !== -1) ? pageIndex : state.pagination.pageIndex,
-      count: (count !== -1) ? count : state.pagination.count,
+      pageIndex: (typeof pageIndex !== 'undefined') ? pageIndex : state.pagination.pageIndex,
+      count: (typeof count !== 'undefined') ? count : state.pagination.count,
       limit: state.pagination.limit
     },
     lastResponseTime
   })),
-  on(PermitsApiActions.searchFailure, (state, { errorMsg }) => ({
+  on(PermitsApiActions.queryFailure, (state, { errorMsg }) => ({
     ...state,
     error: errorMsg
   }))

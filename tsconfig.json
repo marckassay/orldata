@@ -21,15 +21,15 @@
       "dom"
     ],
     "paths": {
-      "@app/*": [
-        "./src/app/*"
-      ],
       "@core/*": [
         "./src/app/core/*"
       ],
       "@permits/*": [
         "./src/app/permits/*"
-      ]
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
     }
   },
 }

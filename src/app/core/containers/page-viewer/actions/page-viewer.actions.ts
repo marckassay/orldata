@@ -1,11 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 
-export const getSelectedSearch = createAction(
-  '[PageViewer - Route Resolver] Selected Search',
-  props<{ page: string }>()
+export const preloadEntities = createAction(
+  '[Page Viewer - Route Resolver] Preload Entities',
+  props<{ content: 'permits' | 'crimes' }>()
 );
 
-export const getSelectedFormSearch = createAction(
-  '[PageViewer - Route Resolver] Selected Form Search',
-  props<{ page: string }>()
+export const preloadDistincts = createAction(
+  '[Page Viewer - Route Resolver] Preload Distincts',
+  props<{ content: 'permits' | 'crimes' }>()
 );

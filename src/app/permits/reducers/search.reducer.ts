@@ -1,51 +1,34 @@
 import { createReducer, on } from '@ngrx/store';
-import { PermitsApiActions, SearchPermitsActions } from '@permits/actions';
+import { PermitsApiActions, PermitsFormTabActions } from '@permits/actions';
 
 export interface State {
-  // TODO: urgent; remove this nested object; application_type
-  selectedApplicationTypes: string[];
-  applicationTypes: Array<{ application_type: string }> | undefined;
+  /**
+   * The application types that the user has selected.
+   */
+  selectedApplicationTypes: string[] | undefined;
 
-/*   selectedWorkTypes: string[];
-  workTypes: string[];
-
-  processedDate: Date | undefined;
-  processedDateOperator: string;
-  secondaryProcessedDate: Date | undefined; */
+  /**
+   * The distinct collection of application types (determined by response data from service query).
+   */
+  distinctApplicationTypes: Array<{ application_type: string }> | undefined;
 }
 
 const initialState: State = {
-  selectedApplicationTypes: [''],
-  applicationTypes: undefined,
-
-/*   selectedWorkTypes: [],
-  workTypes: [],
-
-  processedDate: undefined,
-  processedDateOperator: '',
-  secondaryProcessedDate: undefined */
+  selectedApplicationTypes: undefined,
+  distinctApplicationTypes: undefined,
 };
 
 export const reducer = createReducer(
   initialState,
-  on(SearchPermitsActions.search, (state, {
+  on(PermitsFormTabActions.updateSelected, (state, {
     selectedApplicationTypes,
-/*     selectedWorkTypes,
-    processedDate,
-    processedDateOperator,
-    secondaryProcessedDate */
   }) => ({
     ...state,
-    selectedState: selectedApplicationTypes,
     selectedApplicationTypes,
-   /*  selectedWorkTypes,
-    processedDate,
-    processedDateOperator,
-    secondaryProcessedDate */
   })),
-  on(PermitsApiActions.distinctApplicationTypes, (state, {results}) => ({
+  on(PermitsApiActions.distinctApplicationTypes, (state, { results }) => ({
     ...state,
-      applicationTypes: results
+    distinctApplicationTypes: results
   }))
 );
 

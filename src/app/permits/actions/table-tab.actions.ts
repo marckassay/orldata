@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-export const getSelectedPage = createAction(
-  '[Paginate Permits] Selected Page',
+export const paginate = createAction(
+  '[Permits Table Tab] Paginate',
   props<{ pageIndex: number }>()
 );

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { SearchPermitsActions } from '@app/permits/actions';
+import { PermitsFormTabActions } from '@app/permits/actions';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { interval, Subject, throwError } from 'rxjs';
@@ -18,7 +18,7 @@ export interface CheckGridItem {
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="orl-search-container">
-    <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" novalidate>
+    <form [formGroup]="form" novalidate>
       <orl-check-grid
         title="Application Types"
         [formControl]="application_types"
@@ -106,13 +106,13 @@ export class FormTabComponent implements OnInit, OnDestroy {
       debounce(() => interval(1000)),
       takeUntil(this.unsubscribe$)
     ).subscribe(val => {
-      this.store.dispatch(SearchPermitsActions.search({ selectedApplicationTypes: this.selectApplicationTypes() }));
+      this.store.dispatch(PermitsFormTabActions.updateSelected({ selectedApplicationTypes: this.selectApplicationTypes() }));
     });
   }
 
   private observeApplicationTypes() {
     this.store.pipe(
-      select(fromPermits.getApplicationTypes),
+      select(fromPermits.getDistinctApplicationTypes),
       takeUntil(this.unsubscribe$),
       catchError(error => throwError(error))
     ).subscribe((types) => {
@@ -136,7 +136,7 @@ export class FormTabComponent implements OnInit, OnDestroy {
         });
 
         // since using a resolver that dispatches an action, this is needed to dispatch
-        // SearchPermitsActions.search and see its effects
+        // PermitsFormTabActions.search and see its effects
         this.form.updateValueAndValidity();
       }
     });
@@ -149,14 +149,4 @@ export class FormTabComponent implements OnInit, OnDestroy {
       );
     return results;
   }
-  /*
-  this.store.pipe(select(fromPermits.getSelectedApplicationTypes));
-
-  this.store.pipe(select(fromPermits.getWorkTypes));
-  this.store.pipe(select(fromPermits.getSelectedWorkTypes));
-
-  this.store.pipe(select(fromPermits.getProcessedDate));
-  this.store.pipe(select(fromPermits.getProcessedDateOperator));
-  this.store.pipe(select(fromPermits.getSecondaryProcessedDate));
-  */
 }

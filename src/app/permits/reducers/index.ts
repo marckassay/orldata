@@ -20,10 +20,12 @@ export function reducers(state: PermitsState | undefined, action: Action) {
 }
 
 export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
+
 export const getTableState = createSelector(
   getPermitsState,
   (state) => state.table
 );
+
 export const getSearchState = createSelector(
   getPermitsState,
   (state) => state.search
@@ -33,7 +35,7 @@ export const getSearchState = createSelector(
  Table Selectors
 */
 
-export const getPermitEntitiesState = createSelector(
+export const getEntities = createSelector(
   getPermitsState,
   (state) => state.table.entities
 );
@@ -47,65 +49,10 @@ export const getCount = createSelector(
   getPermitsState,
   (state) => state.table.pagination.count
 );
-// TODO: this limit variable for searching will most likely reside in the Options Tab.
-export const getSearchLimit = createSelector<State, PermitsState, number>(
+
+export const getPageSize = createSelector<State, PermitsState, number>(
   getPermitsState,
   (state) => state.table.pagination.limit
-);
-
-/*
- Search Selectors
-*/
-
-export const getApplicationTypes = createSelector(
-  getSearchState,
-  (state) => state.applicationTypes
-);
-
-export const getSelectedApplicationTypes = createSelector(
-  getSearchState,
-  (state) => state.selectedApplicationTypes
-);
-
-/* export const getWorkTypes = createSelector(
-  getSearchState,
-  (state) => state.workTypes
-);
-
-export const getSelectedWorkTypes = createSelector(
-  getSearchState,
-  (state) => state.selectedWorkTypes
-);
-
-export const getProcessedDate = createSelector(
-  getSearchState,
-  (state) => state.processedDate
-);
-
-export const getProcessedDateOperator = createSelector(
-  getSearchState,
-  (state) => state.processedDateOperator
-);
-
-export const getSecondaryProcessedDate = createSelector(
-  getSearchState,
-  (state) => state.secondaryProcessedDate
-); */
-
-/* export const getSearchLimit = createSelector(
-  getSearchState,
-  (state) => state.limit
-);
- */
-
-export const getSearchSelectedState = createSelector(
-  getSearchState,
-  fromSearch.getSelected
-);
-
-export const getTableSelectedState = createSelector(
-  getTableState,
-  fromTable.getSelected
 );
 
 export const getLastResponseTime = createSelector(
@@ -113,25 +60,34 @@ export const getLastResponseTime = createSelector(
   (state) => state.lastResponseTime
 );
 
+export const getSelectedTableState = createSelector(
+  getTableState,
+  fromTable.getSelected
+);
 
-export const getPermitSelectedState = createSelector(
-  getSearchSelectedState,
-  getTableSelectedState,
+/*
+ Search Selectors
+*/
+
+export const getSelectedApplicationTypes = createSelector(
+  getSearchState,
+  (state) => state.selectedApplicationTypes
+);
+
+export const getDistinctApplicationTypes = createSelector(
+  getSearchState,
+  (state) => state.distinctApplicationTypes
+);
+
+export const getSelectedSearchState = createSelector(
+  getSearchState,
+  fromSearch.getSelected
+);
+
+export const getSelectedPermitsState = createSelector(
+  getSelectedSearchState,
+  getSelectedTableState,
   (search, table) => {
     return Object.assign({}, search, table);
   }
 );
-
-
-// https://stackoverflow.com/a/53025968/648789
-/* let deepClone = <T>(source: T): { [k: string]: any } => {
-  const results: { [k: string]: any } = {};
-  for (let P in source) {
-    if (source[P] !== null && typeof source[P] === 'object') {
-      results[P] = deepClone(source[P]);
-    } else {
-      results[P] = source[P];
-    }
-  }
-  return results;
-}; */
