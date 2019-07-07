@@ -1,12 +1,14 @@
 import { Injectable, NgModule } from '@angular/core';
-// tslint:disable-next-line: max-line-length
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import * as fromCore from '@core/reducers';
 import { Store } from '@ngrx/store';
 import { merge, Observable } from 'rxjs';
 import { filter, mapTo, scan, take } from 'rxjs/operators';
 
-export interface CatalogResolverType { permits: boolean; crimes: boolean; }
+export interface CatalogResolverType {
+  permits: boolean;
+  crimes: boolean;
+}
 
 @Injectable({
   providedIn: 'root'

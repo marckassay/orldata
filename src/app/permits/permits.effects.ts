@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppApiActions } from '@app/core/actions';
+import { AppApiActions, PageViewerActions } from '@app/core/actions';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { PaginatePermits, PermitsApiActions, PermitViewerActions, SearchPermitsActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
 import { combineLatest, of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { PermitsService, SearchRequest, SearchResponse } from '../core/services/permits.service';
 
 @Injectable()
@@ -91,8 +91,23 @@ export class PermitsEffects {
     }),
   ));
 
+  /**
+   * When `PageViewerModule` resolves routes genaericcaly, it dispatches `PageViewerActions` with a
+   * prop of `page`. If `page` is this effects concern, then this stream will "redirect" action.
+   */
+  redirectSelectedSearch$ = createEffect(() => this.actions$.pipe(
+    ofType(PageViewerActions.getSelectedSearch),
+    filter((action) => action.page === 'permits'),
+    map(() => PermitViewerActions.getSelectedSearch({ pageIndex: 0 }))
+  ));
+
+  redirectSelectedSearchForm$ = createEffect(() => this.actions$.pipe(
+    ofType(PageViewerActions.getSelectedFormSearch),
+    filter((action) => action.page === 'permits'),
+    map(() => PermitViewerActions.getSearchFormData())
+  ));
+
   // maps form group data to object literals
-  // tslint:disable-next-line: max-line-length
   mapTo = (types: string[]): Array<{ application_type: string }> => {
     return types.map((value: string) => ({ application_type: value }));
   }

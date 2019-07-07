@@ -19,7 +19,6 @@ export function reducers(state: PermitsState | undefined, action: Action) {
   })(state, action);
 }
 
-// tslint:disable-next-line: max-line-length
 export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
 export const getTableState = createSelector(
   getPermitsState,

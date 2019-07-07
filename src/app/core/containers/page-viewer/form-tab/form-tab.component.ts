@@ -24,9 +24,6 @@ export interface CheckGridItem {
         [formControl]="application_types"
         [dataProvider]="applicationTypesEntities">
       </orl-check-grid>
-      <div class="orl-button-row">
-        <button mat-stroked-button [disabled]="!form.valid" class="orl-button" color="primary" >Search</button>
-      </div>
     </form>
   </div>
   `,
@@ -81,8 +78,9 @@ export class FormTabComponent implements OnInit, OnDestroy {
   form: FormGroup;
   submitValue: any;
 
-  constructor(private store: Store<fromPermits.State>,
-              private fb: FormBuilder) {
+  constructor(
+    private store: Store<fromPermits.State>,
+    private fb: FormBuilder) {
     this.form = this.fb.group({
       application_types: this.fb.control(this.fb.array([]))
     });
@@ -124,7 +122,7 @@ export class FormTabComponent implements OnInit, OnDestroy {
           // TODO: store in this class
           const part: CheckGridItem = {
             id: type.application_type.toLowerCase().replace(/ /gi, '_'),
-            checked: (type.application_type === 'Building Permit' || type.application_type === 'GAS'),
+            checked: (type.application_type === 'Building Permit'),
             name: type.application_type
           };
 
@@ -137,8 +135,8 @@ export class FormTabComponent implements OnInit, OnDestroy {
           (this.application_types.value as FormArray).push(control);
         });
 
-        // since using a resolver that dispatches an action, this is needed to
-        // dispatch SearchPermitsActions.search
+        // since using a resolver that dispatches an action, this is needed to dispatch
+        // SearchPermitsActions.search and see its effects
         this.form.updateValueAndValidity();
       }
     });
@@ -161,8 +159,4 @@ export class FormTabComponent implements OnInit, OnDestroy {
   this.store.pipe(select(fromPermits.getProcessedDateOperator));
   this.store.pipe(select(fromPermits.getSecondaryProcessedDate));
   */
-
-  onSubmit(value: any) {
-    // this.store.dispatch(SearchPermitsActions.search({ pageIndex: 0, selectedApplicationTypes: selectApplicationTypes() }));
-  }
 }

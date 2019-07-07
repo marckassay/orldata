@@ -63,7 +63,7 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
      * See: https://github.com/zalmoxisus/redux-devtools-extension
      */
     StoreDevtoolsModule.instrument({
-      name: 'NgRx - OrlData',
+      name: 'NgRx - orldata',
     }),
 
     EffectsModule.forRoot(
@@ -73,7 +73,8 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
     CoreModule,
     ThemePickerModule
   ],
-  providers: [StyleManager,
+  providers: [
+    StyleManager,
     { provide: RouteReuseStrategy, useClass: AppRouteStrategy }
   ],
   bootstrap: [AppComponent],

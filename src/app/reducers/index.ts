@@ -8,8 +8,11 @@ import * as fromCore from '@core/reducers';
  */
 import * as fromRouter from '@ngrx/router-store';
 import { getSelectors } from '@ngrx/router-store';
-import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MetaReducer } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MemoizedSelector, MetaReducer } from '@ngrx/store';
+import { DefaultProjectorFn } from '@ngrx/store/src/selector';
+import { getApplicationTypes as getPermitsApplicationTypes, getCount as getPermitsCount, getLastResponseTime as getPermitsLastResponseTime } from '@permits/reducers';
 import { environment } from '../../environments/environment';
+
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -68,3 +71,33 @@ export const {
   selectRouteData,      // select the current route data
   selectUrl,            // select the current url
 } = getSelectors(selectRouter);
+
+// TODO: I'm sure there is a more elegant way to go about this. I referenced the following:
+// https://blog.angularindepth.com/ngrx-parameterized-selector-e3f610529f8
+/**
+ * With provided `name` will return it's feature's `getCount` selector.
+ *
+ * @param name the feature name that is a property of root state.
+ */
+export function getSelectedCount(name: string): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
+  switch (name) {
+    case 'permits': return getPermitsCount;
+    default: return getPermitsCount;
+  }
+}
+
+export function getSelectedLastResponseTime(name: string): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
+  switch (name) {
+    case 'permits': return getPermitsLastResponseTime;
+    default: return getPermitsLastResponseTime;
+  }
+}
+
+export function getPredefinedData(name: string): MemoizedSelector<any,
+{ application_type: string; }[] | undefined,
+DefaultProjectorFn<{ application_type: string; }[] | undefined>> {
+  switch (name) {
+    case 'permits': return getPermitsApplicationTypes;
+    default: return getPermitsApplicationTypes;
+  }
+}

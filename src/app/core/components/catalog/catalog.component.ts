@@ -27,7 +27,7 @@ import { CatalogItem, CatalogItems } from './catalog-items';
         mat-list-item
         class="orl-catalog-item"
         [matTooltip]="item.description"
-        [routerLink]="['/catalog', item.routeLink]">
+        (click)="onClick(item)">
 
       <mat-icon matListIcon color="primary">folder</mat-icon>
       <h3 mat-line>{{item.name}}</h3>
@@ -70,7 +70,8 @@ export class CatalogComponent implements OnInit {
       filter(metadata => metadata !== undefined)
     ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
 
-    // datasets are prefetched by RouterEffects
+    // datasets are prefetched by:
+    //  src\app\core\effects\router.effects.ts
   }
 
   updateCatalogItem = (metadata: CatalogItem) => {
