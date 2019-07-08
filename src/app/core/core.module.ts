@@ -11,7 +11,6 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 import { AppComponent } from './containers/app.component';
 import { ThemePickerModule } from './shared/theme-picker';
 
-
 @NgModule({
   imports: [
     CommonModule,

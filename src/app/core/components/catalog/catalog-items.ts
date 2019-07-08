@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ContentName } from '@app/constants';
 import { DatasetIDs } from 'src/environments/environment';
 
 export interface CatalogItem {
@@ -11,17 +12,12 @@ export interface CatalogItem {
   disabled?: boolean;
 }
 
-export enum DatasetNames {
-  PERMITS = 'permits',
-  CRIMES = 'crimes'
-}
-
 @Injectable()
 export class CatalogItems {
 
   CATALOG: CatalogItem[] = [
-    { id: DatasetIDs.PERMITS, routeLink: DatasetNames.PERMITS, disabled: false },
-    { id: DatasetIDs.CRIMES, routeLink: DatasetNames.CRIMES, disabled: true }
+    { id: DatasetIDs.PERMITS, routeLink: ContentName.Permits, disabled: false },
+    { id: DatasetIDs.CRIMES, routeLink: ContentName.Crimes, disabled: true }
   ];
 
   getAllItems(): CatalogItem[] {
@@ -37,7 +33,7 @@ export class CatalogItems {
     }
   }
 
-  getItemByName(name: DatasetNames | string): CatalogItem {
+  getItemByName(name: ContentName | string): CatalogItem {
     try {
       return this.CATALOG.find(item => item.routeLink === name) as CatalogItem;
     } catch (error) {

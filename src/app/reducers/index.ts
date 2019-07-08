@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { ContentName } from '@app/constants';
 import * as fromCore from '@core/reducers';
 /**
  * Every reducer module's default export is the reducer function itself. In
@@ -72,32 +73,32 @@ export const {
 } = getSelectors(selectRouter);
 
 /**
- * With provided `name` will return it's feature's `getCount` selector.
+ * With provided `content` will return it's feature's `getCount` selector.
  *
  * TODO: I'm sure there is a more elegant way to go about this. I referenced the following:
  * @link https://blog.angularindepth.com/ngrx-parameterized-selector-e3f610529f8
  *
  * @param content the feature name that is a property of root state.
  */
-export function getSelectedCount(content: 'permits' | 'crimes'): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
+export function getSelectedCount(content: ContentName): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
   switch (content) {
-    case 'permits': return getPermitsCount;
+    case ContentName.Permits: return getPermitsCount;
     default: return getPermitsCount;
   }
 }
 
-export function getLastResponseTime(content: 'permits' | 'crimes'): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
+export function getLastResponseTime(content: ContentName): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
   switch (content) {
-    case 'permits': return getPermitsLastResponseTime;
+    case ContentName.Permits: return getPermitsLastResponseTime;
     default: return getPermitsLastResponseTime;
   }
 }
 
-export function getDistinctData(content: 'permits' | 'crimes'): MemoizedSelector<any,
+export function getDistinctData(content: ContentName): MemoizedSelector<any,
   { application_type: string; }[] | undefined,
   DefaultProjectorFn<{ application_type: string; }[] | undefined>> {
   switch (content) {
-    case 'permits': return getPermitsApplicationTypes;
+    case ContentName.Permits: return getPermitsApplicationTypes;
     default: return getPermitsApplicationTypes;
   }
 }

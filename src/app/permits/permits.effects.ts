@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { ContentName } from '@app/constants';
 import { AppApiActions, PageViewerActions } from '@app/core/actions';
 import { PermitsService } from '@core/services/permits.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -46,7 +47,7 @@ export class PermitsEffects {
    */
   redirectPaginateToFirst$ = createEffect(() => this.actions$.pipe(
     ofType(PageViewerActions.preloadEntities),
-    filter((action) => action.content === 'permits'),
+    filter((action) => action.content === ContentName.Permits),
     map(() => PermitsEffectActions.paginateToFirst())
   ));
 
@@ -129,7 +130,7 @@ export class PermitsEffects {
    */
   redirectToLoadDistincts$ = createEffect(() => this.actions$.pipe(
     ofType(PageViewerActions.preloadDistincts),
-    filter((action) => action.content === 'permits'),
+    filter((action) => action.content === ContentName.Permits),
     map(() => PermitsEffectActions.loadDistincts())
   ));
 

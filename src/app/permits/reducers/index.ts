@@ -1,3 +1,4 @@
+import { ContentName } from '@app/constants';
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromSearch from '@permits/reducers/search.reducer';
@@ -19,7 +20,7 @@ export function reducers(state: PermitsState | undefined, action: Action) {
   })(state, action);
 }
 
-export const getPermitsState = createFeatureSelector<State, PermitsState>('permits');
+export const getPermitsState = createFeatureSelector<State, PermitsState>(ContentName.Permits);
 
 export const getTableState = createSelector(
   getPermitsState,
