@@ -5,7 +5,6 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of, timer } from 'rxjs';
 import { delayWhen, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-
 @Component({
   selector: 'orl-progress-bar',
   template: `

@@ -21,7 +21,6 @@ export function reducers(state: CoreState | undefined, action: Action) {
 
 const getCoreState = createFeatureSelector<State, CoreState>('core');
 
-
 /*
  Dataset Metadata selectors
 */
@@ -42,7 +41,6 @@ export const getCrimesMetadata: MemoizedSelector<State, object | undefined > = c
   getDatasetsMetas,
   (datasets) => datasets.crimesMetadata
 );
-
 
 /*
  Services status selector

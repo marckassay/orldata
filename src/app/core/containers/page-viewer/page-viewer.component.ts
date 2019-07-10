@@ -4,6 +4,7 @@ import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-page-viewer',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,12 +54,13 @@ export class PageViewerComponent implements OnInit {
   routeParamSubscription: Subscription;
   activedRoute: ActivatedRouteSnapshot;
 
-  constructor(public router: Router,
-              public route: ActivatedRoute,
-              public store: Store<fromPermits.State>,
-              public catalog: CatalogItems) {
+  constructor(
+    public router: Router,
+    public route: ActivatedRoute,
+    public store: Store<fromPermits.State>,
+    public catalog: CatalogItems) {
     this.title = '';
-               }
+  }
 
   ngOnInit() {
     const id = this.router.url.match('(?<=catalog\/)[a-z\-]*(?=([/])|$)');

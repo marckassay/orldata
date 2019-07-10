@@ -1,7 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-// import { DocsAppTestingModule } from '../../testing/testing-module';
 import { ThemePickerComponent, ThemePickerModule } from './theme-picker';
-
 
 describe('ThemePicker', () => {
   beforeEach(async(() => {

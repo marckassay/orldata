@@ -1,6 +1,5 @@
 import {ThemeStorage, DocsSiteTheme} from './theme-storage';
 
-
 const testStorageKey = ThemeStorage.storageKey;
 const testTheme: DocsSiteTheme = {
   primary: '#000000',

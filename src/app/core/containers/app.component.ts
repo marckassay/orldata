@@ -15,10 +15,11 @@ import { Router } from '@angular/router';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  constructor(private router: Router,
-              private iconRegistry: MatIconRegistry,
-              private domSanitizer: DomSanitizer
-    ) {
+  constructor(
+    private router: Router,
+    private iconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
   }
 
   ngOnInit(): void {

@@ -64,8 +64,9 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
   @ViewChild(MatGridList, { static: false })
   grid: MatGridList;
 
-  constructor(private breakpoint$: BreakpointObserver,
-              private ref: ChangeDetectorRef) { }
+  constructor(
+    private breakpoint$: BreakpointObserver,
+    private ref: ChangeDetectorRef) { }
 
   onTouched: () => void = () => { };
 

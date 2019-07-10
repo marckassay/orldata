@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, Input, NgModule, OnInit } from '@angular/core';
 
-
 @Component({
   selector: 'orl-svg-viewer',
   template: '<div class="orl-svg-viewer" aria-hidden="true"></div>',

@@ -6,7 +6,6 @@ import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
 import { QueryBuilder } from './query-builder';
 
-
 @Injectable({
   providedIn: 'root',
 })

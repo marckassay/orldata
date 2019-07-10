@@ -1,7 +1,8 @@
 {
   "extends": "tslint:recommended",
   "rulesDirectory": [
-    "codelyzer"
+    "codelyzer",
+    "node_modules/tslint-import-rules/dist/rules"
   ],
   "rules": {
     "array-type": false,
@@ -34,7 +35,7 @@
         ]
       }
     ],
-    "no-consecutive-blank-lines": false,
+    "no-consecutive-blank-lines": true,
     "no-console": [
       true,
       "debug",
@@ -73,6 +74,9 @@
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true
+    "directive-class-suffix": true,
+    "tir-newline-after-import": [
+      true
+    ]
   }
 }

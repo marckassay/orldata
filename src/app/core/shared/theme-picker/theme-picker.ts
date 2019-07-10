@@ -11,7 +11,6 @@ import { filter, map } from 'rxjs/operators';
 import { StyleManager } from '../style-manager/style-manager';
 import { DocsSiteTheme, ThemeStorage } from './theme-storage/theme-storage';
 
-
 @Component({
   selector: 'theme-picker',
   templateUrl: 'theme-picker.html',

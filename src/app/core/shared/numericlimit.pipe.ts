@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
 /**
  * If value is exceeds 100, a plus sign is appended to it as a string.
  */

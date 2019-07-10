@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { AppApiActions } from '../actions';
 
-
 @Injectable()
 export class RouterEffects {
 

@@ -2,7 +2,6 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { SvgViewerModule } from '@app/core/shared/svg-viewer/svg-viewer';
-// import { ComponentPageTitle } from '../page-title/page-title';
 
 @Component({
   selector: 'app-homepage',

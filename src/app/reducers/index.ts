@@ -1,18 +1,19 @@
 import { InjectionToken } from '@angular/core';
 import { ContentName } from '@app/constants';
 import * as fromCore from '@core/reducers';
-/**
- * Every reducer module's default export is the reducer function itself. In
- * addition, each module should export a type or interface that describes
- * the state of the reducer plus any selector functions. The `* as`
- * notation packages up all of the exports into a single object.
- */
 import * as fromRouter from '@ngrx/router-store';
 import { getSelectors } from '@ngrx/router-store';
 import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MemoizedSelector, MetaReducer } from '@ngrx/store';
 import { DefaultProjectorFn } from '@ngrx/store/src/selector';
 import { getCount as getPermitsCount, getDistinctApplicationTypes as getPermitsApplicationTypes, getLastResponseTime as getPermitsLastResponseTime } from '@permits/reducers';
 import { environment } from '../../environments/environment';
+
+/**
+ * Every reducer module's default export is the reducer function itself. In
+ * addition, each module should export a type or interface that describes
+ * the state of the reducer plus any selector functions. The `* as`
+ * notation packages up all of the exports into a single object.
+ */
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
