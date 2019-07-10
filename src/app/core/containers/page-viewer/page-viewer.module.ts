@@ -18,7 +18,7 @@ import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
 import * as fromRoot from '@app/reducers';
 import { select, Store } from '@ngrx/store';
 import { Observable, throwError } from 'rxjs';
-import { catchError, filter, mapTo, scan, take } from 'rxjs/operators';
+import { catchError, filter, mapTo, scan, take, tap } from 'rxjs/operators';
 import { PageViewerActions } from './actions';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -42,12 +42,15 @@ export class TableTabResolver implements Resolve<number> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
-    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-    this.store.dispatch(PageViewerActions.preloadEntities({ content }));
 
-    // dispatch action above, and take 2 emissions in this stream; first prior to response of action
-    // and second post from response
+    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
+
+    // take 2 emissions in this stream; first one is from prior to this resolve() being called
+    // and second is post from dispatching `PageViewerActions.preloadEntities`
     return this.store.select(fromRoot.getLastResponseTime(content)).pipe(
+      tap(() =>
+        this.store.dispatch(PageViewerActions.preloadEntities({ content }))
+      ),
       take(2),
       catchError(error => throwError(error))
     );
@@ -79,10 +82,13 @@ export class FormTabResolver implements Resolve<FormTabResolverType> {
     const seed: FormTabResolverType = { applicationTypes: false };
 
     const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-    this.store.dispatch(PageViewerActions.preloadDistincts({ content }));
 
     return this.store.select(fromRoot.getDistinctData(content)).pipe(
-      filter((value) => value !== undefined),
+      tap((value) =>
+        (typeof value === 'undefined') ?
+          this.store.dispatch(PageViewerActions.preloadDistincts({ content })) : value
+      ),
+      filter((value) => (typeof value !== 'undefined')),
       mapTo({ applicationTypes: true })
     ).pipe(
       scan((acc, curr) => Object.assign(seed, acc, curr), seed),

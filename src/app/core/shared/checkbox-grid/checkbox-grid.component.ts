@@ -59,21 +59,21 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   onChange: any;
 
-  private unsubscribe$ = new Subject<void>();
+  private unsubscribe = new Subject<void>();
 
   @ViewChild(MatGridList, { static: false })
   grid: MatGridList;
 
   constructor(
-    private breakpoint$: BreakpointObserver,
+    private breakpoint: BreakpointObserver,
     private ref: ChangeDetectorRef) { }
 
   onTouched: () => void = () => { };
 
   ngOnInit() {
-    this.breakpoint$.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
+    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
       .pipe(
-        takeUntil(this.unsubscribe$)
+        takeUntil(this.unsubscribe)
       ).subscribe((state: BreakpointState) => {
         this.grid.cols = this.breakpointsColValue(
           Object.entries(state.breakpoints)
@@ -88,8 +88,8 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   writeValue(value: any) {

@@ -27,26 +27,26 @@ export class RouterEffects {
    * - https://github.com/ngrx/platform/issues/467
    * - https://stackoverflow.com/questions/37069609/show-loading-screen-when-navigating-between-routes-in-angular-2
    */
-  prefetchPermitsMetadata$ = createEffect(() => this.router.events.pipe(
+  prefetchPermitsMetadata = createEffect(() => this.router.events.pipe(
     filter(event => event instanceof NavigationStart),
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
     take(1),
     tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
-    tap(() => this.store.dispatch(AppApiActions.serviceActive) ),
+    tap(() => this.store.dispatch(AppApiActions.serviceActive)),
     switchMap(() => this.permitsSvc.getMetadata().pipe(
-        map((metadata: object[]) =>
+      map((metadata: object[]) =>
         AppApiActions.permitsMetadata({ metadata })),
-        catchError(err =>
-          of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
-        )
+      catchError(err =>
+        of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
       )
+    )
     ),
     tap(() => console.log('[RouterEffects] Prefetched Permits metadata.')),
-    tap(() => this.store.dispatch(AppApiActions.serviceInactive) )
+    tap(() => this.store.dispatch(AppApiActions.serviceInactive))
   ));
 
-  prefetchCrimesMetadata$ = createEffect(() => this.router.events.pipe(
+  prefetchCrimesMetadata = createEffect(() => this.router.events.pipe(
     filter(event => event instanceof NavigationStart),
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
@@ -64,26 +64,26 @@ export class RouterEffects {
     tap(() => { this.store.dispatch(AppApiActions.serviceInactive); })
   ));
 
-  updateTitle$ = createEffect(() => this.router.events.pipe(
-        filter(event => event instanceof NavigationStart),
-        /*
-        map(() => {
-          let route = this.activatedRoute;
-          while (route.firstChild) { route = route.firstChild; }
-          return route;
-        }),
-        mergeMap(route => route.data),
-        // TODO: add subtitle when and if rows can expand for detail
-        // map(data => `Permits - ${data.title}`),
-        map(data => (data.title) ? data.title : ''),
-        tap(title => (title) ? this.titleService.setTitle(title) : '') */
-      ), { dispatch: false });
+  updateTitle = createEffect(() => this.router.events.pipe(
+    filter(event => event instanceof NavigationStart),
+    /*
+    map(() => {
+      let route = this.activatedRoute;
+      while (route.firstChild) { route = route.firstChild; }
+      return route;
+    }),
+    mergeMap(route => route.data),
+    // TODO: add subtitle when and if rows can expand for detail
+    // map(data => `Permits - ${data.title}`),
+    map(data => (data.title) ? data.title : ''),
+    tap(title => (title) ? this.titleService.setTitle(title) : '') */
+  ), { dispatch: false });
 
   constructor(
     private router: Router,
     private titleService: Title,
     private activatedRoute: ActivatedRoute,
-    private actions$: Actions,
+    private actions: Actions,
     private permitsSvc: PermitsService,
     private crimesSvc: CrimesService,
     private store: Store<fromCore.State>

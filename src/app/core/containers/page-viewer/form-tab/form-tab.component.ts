@@ -73,7 +73,7 @@ export interface CheckGridItem {
 })
 export class FormTabComponent implements OnInit, OnDestroy {
   applicationTypesEntities: CheckGridItem[] = [];
-  private unsubscribe$ = new Subject<void>();
+  private unsubscribe = new Subject<void>();
 
   form: FormGroup;
   submitValue: any;
@@ -97,14 +97,14 @@ export class FormTabComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   onFormChanges() {
     this.form.valueChanges.pipe(
       debounce(() => interval(1000)),
-      takeUntil(this.unsubscribe$)
+      takeUntil(this.unsubscribe)
     ).subscribe(val => {
       this.store.dispatch(PermitsFormTabActions.updateSelected({ selectedApplicationTypes: this.selectApplicationTypes() }));
     });
@@ -113,7 +113,7 @@ export class FormTabComponent implements OnInit, OnDestroy {
   private observeApplicationTypes() {
     this.store.pipe(
       select(fromPermits.getDistinctApplicationTypes),
-      takeUntil(this.unsubscribe$),
+      takeUntil(this.unsubscribe),
       catchError(error => throwError(error))
     ).subscribe((types) => {
       if (types && types.length) {

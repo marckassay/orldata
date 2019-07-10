@@ -14,17 +14,17 @@ import { Observable, Subscription } from 'rxjs';
     </div>
 
     <nav mat-tab-nav-bar class="orl-component-viewer-tabbed-content">
-      <a mat-tab-link *ngIf="(count$ | async) > 0"
+      <a mat-tab-link *ngIf="(count | async) > 0"
           class="orl-component-viewer-section-tab"
           routerLink="table"
           routerLinkActive #tableRla="routerLinkActive"
           [active]="tableRla.isActive">
-            <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">TABLE</span>
+            <span class='orl-badge-content' [matBadge]="count | async | numericlimit" matBadgeOverlap="false">TABLE</span>
           </a>
-      <a mat-tab-link *ngIf="(count$ | async) <= 0"
+      <a mat-tab-link *ngIf="(count | async) <= 0"
           class="orl-component-viewer-section-tab disabled"
           class="disabled">
-            <span class='orl-badge-content' [matBadge]="count$ | async | numericlimit" matBadgeOverlap="false">TABLE</span>
+            <span class='orl-badge-content' [matBadge]="count | async | numericlimit" matBadgeOverlap="false">TABLE</span>
           </a>
 
       <a mat-tab-link class="orl-component-viewer-section-tab"
@@ -48,7 +48,7 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class PageViewerComponent implements OnInit {
   title: string;
-  count$: Observable<number>;
+  count: Observable<number>;
 
   params: Observable<Params>;
   routeParamSubscription: Subscription;
@@ -70,6 +70,6 @@ export class PageViewerComponent implements OnInit {
       this.title = (item) ? item.routeLink : '';
     }
 
-    this.count$ = this.store.pipe(select(fromPermits.getCount));
+    this.count = this.store.pipe(select(fromPermits.getCount));
   }
 }

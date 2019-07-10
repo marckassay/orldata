@@ -36,7 +36,7 @@ export class PermitsEffects {
 
   constructor(
     private router: Router,
-    private actions$: Actions,
+    private actions: Actions,
     private service: PermitsService,
     private store: Store<fromPermits.State>
   ) { }
@@ -45,7 +45,7 @@ export class PermitsEffects {
    * When `PageViewerModule` resolves routes generically, it dispatches `PageViewerActions` with a
    * prop of `page`. If `page` is this effects concern, then this stream will "redirect" action.
    */
-  redirectPaginateToFirst$ = createEffect(() => this.actions$.pipe(
+  redirectPaginateToFirst = createEffect(() => this.actions.pipe(
     ofType(PageViewerActions.preloadEntities),
     filter((action) => action.content === ContentName.Permits),
     map(() => PermitsEffectActions.paginateToFirst())
@@ -54,7 +54,7 @@ export class PermitsEffects {
   /**
    * Side-effect is dispatch of: `AppApiActions.serviceActive` and `AppApiActions.serviceInactive`
    */
-  updateEntities$ = createEffect(() => this.actions$.pipe(
+  updateEntities = createEffect(() => this.actions.pipe(
     ofType(PermitsEffectActions.paginateToFirst, PermitsTableTabActions.paginate),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
 
@@ -85,7 +85,7 @@ export class PermitsEffects {
     }),
   ));
 
-  updateCount$ = createEffect(() => this.actions$.pipe(
+  updateCount = createEffect(() => this.actions.pipe(
     ofType(PermitsFormTabActions.updateSelected),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
 
@@ -128,7 +128,7 @@ export class PermitsEffects {
    * Redirects an action (`PageViewerActions.preloadDistincts`) from `PageViewer` to a content
    * specific action; `PermitsEffectActions.loadDistincts`.
    */
-  redirectToLoadDistincts$ = createEffect(() => this.actions$.pipe(
+  redirectToLoadDistincts = createEffect(() => this.actions.pipe(
     ofType(PageViewerActions.preloadDistincts),
     filter((action) => action.content === ContentName.Permits),
     map(() => PermitsEffectActions.loadDistincts())
@@ -137,7 +137,7 @@ export class PermitsEffects {
   /**
    * Queries for fields that are defined collections, specifically: `application_type` and `worktype`.
    */
-  loadDistincts$ = createEffect(() => this.actions$.pipe(
+  loadDistincts = createEffect(() => this.actions.pipe(
     ofType(PermitsEffectActions.loadDistincts),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
 

@@ -9,7 +9,7 @@ import { delayWhen, distinctUntilChanged, switchMap } from 'rxjs/operators';
   selector: 'orl-progress-bar',
   template: `
   <div class="super-host-progress-bar">
-  <div class="host-progress-bar" *ngIf="visibility$ | async">
+  <div class="host-progress-bar" *ngIf="visibility | async">
     <mat-progress-bar
       color="accent"
       mode="indeterminate">
@@ -28,7 +28,7 @@ export class ProgressBarComponent implements OnInit {
   @ViewChild(MatProgressBar, { static: false })
   progressBar: MatProgressBar;
 
-  public visibility$: Observable<boolean>;
+  public visibility: Observable<boolean>;
 
   throttleTime: number;
 
@@ -40,7 +40,7 @@ export class ProgressBarComponent implements OnInit {
 
     // And this approcach below has limitations. perhaps 'bootstrapping' a service as recommended is
     // better: https://stackoverflow.com/a/37070282
-    this.visibility$ = this.store.pipe(
+    this.visibility = this.store.pipe(
       select(fromCore.getCommunicatingStatus),
       distinctUntilChanged((x, y) => {
         return x === y;
