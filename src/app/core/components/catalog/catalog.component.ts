@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnInit
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { CatalogItem, CatalogItems } from './catalog-items';
 
 @Component({
@@ -48,26 +48,27 @@ import { CatalogItem, CatalogItems } from './catalog-items';
   `,
   styleUrls: ['./catalog.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
-  // if set to 'None' as recommended by ang-mat docs, footer raises to away from bottom edge
-  encapsulation: ViewEncapsulation.Emulated
+  encapsulation: ViewEncapsulation.None
 })
 export class CatalogComponent implements OnInit {
 
-  constructor(public catalogItems: CatalogItems,
-              private ref: ChangeDetectorRef,
-              public router: Router,
-              public route: ActivatedRoute,
-              public store: Store<fromCore.State>) { }
+  constructor(
+    private catalogItems: CatalogItems,
+    private ref: ChangeDetectorRef,
+    private router: Router,
+    private store: Store<fromCore.State>) { }
 
   ngOnInit() {
     this.store.pipe(
       select(fromCore.getPermitsMetadata),
-      filter(metadata => metadata !== undefined)
+      filter(metadata => metadata !== undefined),
+      take(1),
     ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
 
     this.store.pipe(
       select(fromCore.getCrimesMetadata),
-      filter(metadata => metadata !== undefined)
+      filter(metadata => metadata !== undefined),
+      take(1),
     ).subscribe((value) => this.updateCatalogItem(value as CatalogItem));
 
     // datasets are prefetched by:

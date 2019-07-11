@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
-import { select, Store } from '@ngrx/store';
-import * as fromPermits from '@permits/reducers';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-page-viewer',
@@ -50,15 +48,10 @@ export class PageViewerComponent implements OnInit {
   title: string;
   count: Observable<number>;
 
-  params: Observable<Params>;
-  routeParamSubscription: Subscription;
-  activedRoute: ActivatedRouteSnapshot;
-
   constructor(
     public router: Router,
-    public route: ActivatedRoute,
-    public store: Store<fromPermits.State>,
-    public catalog: CatalogItems) {
+    public catalog: CatalogItems,
+  ) {
     this.title = '';
   }
 
@@ -69,7 +62,5 @@ export class PageViewerComponent implements OnInit {
       const item = this.catalog.getItemByName(id[0]);
       this.title = (item) ? item.routeLink : '';
     }
-
-    this.count = this.store.pipe(select(fromPermits.getCount));
   }
 }

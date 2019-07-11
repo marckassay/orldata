@@ -1,11 +1,8 @@
 import { InjectionToken } from '@angular/core';
-import { ContentName } from '@app/constants';
 import * as fromCore from '@core/reducers';
 import * as fromRouter from '@ngrx/router-store';
 import { getSelectors } from '@ngrx/router-store';
-import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MemoizedSelector, MetaReducer } from '@ngrx/store';
-import { DefaultProjectorFn } from '@ngrx/store/src/selector';
-import { getCount as getPermitsCount, getDistinctApplicationTypes as getPermitsApplicationTypes, getLastResponseTime as getPermitsLastResponseTime } from '@permits/reducers';
+import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 
 /**
@@ -72,34 +69,3 @@ export const {
   selectRouteData,      // select the current route data
   selectUrl,            // select the current url
 } = getSelectors(selectRouter);
-
-/**
- * With provided `content` will return it's feature's `getCount` selector.
- *
- * TODO: I'm sure there is a more elegant way to go about this. I referenced the following:
- * @link https://blog.angularindepth.com/ngrx-parameterized-selector-e3f610529f8
- *
- * @param content the feature name that is a property of root state.
- */
-export function getSelectedCount(content: ContentName): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
-  switch (content) {
-    case ContentName.Permits: return getPermitsCount;
-    default: return getPermitsCount;
-  }
-}
-
-export function getLastResponseTime(content: ContentName): MemoizedSelector<any, number, DefaultProjectorFn<number>> {
-  switch (content) {
-    case ContentName.Permits: return getPermitsLastResponseTime;
-    default: return getPermitsLastResponseTime;
-  }
-}
-
-export function getDistinctData(content: ContentName): MemoizedSelector<any,
-  { application_type: string; }[] | undefined,
-  DefaultProjectorFn<{ application_type: string; }[] | undefined>> {
-  switch (content) {
-    case ContentName.Permits: return getPermitsApplicationTypes;
-    default: return getPermitsApplicationTypes;
-  }
-}

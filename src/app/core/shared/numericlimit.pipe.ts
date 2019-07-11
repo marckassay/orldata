@@ -5,7 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({ name: 'numericlimit' })
 export class NumericLimitPipe implements PipeTransform {
-  transform(value: number): string {
+  transform(value: number | any): string {
+    value = (typeof value === 'number') ? value : 0;
     return (value > 100) ? '100+' : value.toString();
   }
 }

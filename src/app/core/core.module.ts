@@ -14,9 +14,9 @@ import { ThemePickerModule } from './shared/theme-picker';
 @NgModule({
   imports: [
     CommonModule,
-    // TODO: For now, synchronously load HomeModule to prevent any rendering "movement". Although I
-    // attempted to preload it, but wasn't able to successfully.
-    // src: https://angular.io/guide/router#preloading-background-loading-of-feature-areas
+    // TODO: For now, synchronously load HomeModule to prevent any rendering "jumping" of elements.
+    // Although I attempted to preload it, but wasn't able to successfully.
+    // @link https://angular.io/guide/router#preloading-background-loading-of-feature-areas
     HomeModule,
     MatIconModule,
     MatProgressBarModule,

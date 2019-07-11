@@ -19,8 +19,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private iconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
     this.router.navigate(['']);

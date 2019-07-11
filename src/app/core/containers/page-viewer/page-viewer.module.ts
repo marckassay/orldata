@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Injectable, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,137 +11,36 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Resolve, Router, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
-import * as fromRoot from '@app/reducers';
-import { select, Store } from '@ngrx/store';
 import { Observable, throwError } from 'rxjs';
-import { catchError, filter, mapTo, scan, take, tap } from 'rxjs/operators';
-import { PageViewerActions } from './actions';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
 import { TableTabComponent } from './table-tab/table-tab.component';
 
-@Injectable({
-  providedIn: 'root'
-})
 /**
  * @source https://angular.io/guide/router#resolve-pre-fetching-component-data
  */
-export class TableTabResolver implements Resolve<number> {
-  selectRouter: any;
-
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    protected store: Store<fromRoot.State>,
-  ) {
-    store.select(fromRoot.selectRouter).subscribe(value => this.selectRouter = value);
-  }
-
+export abstract class TableTabResolver implements Resolve<number> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
-
-    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-
-    // take 2 emissions in this stream; first one is from prior to this resolve() being called
-    // and second is post from dispatching `PageViewerActions.preloadEntities`
-    return this.store.select(fromRoot.getLastResponseTime(content)).pipe(
-      tap(() =>
-        this.store.dispatch(PageViewerActions.preloadEntities({ content }))
-      ),
-      take(2),
-      catchError(error => throwError(error))
-    );
+    return throwError(`PageViewerModule's TableTabResolver() is abstract. It must be extended.`);
   }
 }
 
-export interface FormTabResolverType {
-  applicationTypes: boolean;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-/**
- * @source https://angular.io/guide/router#resolve-pre-fetching-component-data
- */
-export class FormTabResolver implements Resolve<FormTabResolverType> {
-  selectRouter: any;
-
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    protected store: Store<fromRoot.State>,
-  ) {
-    store.select(fromRoot.selectRouter).subscribe(value => this.selectRouter = value);
-  }
-
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FormTabResolverType> | Observable<never> {
-    const seed: FormTabResolverType = { applicationTypes: false };
-
-    const content = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-
-    return this.store.select(fromRoot.getDistinctData(content)).pipe(
-      tap((value) =>
-        (typeof value === 'undefined') ?
-          this.store.dispatch(PageViewerActions.preloadDistincts({ content })) : value
-      ),
-      filter((value) => (typeof value !== 'undefined')),
-      mapTo({ applicationTypes: true })
-    ).pipe(
-      scan((acc, curr) => Object.assign(seed, acc, curr), seed),
-      filter((value: FormTabResolverType) => (value.applicationTypes === true)),
-      take(1)
-    );
+export abstract class FormTabResolver<T> implements Resolve<T> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<T> | Observable<never> {
+    return throwError(`PageViewerModule's FormTabResolver<T>() is abstract. It must be extended.`);
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-class CanActivateTab implements CanActivate {
-  selectUrl: string;
-  selectRouter: any;
-
-  constructor(
-    public store: Store<fromRoot.State>,
-    public router: Router,
-    private activatedRoute: ActivatedRoute) {
-
-    store.select(fromRoot.selectUrl).subscribe(value => this.selectUrl = value);
-    store.select(fromRoot.selectRouter).subscribe(value => this.selectRouter = value);
-  }
-
+export abstract class CanActivateTab implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const page = this.selectRouter.state.root.firstChild.data.title.toLowerCase();
-
-    /**
-     * Converts the following route below, if table doesn't have a `count` greater than 0.
-     *
-     * `'/catalogs/permits/table'` to `'/catalogs/permits/form'`
-     */
-    const getRedirectLink = (): string[] => {
-      let result;
-      if (this.selectUrl && this.selectUrl.match('/')) {
-        result = this.selectUrl.split('/');
-        result.pop();
-        result.push('form');
-      }
-      return result as string[];
-    };
-
-    let count = 0;
-    this.store.pipe(
-      select(fromRoot.getSelectedCount(page)),
-      take(1),
-    ).subscribe(value => count = value);
-
-    return (count > 0) ? true : this.router.navigate(getRedirectLink(), { relativeTo: this.activatedRoute });
+    return throwError(`PageViewerModule's CanActivateTab() is abstract. It must be extended.`);
   }
 }
 
@@ -153,7 +52,7 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'table',
-        pathMatch: 'full'
+        pathMatch: 'prefix'
       },
       {
         path: 'table',
@@ -204,7 +103,6 @@ export const routes: Routes = [
     FormTabComponent,
   ],
   providers: [
-    CanActivateTab,
     CatalogItems
   ]
 })

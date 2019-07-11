@@ -48,24 +48,25 @@ export class CatalogResolver implements Resolve<CatalogResolverType> {
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
     pathMatch: 'full',
+    redirectTo: 'home',
   },
   {
     path: 'home',
     loadChildren: '@core/components/home/home.component#HomeModule',
+    pathMatch: 'full',
     data: { title: 'Home' }
   },
   {
     path: 'catalog',
     loadChildren: '@core/components/catalog/catalog.component#CatalogModule',
     pathMatch: 'full',
+    data: { title: 'Catalog' },
     resolve: { subject: CatalogResolver },
-    data: { title: 'Catalog' }
   },
   {
     path: 'catalog/permits',
-    loadChildren: '@permits/permits.component#PermitsModule',
+    loadChildren: '@permits/permits.module#PermitsModule',
     data: { title: 'Permits' }
   },
 ];
@@ -74,7 +75,7 @@ export const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       useHash: true,
-      enableTracing: false, // <-- debugging purposes only
+      enableTracing: true, // <-- debugging purposes only
       relativeLinkResolution: 'corrected',
     })
   ],

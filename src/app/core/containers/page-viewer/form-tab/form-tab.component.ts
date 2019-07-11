@@ -16,17 +16,7 @@ export interface CheckGridItem {
   selector: 'orl-form-tab',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  template: `
-  <div class="orl-search-container">
-    <form [formGroup]="form" novalidate>
-      <orl-check-grid
-        title="Application Types"
-        [formControl]="application_types"
-        [dataProvider]="applicationTypesEntities">
-      </orl-check-grid>
-    </form>
-  </div>
-  `,
+  templateUrl: 'form-tab.html',
   styles: [`
   .orl-search-container {
     display: flex;

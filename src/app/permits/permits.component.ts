@@ -1,58 +1,36 @@
-import { ChangeDetectionStrategy, Component, NgModule, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ContentName } from '@app/constants';
-import { PageViewerModule } from '@app/core/containers/page-viewer/page-viewer.module';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { PermitsEffects } from '@permits/permits.effects';
-import { reducers } from '@permits/reducers';
+import { AfterContentInit, ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { Store } from '@ngrx/store';
+import * as fromPermits from '@permits/reducers';
 
 @Component({
-  selector: 'orl-permit-viewer',
+  selector: 'orl-permits',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   template: `
-    <app-page-viewer></app-page-viewer>
+    <router-outlet></router-outlet>
   `,
-  encapsulation: ViewEncapsulation.None
+  styles: [
+    `orl-permits {
+      min-height: 100%;
+      margin-bottom: -139px;
+    }`
+  ]
 })
-export class PermitsComponent {
+export class PermitsComponent implements AfterContentInit {
   // All possible fields for Permits:
   // tslint:disable-next-line: max-line-length
   /* displayedColumns: string[] = ['permit_number', 'application_type', 'parcel_number', 'worktype', 'final_date', 'temp_coo_date', 'coo_date', 'coc_date', 'permit_address', 'property_owner_name', 'parcel_owner_name', 'contractor', 'contractor_name', 'contractor_address', 'contractor_phone_number', 'plan_review_type', 'estimated_cost', 'processed_date', 'under_review_date', 'prescreen_completed_date', 'review_started_date_excluding', 'review_started_including', 'of_cycles', 'of_pdoxwkflw', 'collect_permit_fees_date', 'geocoded_column', 'pending_issuance_date', 'issue_permit_date', 'pdoxbatch_date', 'day_to_issuance']; */
-  constructor(
-    public router: Router,
-    public route: ActivatedRoute) {
+  /*   @ViewChild(PageViewerComponent, { static: false })
+    viewer: PageViewerComponent;
+   */
+  constructor(protected store: Store<fromPermits.State>) {
+    console.log('!!!!!!!!! PermitsComponent construct !!!!!!!!!!');
+  }
+
+  ngAfterContentInit() {
+    /*    this.viewer.count = this.store.pipe(
+         select(fromPermits.getCount),
+         startWith(0)
+       ); */
   }
 }
-
-@NgModule({
-  imports: [
-    PageViewerModule,
-    RouterModule.forChild([{ path: '', component: PermitsComponent }]),
-
-    /**
-     * StoreModule.forFeature is used for composing state
-     * from feature modules. These modules can be loaded
-     * eagerly or lazily and will be dynamically added to
-     * the existing state.
-     */
-    StoreModule.forFeature(ContentName.Permits, reducers),
-
-    /**
-     * Effects.forFeature is used to register effects
-     * from feature modules. Effects can be loaded
-     * eagerly or lazily and will be started immediately.
-     *
-     * All Effects will only be instantiated once regardless of
-     * whether they are registered once or multiple times.
-     */
-    EffectsModule.forFeature([PermitsEffects]),
-  ],
-  exports: [
-    PermitsComponent
-  ],
-  declarations: [
-    PermitsComponent
-  ]
-})
-export class PermitsModule { }

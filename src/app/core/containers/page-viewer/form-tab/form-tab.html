@@ -1,0 +1,7 @@
+<div class="orl-search-container">
+  <form [formGroup]="form" novalidate>
+    <orl-check-grid title="Application Types" [formControl]="application_types"
+      [dataProvider]="applicationTypesEntities">
+    </orl-check-grid>
+  </form>
+</div>

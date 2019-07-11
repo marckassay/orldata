@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { ContentName } from '@app/constants';
-import { AppApiActions, PageViewerActions } from '@app/core/actions';
+import { AppApiActions } from '@app/core/actions';
 import { PermitsService } from '@core/services/permits.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { PermitsApiActions, PermitsEffectActions, PermitsFormTabActions, PermitsTableTabActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
 import { combineLatest, of } from 'rxjs';
-import { catchError, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 
 export interface SearchRequest {
   selected: { selectedApplicationTypes: Array<{ application_type: string }> };
@@ -35,21 +33,10 @@ export interface SearchResponse {
 export class PermitsEffects {
 
   constructor(
-    private router: Router,
     private actions: Actions,
     private service: PermitsService,
     private store: Store<fromPermits.State>
   ) { }
-
-  /**
-   * When `PageViewerModule` resolves routes generically, it dispatches `PageViewerActions` with a
-   * prop of `page`. If `page` is this effects concern, then this stream will "redirect" action.
-   */
-  redirectPaginateToFirst = createEffect(() => this.actions.pipe(
-    ofType(PageViewerActions.preloadEntities),
-    filter((action) => action.content === ContentName.Permits),
-    map(() => PermitsEffectActions.paginateToFirst())
-  ));
 
   /**
    * Side-effect is dispatch of: `AppApiActions.serviceActive` and `AppApiActions.serviceInactive`
@@ -122,16 +109,6 @@ export class PermitsEffects {
       this.store.dispatch(AppApiActions.serviceInactive);
       return of(PermitsApiActions.queryFailure({ errorMsg: err }));
     }),
-  ));
-
-  /**
-   * Redirects an action (`PageViewerActions.preloadDistincts`) from `PageViewer` to a content
-   * specific action; `PermitsEffectActions.loadDistincts`.
-   */
-  redirectToLoadDistincts = createEffect(() => this.actions.pipe(
-    ofType(PageViewerActions.preloadDistincts),
-    filter((action) => action.content === ContentName.Permits),
-    map(() => PermitsEffectActions.loadDistincts())
   ));
 
   /**
