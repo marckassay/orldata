@@ -3,13 +3,14 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, 
 import { ContentName } from '@app/constants';
 import { CanActivateTab, FormTabResolver, TableTabResolver } from '@app/core/containers/page-viewer/page-viewer.module';
 import * as fromRoot from '@app/reducers';
+import { COUNT_TOKEN } from '@core/containers/page-viewer/page-viewer.component';
 import { EffectsModule } from '@ngrx/effects';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { PermitsEffects } from '@permits/permits.effects';
 import * as fromPermits from '@permits/reducers';
 import { reducers } from '@permits/reducers';
 import { Observable, throwError } from 'rxjs';
-import { catchError, filter, mapTo, scan, take, tap } from 'rxjs/operators';
+import { catchError, filter, mapTo, scan, startWith, take, tap } from 'rxjs/operators';
 import { PermitsEffectActions } from './actions';
 import { PermitsComponent } from './permits.component';
 
@@ -120,6 +121,18 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
   }
 }
 
+@Injectable({ providedIn: 'root' })
+export class PermitsCountService {
+  private observable: Observable<number>;
+  toObservable(): Observable<number> {
+    return this.observable;
+  }
+
+  constructor(protected store: Store<fromPermits.State>) {
+    this.observable = store.pipe(select(fromPermits.getCount), startWith(0));
+  }
+}
+
 @NgModule({
   imports: [
 
@@ -153,6 +166,11 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
     PermitsTableTabResolver, { provide: TableTabResolver, useExisting: PermitsTableTabResolver },
     PermitsFormTabResolver, { provide: FormTabResolver, useExisting: PermitsFormTabResolver },
     PermitsCanActivateTableTab, { provide: CanActivateTab, useExisting: PermitsCanActivateTableTab },
+    {
+      provide: COUNT_TOKEN,
+      useFactory: (svc: PermitsCountService) => svc.toObservable(),
+      deps: [PermitsCountService]
+    }
   ],
   exports: [
     PermitsComponent
@@ -162,3 +180,4 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
   ]
 })
 export class PermitsModule { }
+// const CUSTOMER_SERVICE = new InjectionToken<ICountService>('CountService');

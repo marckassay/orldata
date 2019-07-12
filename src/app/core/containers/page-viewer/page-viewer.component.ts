@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, InjectionToken, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { Observable } from 'rxjs';
+
+export const COUNT_TOKEN = new InjectionToken<
+  Observable<number>
+>('count');
 
 @Component({
   selector: 'app-page-viewer',
@@ -51,7 +55,9 @@ export class PageViewerComponent implements OnInit {
   constructor(
     public router: Router,
     public catalog: CatalogItems,
+    @Inject(COUNT_TOKEN) count: Observable<number>,
   ) {
+    this.count = count;
     this.title = '';
   }
 
