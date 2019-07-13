@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { ProgressbarDelay } from '@app/constants';
 import * as fromCore from '@core/reducers';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, timer } from 'rxjs';
@@ -33,7 +34,7 @@ export class ProgressBarComponent implements OnInit {
   throttleTime: number;
 
   constructor(public store: Store<fromCore.State>) {
-    this.throttleTime = 2000;
+    this.throttleTime = ProgressbarDelay;
   }
 
   ngOnInit(): void {

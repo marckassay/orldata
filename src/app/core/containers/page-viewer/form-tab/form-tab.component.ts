@@ -1,16 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PermitsFormTabActions } from '@app/permits/actions';
+import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { interval, Subject, throwError } from 'rxjs';
-import { catchError, debounce, takeUntil } from 'rxjs/operators';
-
-export interface CheckGridItem {
-  id: string;
-  checked: boolean;
-  name: string;
-}
+import { Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'orl-form-tab',
@@ -93,7 +88,10 @@ export class FormTabComponent implements OnInit, OnDestroy {
 
   onFormChanges() {
     this.form.valueChanges.pipe(
-      debounce(() => interval(1000)),
+      // TODO: what I want is to emit first immediately and subsiquent emissions in a 'window' of
+      // time, to be delayed. But this delays all emissions. The link below talks about this:
+      // @link https://stackoverflow.com/questions/30140044/deliver-the-first-item-immediately-debounce-following-items
+      debounceTime(1000),
       takeUntil(this.unsubscribe)
     ).subscribe(val => {
       this.store.dispatch(PermitsFormTabActions.updateSelected({ selectedApplicationTypes: this.selectApplicationTypes() }));
@@ -109,7 +107,6 @@ export class FormTabComponent implements OnInit, OnDestroy {
       if (types && types.length) {
         types.forEach((type: { application_type: string }) => {
 
-          // TODO: store in this class
           const part: CheckGridItem = {
             id: type.application_type.toLowerCase().replace(/ /gi, '_'),
             checked: (type.application_type === 'Building Permit'),

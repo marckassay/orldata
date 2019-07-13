@@ -121,9 +121,12 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
   }
 }
 
+// TODO: this should be 'providedIn' this module (or PageViewerModule)?
 @Injectable({ providedIn: 'root' })
 export class PermitsCountService {
+
   private observable: Observable<number>;
+
   toObservable(): Observable<number> {
     return this.observable;
   }
@@ -154,13 +157,11 @@ export class PermitsCountService {
      */
     EffectsModule.forFeature([PermitsEffects]),
 
-    RouterModule.forChild([
-      {
-        path: '',
-        component: PermitsComponent,
-        loadChildren: '@core/containers/page-viewer/page-viewer.module#PageViewerModule'
-      }
-    ]),
+    RouterModule.forChild([{
+      path: '',
+      component: PermitsComponent,
+      loadChildren: '@core/containers/page-viewer/page-viewer.module#PageViewerModule'
+    }]),
   ],
   providers: [
     PermitsTableTabResolver, { provide: TableTabResolver, useExisting: PermitsTableTabResolver },
@@ -180,4 +181,3 @@ export class PermitsCountService {
   ]
 })
 export class PermitsModule { }
-// const CUSTOMER_SERVICE = new InjectionToken<ICountService>('CountService');

@@ -1,17 +1,9 @@
 @import '../../../../styles/constants';
 
 app-catalog {
-  // TODO: this works for now, but perhaps may be best to use 'flexbox'
-  // @link https://css-tricks.com/couple-takes-sticky-footer/#article-header-id-3
-  min-height: 100%;
-  margin-bottom: -139px;
-}
-
-:host {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-
 }
 
 .orl-catalog-list {

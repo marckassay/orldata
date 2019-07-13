@@ -1,10 +1,15 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatGridList } from '@angular/material/grid-list';
-import { CheckGridItem } from '@app/core/containers/page-viewer/form-tab/form-tab.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+export interface CheckGridItem {
+  id: string;
+  checked: boolean;
+  name: string;
+}
 
 @Component({
   selector: 'orl-check-grid',
@@ -47,7 +52,7 @@ import { takeUntil } from 'rxjs/operators';
     }
   `]
 })
-export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
+export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input()
   title: string;
@@ -81,10 +86,6 @@ export class CheckboxGridComponent implements OnInit, AfterViewInit, OnDestroy, 
         );
         this.ref.markForCheck();
       });
-  }
-
-  ngAfterViewInit(): void {
-    //  throw new Error("Method not implemented.");
   }
 
   ngOnDestroy(): void {
