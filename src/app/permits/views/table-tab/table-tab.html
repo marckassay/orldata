@@ -1,4 +1,4 @@
-<div class="orl-table-container">
+<ng-template #permitsTable>
   <table mat-table [dataSource]="dataSource">
 
     <!-- permit_number Column -->
@@ -22,6 +22,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-</div>
+</ng-template>
 
-<mat-paginator [pageIndex]="pageIndex | async" [pageSize]="limit | async" [length]="count | async" (page)="pageIndexChange($event)"></mat-paginator>
+<orl-table-tab [template]="permitsTable" [count]="count" [pageIndex]="pageIndex" [limit]="limit"
+  (paginate)="pageIndexChange($event)"></orl-table-tab>

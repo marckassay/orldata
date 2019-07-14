@@ -11,7 +11,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
@@ -44,37 +44,6 @@ export abstract class CanActivateTab implements CanActivate {
   }
 }
 
-export const routes: Routes = [
-  {
-    path: '',
-    component: PageViewerComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'table',
-        pathMatch: 'prefix'
-      },
-      {
-        path: 'table',
-        component: TableTabComponent,
-        pathMatch: 'full',
-        canActivate: [CanActivateTab],
-        resolve: { subject: TableTabResolver }
-      },
-      {
-        path: 'form',
-        component: FormTabComponent,
-        pathMatch: 'full',
-        resolve: { subject: FormTabResolver }
-      },
-      {
-        path: '**',
-        redirectTo: 'table'
-      }
-    ],
-  }
-];
-
 @NgModule({
   imports: [
     FormsModule,
@@ -90,17 +59,33 @@ export const routes: Routes = [
     MatCheckboxModule,
     MatFormFieldModule,
     CheckboxGridModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild([]),
     CommonModule,
   ],
   exports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatBadgeModule,
+    MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatCardModule,
+    MatGridListModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    CheckboxGridModule,
+    TableTabComponent,
+    FormTabComponent,
     PageViewerComponent,
+    CommonModule,
   ],
   declarations: [
     NumericLimitPipe,
-    PageViewerComponent,
     TableTabComponent,
     FormTabComponent,
+    PageViewerComponent,
   ],
   providers: [
     CatalogItems

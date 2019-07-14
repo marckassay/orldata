@@ -6,7 +6,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
-import { HomeModule } from './components/home/home.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { AppComponent } from './containers/app.component';
 import { ThemePickerModule } from './shared/theme-picker';
@@ -17,7 +16,7 @@ import { ThemePickerModule } from './shared/theme-picker';
     // TODO: For now, synchronously load HomeModule to prevent any rendering "jumping" of elements.
     // Although I attempted to preload it, but wasn't able to successfully.
     // @link https://angular.io/guide/router#preloading-background-loading-of-feature-areas
-    HomeModule,
+    // HomeModule,
     MatIconModule,
     MatProgressBarModule,
     MatButtonModule,

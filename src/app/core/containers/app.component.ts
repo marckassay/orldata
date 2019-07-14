@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'orl-app',
@@ -16,14 +15,11 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private router: Router,
     private iconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
-    this.router.navigate(['']);
-
     this.iconRegistry.addSvgIcon(
       'github_circle_white',
       this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/github-circle-white-transparent.svg')

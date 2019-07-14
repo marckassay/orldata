@@ -6,7 +6,7 @@ import { PageViewerComponent } from '@core/containers/page-viewer/page-viewer.co
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `
-    <router-outlet></router-outlet>
+    <app-page-viewer></app-page-viewer>
   `,
   styles: [
     `orl-permits {

@@ -1,7 +1,7 @@
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { ContentName } from '@app/constants';
-import { CanActivateTab, FormTabResolver, TableTabResolver } from '@app/core/containers/page-viewer/page-viewer.module';
+import { CanActivateTab, FormTabResolver, PageViewerModule, TableTabResolver } from '@app/core/containers/page-viewer/page-viewer.module';
 import * as fromRoot from '@app/reducers';
 import { COUNT_TOKEN } from '@core/containers/page-viewer/page-viewer.component';
 import { EffectsModule } from '@ngrx/effects';
@@ -13,6 +13,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, filter, mapTo, scan, startWith, take, tap } from 'rxjs/operators';
 import { PermitsEffectActions } from './actions';
 import { PermitsComponent } from './permits.component';
+import { PermitsFormTabComponent } from './views/form-tab/form-tab.component';
+import { PermitsTableTabComponent } from './views/table-tab/table-tab.component';
 
 @Injectable({
   providedIn: 'root'
@@ -156,11 +158,33 @@ export class PermitsCountService {
      * whether they are registered once or multiple times.
      */
     EffectsModule.forFeature([PermitsEffects]),
-
+    PageViewerModule,
     RouterModule.forChild([{
       path: '',
       component: PermitsComponent,
-      loadChildren: '@core/containers/page-viewer/page-viewer.module#PageViewerModule'
+      children: [
+        {
+          path: 'table',
+          component: PermitsTableTabComponent,
+          pathMatch: 'full',
+          canActivate: [CanActivateTab],
+          resolve: { subject: TableTabResolver }
+        },
+        {
+          path: 'form',
+          component: PermitsFormTabComponent,
+          pathMatch: 'full',
+          resolve: { subject: FormTabResolver }
+        },
+        {
+          path: '',
+          redirectTo: 'table',
+        },
+        {
+          path: '**',
+          redirectTo: 'table'
+        }
+      ],
     }]),
   ],
   providers: [
@@ -177,6 +201,8 @@ export class PermitsCountService {
     PermitsComponent
   ],
   declarations: [
+    PermitsTableTabComponent,
+    PermitsFormTabComponent,
     PermitsComponent
   ]
 })
