@@ -21,5 +21,17 @@
     }
   }
 
+  orl-table-tab {
+    $opacity: .1;
+    $selected-color: mat-color($accent, $opacity);
+    tr.example-expanded-row {
+      background: $selected-color;
+    }
+
+    tr.example-detail-row {
+      background: $selected-color;
+    }
+  }
+
   @include form-tab-theme($theme);
 }

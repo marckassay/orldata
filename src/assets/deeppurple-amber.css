@@ -1569,6 +1569,12 @@ orl-page-viewer .orl-header-headline {
 orl-page-viewer .orl-header-start {
   color: #673ab7; }
 
+orl-table-tab tr.example-expanded-row {
+  background: rgba(255, 215, 64, 0.1); }
+
+orl-table-tab tr.example-detail-row {
+  background: rgba(255, 215, 64, 0.1); }
+
 orl-form-tab .orl-valid-div > p {
   color: #f44336; }
 

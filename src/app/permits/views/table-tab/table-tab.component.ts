@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,7 +12,16 @@ import { Observable } from 'rxjs';
   selector: 'permits-table-tab',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'table-tab.html',
-  encapsulation: ViewEncapsulation.None
+  // ViewEncapsulation.Emulated (vs None) has been set to allow detailExpand to work as expected.
+  encapsulation: ViewEncapsulation.Emulated,
+  styleUrls: ['table-tab.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class PermitsTableTabComponent implements OnInit {
 
@@ -24,8 +34,10 @@ export class PermitsTableTabComponent implements OnInit {
 
   displayedColumns: string[] = ['permit_number', 'application_type', 'processed_date'];
   dataSource = new MatTableDataSource<object>();
+  expandedElement: object | undefined;
 
-  constructor(public store: Store<fromPermits.State>, private ref: ChangeDetectorRef) { }
+  constructor(public store: Store<fromPermits.State>, private ref: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
     this.store.pipe(select(fromPermits.getEntities))
@@ -38,6 +50,7 @@ export class PermitsTableTabComponent implements OnInit {
     this.count = this.store.pipe(select(fromPermits.getCount));
     this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));
     this.limit = this.store.pipe(select(fromPermits.getPageSize));
+
   }
 
   pageIndexChange(event: PageEvent) {

@@ -16,8 +16,7 @@ import { Observable } from 'rxjs';
       [pageSize]="limit | async"
       [length]="count | async"
       (page)="pageIndexChange($event)"></mat-paginator>
-  `,
-  styleUrls: ['table-tab.scss'],
+  `
 })
 export class TableTabComponent {
 
