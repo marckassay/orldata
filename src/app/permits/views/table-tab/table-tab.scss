@@ -2,48 +2,36 @@ table {
   width: 100%;
 }
 
-tr.example-detail-row {
+tr.orl-detail-row {
   height: 0;
 }
 
-tr.example-element-row:not(.example-expanded-row):hover {
-  background: #777;
-}
-
-/* tr.example-element-row:not(.example-expanded-row):active {
+/* tr.orl-record-row:not(.orl-expanded-row):active {
   background: #efefef;
 } */
 
-.example-element-row td {
+.orl-record-row td {
   border-bottom-width: 0;
 }
 
-.example-element-detail {
+.orl-record-detail {
   overflow: hidden;
   display: flex;
 }
 
-.example-element-diagram {
-  min-width: 80px;
-  border: 2px solid black;
-  padding: 8px;
-  font-weight: lighter;
-  margin: 8px 0;
-  height: 104px;
+.orl-record-diagram {
+  margin: 5px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(5px, auto);
+  .orl-record-keyvalue {
+    .orl-record-key {
+      grid-column: 1;
+    }
+
+    .orl-record-value {
+      grid-column: 1;
+    }
+  }
 }
-
-.example-element-symbol {
-  font-weight: bold;
-  font-size: 40px;
-  line-height: normal;
-}
-
-.example-element-description {
-  padding: 16px;
-}
-
-.example-element-description-attribution {
-  opacity: 0.5;
-}
-
-

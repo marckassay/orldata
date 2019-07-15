@@ -34,7 +34,7 @@ export class PermitsTableTabComponent implements OnInit {
 
   displayedColumns: string[] = ['permit_number', 'application_type', 'processed_date'];
   dataSource = new MatTableDataSource<object>();
-  expandedElement: object | undefined;
+  expandedRecord: object | undefined;
 
   constructor(public store: Store<fromPermits.State>, private ref: ChangeDetectorRef) {
   }

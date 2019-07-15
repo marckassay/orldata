@@ -34,11 +34,6 @@ export const COUNT_TOKEN = new InjectionToken<
           routerLinkActive #formRla="routerLinkActive"
           [active]="formRla.isActive">Form</a>
 
-      <a mat-tab-link class="orl-component-viewer-section-tab"
-          [attr.disabled]="true"
-          routerLink="options"
-          routerLinkActive #optionsRla="routerLinkActive"
-          [active]="optionsRla.isActive">Options</a>
     </nav>
 
     <div class="orl-component-viewer-content">

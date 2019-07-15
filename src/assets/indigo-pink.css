@@ -1569,10 +1569,13 @@ orl-page-viewer .orl-header-headline {
 orl-page-viewer .orl-header-start {
   color: #3f51b5; }
 
-orl-table-tab tr.example-expanded-row {
+orl-table-tab tr.orl-expanded-row {
   background: rgba(255, 64, 129, 0.1); }
 
-orl-table-tab tr.example-detail-row {
+orl-table-tab tr.orl-detail-row {
+  background: rgba(255, 64, 129, 0.1); }
+
+orl-table-tab tr.orl-record-row:not(.orl-expanded-row):hover {
   background: rgba(255, 64, 129, 0.1); }
 
 orl-form-tab .orl-valid-div > p {

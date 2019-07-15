@@ -24,11 +24,15 @@
   orl-table-tab {
     $opacity: .1;
     $selected-color: mat-color($accent, $opacity);
-    tr.example-expanded-row {
+    tr.orl-expanded-row {
       background: $selected-color;
     }
 
-    tr.example-detail-row {
+    tr.orl-detail-row {
+      background: $selected-color;
+    }
+
+    tr.orl-record-row:not(.orl-expanded-row):hover {
       background: $selected-color;
     }
   }

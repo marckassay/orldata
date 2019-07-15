@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -15,6 +15,8 @@ import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterState
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
 import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
+import { LabelCasePipe } from '@core/shared/labelcase.pipe';
+import { MailAddressPipe } from '@core/shared/mailaddress.pipe';
 import { Observable, throwError } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -63,6 +65,10 @@ export abstract class CanActivateTab implements CanActivate {
     CommonModule,
   ],
   exports: [
+    LabelCasePipe,
+    NumericLimitPipe,
+    JsonPipe,
+    MailAddressPipe,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -82,7 +88,9 @@ export abstract class CanActivateTab implements CanActivate {
     CommonModule,
   ],
   declarations: [
+    LabelCasePipe,
     NumericLimitPipe,
+    MailAddressPipe,
     TableTabComponent,
     FormTabComponent,
     PageViewerComponent,
