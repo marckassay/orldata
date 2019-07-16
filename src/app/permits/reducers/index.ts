@@ -80,6 +80,11 @@ export const getDistinctApplicationTypes = createSelector(
   (state) => state.distinctApplicationTypes
 );
 
+export const getSelectedDates = createSelector(
+  getSearchState,
+  (state) => state.selectedDates
+);
+
 export const getSelectedSearchState = createSelector(
   getSearchState,
   fromSearch.getSelected

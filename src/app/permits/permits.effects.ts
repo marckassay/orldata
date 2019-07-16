@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppApiActions } from '@app/core/actions';
 import { PermitsService } from '@core/services/permits.service';
+import { ISODateString } from '@core/shared/iso-date-string';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { PermitsApiActions, PermitsEffectActions, PermitsFormTabActions, PermitsTableTabActions } from '@permits/actions';
@@ -9,7 +10,10 @@ import { combineLatest, of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 
 export interface SearchRequest {
-  selected: { selectedApplicationTypes: Array<{ application_type: string }> };
+  selected: {
+    selectedApplicationTypes: { application_type: string }[];
+    selectedDates: { start: ISODateString, end: ISODateString } | undefined
+  };
   pagination?: {
     pageIndex: number;
     offset: number;
@@ -50,7 +54,10 @@ export class PermitsEffects {
         take(1),
         map(([size, selected]) => {
           return {
-            selected: { selectedApplicationTypes: this.mapTo(selected.selectedApplicationTypes) },
+            selected: {
+              selectedApplicationTypes: this.mapTo(selected.selectedApplicationTypes),
+              selectedDates: selected.selectedDates
+            },
             pagination: { pageIndex: action.pageIndex, offset: action.pageIndex * size, limit: size }
           } as SearchRequest;
         }),
@@ -80,7 +87,10 @@ export class PermitsEffects {
       // TODO: remove following comments when issue upgraded to fixed build
       // https://github.com/ReactiveX/rxjs/issues/4723
       return of<SearchRequest>({
-        selected: { selectedApplicationTypes: this.mapTo(action.selectedApplicationTypes) },
+        selected: {
+          selectedApplicationTypes: this.mapTo(action.selectedApplicationTypes),
+          selectedDates: action.selectedDates
+        },
         pagination: undefined
       });
     }),

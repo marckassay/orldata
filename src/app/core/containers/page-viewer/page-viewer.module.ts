@@ -5,8 +5,11 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
@@ -54,7 +57,10 @@ export abstract class CanActivateTab implements CanActivate {
     MatBadgeModule,
     MatTabsModule,
     MatTableModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
     MatPaginatorModule,
+    MatInputModule,
     MatSelectModule,
     MatCardModule,
     MatGridListModule,
@@ -76,6 +82,9 @@ export abstract class CanActivateTab implements CanActivate {
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
     MatSelectModule,
     MatCardModule,
     MatGridListModule,

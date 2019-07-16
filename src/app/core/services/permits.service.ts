@@ -43,7 +43,7 @@ export class PermitsService {
    * then request is requesting *a count only* on query.
    */
   search(request: SearchRequest): Observable<SearchResponse> {
-    let query = 'select * ' + this.qb.where(request.selected.selectedApplicationTypes);
+    let query = 'select * ' + this.qb.where(request);
 
     if (request.pagination) {
       if (query.includes(' where (') === false) {

@@ -51,6 +51,14 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef, ViewEncapsulati
   .mat-grid-tile .mat-figure {
     justify-content: start;
   }
+
+  mat-card {
+    margin-bottom: 10px;
+  }
+
+  mat-form-field {
+    margin-right: 12px;
+  }
   `]
 })
 export class FormTabComponent {

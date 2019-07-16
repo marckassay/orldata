@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SearchRequest } from '@permits/permits.effects';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,10 @@ export class QueryBuilder {
    *
    * @param value string value from a reduced array.
    */
-  where(value: object[]): string {
-    if (value.length) {
+  where(value: SearchRequest): string {
+    if (value) {
       let whereclause = 'where (';
-      value.forEach((entry) => {
+      value.selected.selectedApplicationTypes.forEach((entry) => {
         const key = Object.keys(entry).toString();
         const val = Object.values(entry).toString();
 
@@ -21,7 +22,13 @@ export class QueryBuilder {
         }
         whereclause = whereclause.concat(key, ` = '${val}'`);
       });
-      whereclause = whereclause.concat(' AND processed_date IS NOT NULL)');
+      if (value.selected.selectedDates) {
+        whereclause = whereclause.concat(` AND processed_date between '${value.selected.selectedDates.end}'` +
+          ` and '${value.selected.selectedDates.start}')`);
+      } else {
+        whereclause = whereclause.concat(' AND processed_date IS NOT NULL)');
+      }
+
       return whereclause;
     } else {
       return '';

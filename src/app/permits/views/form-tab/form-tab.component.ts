@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PermitsFormTabActions } from '@app/permits/actions';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
+import { ISODateString, ISODateStringConverter } from '@core/shared/iso-date-string';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Subject, throwError } from 'rxjs';
@@ -68,11 +69,26 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   form: FormGroup;
   submitValue: any;
 
+  maxDateRangeLimit: Date;
+  minDateRangeLimit: Date;
+
   constructor(
     private store: Store<fromPermits.State>,
     private fb: FormBuilder) {
+
+    this.maxDateRangeLimit = new Date();
+    this.minDateRangeLimit = new Date(2000, 0, 1);
+
+    const startDate = new Date();
+    const endDate = (date = new Date()): Date => {
+      date.setMonth((startDate.getMonth() !== 0) ? startDate.getMonth() - 1 : 11);
+      return date;
+    };
+
     this.form = this.fb.group({
-      application_types: this.fb.control(this.fb.array([]))
+      application_types: this.fb.control(this.fb.array([])),
+      start_date: this.fb.control(startDate),
+      end_date: this.fb.control(endDate())
     });
 
     this.onFormChanges();
@@ -82,8 +98,16 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     return this.form.get('application_types') as FormControl;
   }
 
+  get start_date() {
+    return this.form.get('start_date') as FormControl;
+  }
+
+  get end_date() {
+    return this.form.get('end_date') as FormControl;
+  }
+
   ngOnInit() {
-    this.observeApplicationTypes();
+    this.observeDistinctApplicationTypes();
   }
 
   ngOnDestroy(): void {
@@ -93,17 +117,20 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
   onFormChanges() {
     this.form.valueChanges.pipe(
-      // TODO: what I want is to emit first immediately and subsiquent emissions in a 'window' of
+      // TODO: what I want is to emit first immediately and subsequent emissions in a 'window' of
       // time, to be delayed. But this delays all emissions. The link below talks about this:
       // @link https://stackoverflow.com/questions/30140044/deliver-the-first-item-immediately-debounce-following-items
       debounceTime(1000),
       takeUntil(this.unsubscribe)
     ).subscribe(val => {
-      this.store.dispatch(PermitsFormTabActions.updateSelected({ selectedApplicationTypes: this.selectApplicationTypes() }));
+      this.store.dispatch(PermitsFormTabActions.updateSelected({
+        selectedApplicationTypes: this.getSelectedApplicationTypes(),
+        selectedDates: this.getSelectedDates()
+      }));
     });
   }
 
-  private observeApplicationTypes() {
+  private observeDistinctApplicationTypes() {
     this.store.pipe(
       select(fromPermits.getDistinctApplicationTypes),
       takeUntil(this.unsubscribe),
@@ -134,11 +161,15 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     });
   }
 
-  private selectApplicationTypes(): string[] {
+  private getSelectedApplicationTypes(): string[] {
     const results = this.application_types.value.value
       .flatMap(
         (currentValue: boolean, index: number) => (currentValue === true) ? this.applicationTypesEntities[index].name : []
       );
     return results;
+  }
+
+  private getSelectedDates(): { start: ISODateString, end: ISODateString } {
+    return { start: ISODateStringConverter.convert(this.start_date.value), end: ISODateStringConverter.convert(this.end_date.value) };
   }
 }

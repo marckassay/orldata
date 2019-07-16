@@ -3,6 +3,21 @@
     <orl-check-grid title="Application Types" [formControl]="application_types"
       [dataProvider]="applicationTypesEntities">
     </orl-check-grid>
+    <mat-card>
+      <mat-card-title>Data Range</mat-card-title>
+      <mat-form-field>
+        <input matInput [matDatepicker]="startPicker" [min]="end_date.value" [max]="maxDateRangeLimit"
+          [formControl]="start_date" placeholder="Start Date">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="endPicker" [min]="minDateRangeLimit" [max]="start_date.value"
+          [formControl]="end_date" placeholder="End Date">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </mat-card>
   </form>
 </ng-template>
 <orl-form-tab [template]="permitsForm"></orl-form-tab>
