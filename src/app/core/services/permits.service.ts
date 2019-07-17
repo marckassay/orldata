@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SearchRequest, SearchResponse } from '@permits/permits.effects';
+import { UpdateCountRequest, UpdateCountResponse, UpdateDistinctFilteredNamesResponse, UpdateEntitiesRequest, UpdateEntitiesResponse } from '@permits/effects/types';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { DatasetIDs, environment } from 'src/environments/environment';
@@ -42,29 +42,38 @@ export class PermitsService {
    * @param request.pagination the trio of variables for the `TableTab`. If its `undefined`,
    * then request is requesting *a count only* on query.
    */
-  search(request: SearchRequest): Observable<SearchResponse> {
-    let query = 'select * ' + this.qb.where(request);
+  getEntities(request: UpdateEntitiesRequest): Observable<UpdateEntitiesResponse> {
+    const limit = request.pagination.limit.toString();
+    const offset = request.pagination.offset.toString();
+    const query = this.qb.where(request)
+      .concat(` order by processed_date DESC limit ${limit} offset ${offset}`);
 
-    if (request.pagination) {
-      if (query.includes(' where (') === false) {
-        query += ' AND ';
-      }
-
-      query += 'order by processed_date DESC limit ' + request.pagination.limit + ' offset ' + request.pagination.offset;
-    } else {
-      query += '|> SELECT COUNT(*)';
-    }
+    const pageIndex = request.pagination.pageIndex;
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
         // simulates network latency
         // delayWhen(() => (request.pagination && request.pagination.pageIndex === 34) ? timer(5000) : timer(500)),
         map((value) => {
-          const count = ('COUNT' in value[0]) ? parseInt((value[0] as any).COUNT, 10) : undefined;
-          const pageIndex = (request.pagination !== undefined) ? request.pagination.pageIndex : undefined;
           return {
-            entities: (typeof count === 'undefined') ? value : undefined,
-            pagination: { pageIndex, count },
+            entities: value,
+            pagination: { pageIndex },
+            lastResponseTime: Date.now()
+          };
+        }),
+        catchError(error => throwError(error))
+      );
+  }
+
+  getCount(request: UpdateCountRequest): Observable<UpdateCountResponse> {
+    const query = this.qb.where(request);
+
+    return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
+      .pipe(
+        map((value) => {
+          const count = parseInt((value[0] as any).COUNT, 10);
+          return {
+            pagination: { pageIndex: 0 as const, count },
             lastResponseTime: Date.now()
           };
         }),
@@ -75,19 +84,19 @@ export class PermitsService {
   getDistinctApplicationTypes(): Observable<Array<{ application_type: string }>> {
     const query = 'select distinct application_type';
 
-    return this.http.get<{ application_type: string }[]>(this.getFullQueryExpression(query), this.getHttpHeader())
+    return this.http.get<{ application_type: string }[]>(this.getFullQueryExpression(query, true), this.getHttpHeader())
       .pipe(
         map(types => types),
         catchError(error => throwError(error))
       );
   }
 
-  getDistinctWorkTypes(): Observable<object[]> {
-    const query = 'select distinct worktype';
+  getDistinctFilteredNames(request: UpdateCountRequest): Observable<UpdateDistinctFilteredNamesResponse> {
+    const query = ''; // this.qb.whereForDistinctNames(filteredName);
 
     return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
       .pipe(
-        map(types => types),
+        map(types => ({ selectedFilterName: request.selected.selectedFilterName, distinctFilteredNames: types })),
         catchError(error => throwError(error))
       );
   }
@@ -102,7 +111,9 @@ export class PermitsService {
     };
   }
 
-  private getFullQueryExpression(query: string): string {
-    return this.API_ENDPOINT + '?$query=' + query;
+  private getFullQueryExpression(query: string, asFullQueryString = false): string {
+    const results = this.API_ENDPOINT + ((asFullQueryString === true) ? '?$query=' : '?$') + query;
+    console.log('[PermitsService] Query :', results);
+    return results;
   }
 }

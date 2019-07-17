@@ -6,5 +6,6 @@ export const updateSelected = createAction(
   props<{
     selectedApplicationTypes: string[];
     selectedDates: { start: ISODateString, end: ISODateString };
+    selectedFilterName: string;
   }>()
 );

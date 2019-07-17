@@ -1,10 +1,16 @@
-import { createAction } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
+import { UpdateCountRequest } from '@permits/effects/types';
 
 export const paginateToFirst = createAction(
-  '[Permits Effect - Redirect] Paginate To First',
+  '[Permits TableTabResolver - Resolve] Paginate To First',
   () => ({ pageIndex: 0 }),
 );
 
 export const loadDistincts = createAction(
-  '[Permits Effect - Redirect] Load Distincts',
+  '[Permits FormTabResolver - Resolve] Load Distincts',
+);
+
+export const updateDistinctNames = createAction(
+  '[Permits Effect - Exec] Update Distinct Names',
+  props<UpdateCountRequest>()
 );

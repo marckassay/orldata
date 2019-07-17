@@ -6,8 +6,8 @@ import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.componen
 import { ISODateString, ISODateStringConverter } from '@core/shared/iso-date-string';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
-import { Subject, throwError } from 'rxjs';
-import { catchError, debounceTime, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'permits-form-tab',
@@ -72,6 +72,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   maxDateRangeLimit: Date;
   minDateRangeLimit: Date;
 
+  filteredNames: Observable<string[] | any | undefined>;
+
   constructor(
     private store: Store<fromPermits.State>,
     private fb: FormBuilder) {
@@ -88,7 +90,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       application_types: this.fb.control(this.fb.array([])),
       start_date: this.fb.control(startDate),
-      end_date: this.fb.control(endDate())
+      end_date: this.fb.control(endDate()),
+      filter_name: this.fb.control('')
     });
 
     this.onFormChanges();
@@ -106,8 +109,13 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     return this.form.get('end_date') as FormControl;
   }
 
+  get filter_name() {
+    return this.form.get('filter_name') as FormControl;
+  }
+
   ngOnInit() {
     this.observeDistinctApplicationTypes();
+    this.observeFilteredNames();
   }
 
   ngOnDestroy(): void {
@@ -125,7 +133,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     ).subscribe(val => {
       this.store.dispatch(PermitsFormTabActions.updateSelected({
         selectedApplicationTypes: this.getSelectedApplicationTypes(),
-        selectedDates: this.getSelectedDates()
+        selectedDates: this.getSelectedDates(),
+        selectedFilterName: this.filter_name.value
       }));
     });
   }
@@ -155,10 +164,20 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
         });
 
         // since using a resolver that dispatches an action, this is needed to dispatch
-        // PermitsFormTabActions.search and see its effects
+        // PermitsFormTabActions.updateSelected and see its effects
         this.form.updateValueAndValidity();
       }
     });
+  }
+
+  private observeFilteredNames(): void {
+    this.filteredNames = this.store.pipe(
+      select(fromPermits.getDistinctFilteredNames),
+      map(value => (value === undefined) ? [''] : value),
+      startWith(['']),
+      takeUntil(this.unsubscribe),
+      catchError(error => throwError(error))
+    );
   }
 
   private getSelectedApplicationTypes(): string[] {

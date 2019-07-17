@@ -18,6 +18,20 @@
         <mat-datepicker #endPicker></mat-datepicker>
       </mat-form-field>
     </mat-card>
+    <mat-card>
+      <mat-card-title>Name</mat-card-title>
+      <mat-form-field>
+        <input type="text" placeholder="filter by name" matInput [formControl]="filter_name">
+        <!--    TODO: implement typeahead feature
+        <input type="text" placeholder="filter by name" matInput [formControl]="filter_name" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredNames | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+-->
+      </mat-form-field>
+    </mat-card>
   </form>
 </ng-template>
 <orl-form-tab [template]="permitsForm"></orl-form-tab>

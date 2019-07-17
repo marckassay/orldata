@@ -75,14 +75,29 @@ export const getSelectedApplicationTypes = createSelector(
   (state) => state.selectedApplicationTypes
 );
 
+export const getSelectedDates = createSelector(
+  getSearchState,
+  (state) => state.selectedDates
+);
+
+export const getSelectedFilterName = createSelector(
+  getSearchState,
+  (state) => state.selectedFilterName
+);
+
+export const isSelectedFilterNameDirty = (value: string) => createSelector(
+  getSearchState,
+  (state) => state.selectedFilterName !== value
+);
+
 export const getDistinctApplicationTypes = createSelector(
   getSearchState,
   (state) => state.distinctApplicationTypes
 );
 
-export const getSelectedDates = createSelector(
+export const getDistinctFilteredNames = createSelector(
   getSearchState,
-  (state) => state.selectedDates
+  (state) => state.distinctFilteredNames
 );
 
 export const getSelectedSearchState = createSelector(

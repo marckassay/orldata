@@ -6,7 +6,7 @@ import * as fromRoot from '@app/reducers';
 import { COUNT_TOKEN } from '@core/containers/page-viewer/page-viewer.component';
 import { EffectsModule } from '@ngrx/effects';
 import { select, Store, StoreModule } from '@ngrx/store';
-import { PermitsEffects } from '@permits/permits.effects';
+import { PermitsEffects } from '@permits/effects/permits.effects';
 import * as fromPermits from '@permits/reducers';
 import { reducers } from '@permits/reducers';
 import { Observable, throwError } from 'rxjs';

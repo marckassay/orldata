@@ -52,17 +52,26 @@ const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  on(PermitsApiActions.querySuccess, (state, { entities, pagination: { pageIndex, count }, lastResponseTime }) => ({
+  on(PermitsApiActions.updateEntitiesSuccess, (state, { entities, pagination: { pageIndex }, lastResponseTime }) => ({
     ...state,
     entities,
     pagination: {
-      pageIndex: (typeof pageIndex !== 'undefined') ? pageIndex : state.pagination.pageIndex,
-      count: (typeof count !== 'undefined') ? count : state.pagination.count,
+      pageIndex,
+      count: state.pagination.count,
       limit: state.pagination.limit
     },
     lastResponseTime
   })),
-  on(PermitsApiActions.queryFailure, (state, { errorMsg }) => ({
+  on(PermitsApiActions.updateCountSuccess, (state, { pagination: { pageIndex, count }, lastResponseTime }) => ({
+    ...state,
+    pagination: {
+      pageIndex,
+      count,
+      limit: state.pagination.limit
+    },
+    lastResponseTime
+  })),
+  on(PermitsApiActions.updateEntitiesFailure, (state, { errorMsg }) => ({
     ...state,
     error: errorMsg
   }))

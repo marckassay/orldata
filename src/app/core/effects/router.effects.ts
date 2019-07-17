@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { CrimesService } from '@app/core/services/crimes.service';
 import { PermitsService } from '@app/core/services/permits.service';
 import * as fromCore from '@core/reducers';
-import { Actions, createEffect } from '@ngrx/effects';
+import { createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
@@ -32,7 +31,7 @@ export class RouterEffects {
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
     take(1),
-    tap(() => console.log('[RouterEffects] Prefetching Permits metadata for Catalog page.')),
+    tap(() => console.log(`[RouterEffects - Resolve] Crime's metadata for Catalog page.`)),
     tap(() => this.store.dispatch(AppApiActions.serviceActive)),
     switchMap(() => this.permitsSvc.getMetadata().pipe(
       map((metadata: object[]) =>
@@ -42,7 +41,7 @@ export class RouterEffects {
       )
     )
     ),
-    tap(() => console.log('[RouterEffects] Prefetched Permits metadata.')),
+    tap(() => console.log(`[RouterEffects - Resolved] Crime's metadata.`)),
     tap(() => this.store.dispatch(AppApiActions.serviceInactive))
   ));
 
@@ -51,7 +50,7 @@ export class RouterEffects {
     filter(event => (event as NavigationStart).url.includes('/catalog')),
     withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
     take(1),
-    tap(() => console.log('[RouterEffects] Prefetching Crimes metadata for Catalog page.')),
+    tap(() => console.log(`[RouterEffects - Resolve] Crime's metadata for Catalog page.`)),
     tap(() => { this.store.dispatch(AppApiActions.serviceActive); }),
     switchMap(() => this.crimesSvc.getMetadata().pipe(
       map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
@@ -60,30 +59,12 @@ export class RouterEffects {
       )
     )
     ),
-    tap(() => console.log('[RouterEffects] Prefetched Crimes metadata.')),
+    tap(() => console.log(`[RouterEffects - Resolved] Crime's metadata.`)),
     tap(() => { this.store.dispatch(AppApiActions.serviceInactive); })
   ));
 
-  updateTitle = createEffect(() => this.router.events.pipe(
-    filter(event => event instanceof NavigationStart),
-    /*
-    map(() => {
-      let route = this.activatedRoute;
-      while (route.firstChild) { route = route.firstChild; }
-      return route;
-    }),
-    mergeMap(route => route.data),
-    // TODO: add subtitle when and if rows can expand for detail
-    // map(data => `Permits - ${data.title}`),
-    map(data => (data.title) ? data.title : ''),
-    tap(title => (title) ? this.titleService.setTitle(title) : '') */
-  ), { dispatch: false });
-
   constructor(
     private router: Router,
-    private titleService: Title,
-    private activatedRoute: ActivatedRoute,
-    private actions: Actions,
     private permitsSvc: PermitsService,
     private crimesSvc: CrimesService,
     private store: Store<fromCore.State>

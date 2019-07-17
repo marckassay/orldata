@@ -1,6 +1,7 @@
 import { CommonModule, JsonPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -57,6 +58,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatBadgeModule,
     MatTabsModule,
     MatTableModule,
+    MatAutocompleteModule,
     MatNativeDateModule,
     MatDatepickerModule,
     MatPaginatorModule,
@@ -81,6 +83,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatBadgeModule,
     MatTabsModule,
     MatTableModule,
+    MatAutocompleteModule,
     MatPaginatorModule,
     MatInputModule,
     MatNativeDateModule,
