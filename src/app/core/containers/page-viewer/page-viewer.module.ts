@@ -13,6 +13,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
@@ -60,6 +61,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatTableModule,
     MatAutocompleteModule,
     MatNativeDateModule,
+    MatSnackBarModule,
     MatDatepickerModule,
     MatPaginatorModule,
     MatInputModule,
@@ -87,6 +89,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatPaginatorModule,
     MatInputModule,
     MatNativeDateModule,
+    MatSnackBarModule,
     MatDatepickerModule,
     MatSelectModule,
     MatCardModule,

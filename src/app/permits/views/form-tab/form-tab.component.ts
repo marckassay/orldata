@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermitsFormTabActions } from '@app/permits/actions';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
@@ -56,6 +57,7 @@ import { catchError, debounceTime, map, startWith, takeUntil } from 'rxjs/operat
   .mat-grid-tile .mat-figure {
     justify-content: start;
   }
+
   `]
 })
 export class PermitsFormTabComponent implements OnInit, OnDestroy {
@@ -76,7 +78,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<fromPermits.State>,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar) {
 
     this.maxDateRangeLimit = new Date();
     this.minDateRangeLimit = new Date(2000, 0, 1);
@@ -116,6 +119,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.observeDistinctApplicationTypes();
     this.observeFilteredNames();
+    this.observeCount();
   }
 
   ngOnDestroy(): void {
@@ -178,6 +182,28 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe),
       catchError(error => throwError(error))
     );
+  }
+
+  private observeCount(): void {
+    this.store.pipe(
+      select(fromPermits.getCount),
+      takeUntil(this.unsubscribe),
+      catchError(error => throwError(error))
+    ).subscribe(value => {
+      let mesg: string;
+      if (value === 0) {
+        mesg = 'No permits found.';
+      } else if (value === 1) {
+        mesg = '1 permit found!';
+      } else {
+        mesg = value + ' permits found!';
+      }
+      this.snackBar.open(mesg, undefined, {
+        duration: 2000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+      });
+    });
   }
 
   private getSelectedApplicationTypes(): string[] {
