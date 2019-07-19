@@ -192,7 +192,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     ).subscribe(value => {
       let mesg: string;
       if (value === 0) {
-        mesg = 'No permits found.';
+        mesg = 'No permit found.';
       } else if (value === 1) {
         mesg = '1 permit found!';
       } else {

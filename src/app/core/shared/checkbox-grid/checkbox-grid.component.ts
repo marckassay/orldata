@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Inpu
 import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatGridList } from '@angular/material/grid-list';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 export interface CheckGridItem {
   id: string;
@@ -35,8 +35,8 @@ export interface CheckGridItem {
         </mat-grid-list>
       </form>
       <div class="orl-button-row">
-        <button mat-stroked-button color="primary" class="orl-button" (click)="clearAll()">Clear All</button>
-        <button mat-stroked-button color="primary" class="orl-button" (click)="selectAll()">Select All</button>
+        <button mat-stroked-button color="primary" class="orl-button" type="button" (click)="clearAll($event)">Clear All</button>
+        <button mat-stroked-button color="primary" class="orl-button" type="button" (click)="selectAll($event)">Select All</button>
       </div>
     </mat-card>
   `,
@@ -99,7 +99,9 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
     }
 
     // subscribe to any changes in FormArray
-    this.form.valueChanges.subscribe((res: any) => {
+    this.form.valueChanges.pipe(
+      debounceTime(500),
+    ).subscribe((res: any) => {
       console.log('Checkbox - valueChanges(res)', res);
       if (this.onChange) {
         this.onChange(this.form);
@@ -120,7 +122,7 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
     this.onTouched = fn;
   }
 
-  selectAll() {
+  selectAll(event: MouseEvent) {
     if (this.form) {
       (this.form.controls as FormControl[]).forEach((control) => {
         control.setValue(true);
@@ -128,7 +130,7 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
     }
   }
 
-  clearAll() {
+  clearAll(event: MouseEvent) {
     if (this.form) {
       (this.form.controls as FormControl[]).forEach((control) => {
         control.setValue(false);
