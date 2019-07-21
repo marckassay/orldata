@@ -1,4 +1,4 @@
-import { ISODateString } from '@core/shared/iso-date-string';
+import { ISODateString } from '@core/shared/date-converter';
 import { createAction, props } from '@ngrx/store';
 
 export const updateSelected = createAction(

@@ -6,7 +6,6 @@
       <td mat-cell *matCellDef="let record"> {{ column == 'processed_date' ? (record[column] | date) : record[column] }}
       </td>
     </ng-container>
-
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
@@ -14,11 +13,13 @@
           <div class="orl-record-diagram">
             <div *ngFor="let map of record | keyvalue" class="orl-record-keyvalue">
               <div class="orl-record-key">{{map.key | labelcase }}: </div>
-              <div [ngSwitch]="map.key | slice:-4" class="orl-record-value">
-                <div *ngSwitchCase="'cost'">{{ map.value | currency }}</div>
-                <div *ngSwitchCase="'date'">{{ map.value | date }}</div>
-                <div *ngSwitchCase="'lumn'">{{ map.value.coordinates }}</div>
-                <div *ngSwitchDefault>{{ map.value ? map.value: 'N/A' }}</div>
+              <div [ngSwitch]="map.key | fieldtype" class="orl-record-value">
+                <div *ngSwitchCase="'Address'"><span [outerHTML]="map.value | mailaddress"></span></div>
+                <div *ngSwitchCase="'Currency'">{{ map.value | currency }}</div>
+                <div *ngSwitchCase="'Date'">{{ map.value | date }}</div>
+                <div *ngSwitchCase="'Coordinates'"><span [outerHTML]="map.value | geolocation"></span></div>
+                <div *ngSwitchCase="'Empty'">{{ map.value | labelcase }}</div>
+                <div *ngSwitchDefault>{{ map.value | labelcase }}</div>
               </div>
             </div>
           </div>

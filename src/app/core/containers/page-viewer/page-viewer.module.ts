@@ -19,9 +19,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
-import { NumericLimitPipe } from '@app/core/shared/numericlimit.pipe';
-import { LabelCasePipe } from '@core/shared/labelcase.pipe';
-import { MailAddressPipe } from '@core/shared/mailaddress.pipe';
+import { FieldTypePipe } from '@core/shared/field-type.pipe';
+import { GeoLocationPipe } from '@core/shared/geo-location.pipe';
+import { LabelCasePipe } from '@core/shared/label-case.pipe';
+import { MailAddressPipe } from '@core/shared/mail-address.pipe';
+import { NumericLimitPipe } from '@core/shared/numeric-limit.pipe';
 import { Observable, throwError } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -76,6 +78,8 @@ export abstract class CanActivateTab implements CanActivate {
   ],
   exports: [
     LabelCasePipe,
+    FieldTypePipe,
+    GeoLocationPipe,
     NumericLimitPipe,
     JsonPipe,
     MailAddressPipe,
@@ -104,6 +108,8 @@ export abstract class CanActivateTab implements CanActivate {
   ],
   declarations: [
     LabelCasePipe,
+    FieldTypePipe,
+    GeoLocationPipe,
     NumericLimitPipe,
     MailAddressPipe,
     TableTabComponent,

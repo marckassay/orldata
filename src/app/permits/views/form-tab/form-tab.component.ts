@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermitsFormTabActions } from '@app/permits/actions';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
-import { ISODateString, ISODateStringConverter } from '@core/shared/iso-date-string';
+import { DateConverter, ISODateString } from '@core/shared/date-converter';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subject, throwError } from 'rxjs';
@@ -215,6 +215,6 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   }
 
   private getSelectedDates(): { start: ISODateString, end: ISODateString } {
-    return { start: ISODateStringConverter.convert(this.start_date.value), end: ISODateStringConverter.convert(this.end_date.value) };
+    return { start: DateConverter.convert(this.start_date.value), end: DateConverter.convert(this.end_date.value) };
   }
 }

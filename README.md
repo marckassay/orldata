@@ -1,4 +1,4 @@
-# DemoNumber6
+# OrlData
 
 An Angular app using NgRx to syndicate ['Orlando's Open Data'](https://data.cityoforlando.net/) services.
 

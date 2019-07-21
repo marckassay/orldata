@@ -27,7 +27,7 @@ export class PermitsTableTabComponent implements OnInit {
 
   @ViewChild('orl-table-tab', { static: false })
   orlTab: TableTabComponent;
-
+  counter = 1;
   count: Observable<number>;
   pageIndex: Observable<number>;
   limit: Observable<number>;
@@ -40,12 +40,18 @@ export class PermitsTableTabComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.pipe(select(fromPermits.getEntities))
-      .subscribe((data) => {
-        if (data !== undefined) {
-          this.dataSource.data = data;
-        }
-      });
+    /**
+     * If you are reading this and wondering why this stream emits 2 identical arrays, its probably
+     * because of `StoreDevToolsModule`.
+     * @link https://github.com/ngrx/platform/issues/1325
+     */
+    this.store.pipe(
+      select(fromPermits.getEntities),
+    ).subscribe((data) => {
+      if (data !== undefined) {
+        this.dataSource.data = data;
+      }
+    });
 
     this.count = this.store.pipe(select(fromPermits.getCount));
     this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));

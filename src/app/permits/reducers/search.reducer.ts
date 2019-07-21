@@ -1,4 +1,4 @@
-import { ISODateString } from '@core/shared/iso-date-string';
+import { ISODateString } from '@core/shared/date-converter';
 import { createReducer, on } from '@ngrx/store';
 import { PermitsApiActions, PermitsFormTabActions } from '@permits/actions';
 
