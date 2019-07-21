@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -24,6 +24,7 @@ import { GeoLocationPipe } from '@core/shared/geo-location.pipe';
 import { LabelCasePipe } from '@core/shared/label-case.pipe';
 import { MailAddressPipe } from '@core/shared/mail-address.pipe';
 import { NumericLimitPipe } from '@core/shared/numeric-limit.pipe';
+import { CoordinatesModule } from 'angular-coordinates';
 import { Observable, throwError } from 'rxjs';
 import { FormTabComponent } from './form-tab/form-tab.component';
 import { PageViewerComponent } from './page-viewer.component';
@@ -57,6 +58,7 @@ export abstract class CanActivateTab implements CanActivate {
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    CoordinatesModule,
     MatButtonModule,
     MatBadgeModule,
     MatTabsModule,
@@ -81,8 +83,8 @@ export abstract class CanActivateTab implements CanActivate {
     FieldTypePipe,
     GeoLocationPipe,
     NumericLimitPipe,
-    JsonPipe,
     MailAddressPipe,
+    CoordinatesModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,

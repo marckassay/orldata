@@ -17,7 +17,10 @@
                 <div *ngSwitchCase="'Address'"><span [outerHTML]="map.value | mailaddress"></span></div>
                 <div *ngSwitchCase="'Currency'">{{ map.value | currency }}</div>
                 <div *ngSwitchCase="'Date'">{{ map.value | date }}</div>
-                <div *ngSwitchCase="'Coordinates'"><span [outerHTML]="map.value | geolocation"></span></div>
+                <div *ngSwitchCase="'Coordinates'">
+                  <geo-coordinates [value]="map.value.coordinates[1]" [direction]="1"></geo-coordinates>
+                  <geo-coordinates [value]="map.value.coordinates[0]" [direction]="2"></geo-coordinates>
+                </div>
                 <div *ngSwitchCase="'Empty'">{{ map.value | labelcase }}</div>
                 <div *ngSwitchDefault>{{ map.value | labelcase }}</div>
               </div>
