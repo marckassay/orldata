@@ -75,7 +75,7 @@ export const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       useHash: true,
-      enableTracing: true, // <-- debugging purposes only
+      enableTracing: false, // <-- debugging purposes only
       relativeLinkResolution: 'corrected',
     })
   ],

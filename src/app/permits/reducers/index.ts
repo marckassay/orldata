@@ -61,6 +61,11 @@ export const getLastResponseTime = createSelector(
   (state) => state.lastResponseTime
 );
 
+export const getDirtyStatus = createSelector(
+  getTableState,
+  (state) => state.dirty
+);
+
 export const getSelectedTableState = createSelector(
   getTableState,
   fromTable.getSelected

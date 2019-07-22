@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { PermitsApiActions } from '@permits/actions';
+import { PermitsApiActions, PermitsTableTabActions } from '@permits/actions';
 
 export interface State {
 
@@ -36,6 +36,16 @@ export interface State {
    */
   lastResponseTime: number;
 
+  /**
+   * This flag indicates that the component hasn't confirmed if the table has completed rendering
+   * itself with new data.
+   *
+   * This has been created to circumvent the limitation mentioned in the link below:
+   *
+   * @link https://github.com/angular/components/issues/8068#issuecomment-342307762
+   */
+  dirty: boolean | undefined;
+
   error: string;
 }
 
@@ -47,6 +57,7 @@ const initialState: State = {
     limit: 40,
   },
   lastResponseTime: 0,
+  dirty: undefined,
   error: ''
 };
 
@@ -60,7 +71,8 @@ export const reducer = createReducer(
       count: state.pagination.count,
       limit: state.pagination.limit
     },
-    lastResponseTime
+    lastResponseTime,
+    dirty: (typeof state.dirty !== 'undefined')
   })),
   on(PermitsApiActions.updateCountSuccess, (state, { pagination: { pageIndex, count }, lastResponseTime }) => ({
     ...state,
@@ -69,12 +81,18 @@ export const reducer = createReducer(
       count,
       limit: state.pagination.limit
     },
-    lastResponseTime
+    lastResponseTime,
+    dirty: (typeof state.dirty !== 'undefined')
+  })),
+  on(PermitsTableTabActions.cleaned, (state) => ({
+    ...state,
+    dirty: false
   })),
   on(PermitsApiActions.updateEntitiesFailure, (state, { errorMsg }) => ({
     ...state,
-    error: errorMsg
-  }))
+    error: errorMsg,
+    dirty: (typeof state.dirty !== 'undefined')
+  })),
 );
 
 /**

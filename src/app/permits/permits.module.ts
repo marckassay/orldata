@@ -1,3 +1,4 @@
+import { ObserversModule } from '@angular/cdk/observers';
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { ContentName } from '@app/constants';
@@ -9,8 +10,8 @@ import { select, Store, StoreModule } from '@ngrx/store';
 import { PermitsEffects } from '@permits/effects/permits.effects';
 import * as fromPermits from '@permits/reducers';
 import { reducers } from '@permits/reducers';
-import { Observable, throwError } from 'rxjs';
-import { catchError, filter, mapTo, scan, startWith, take, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, mapTo, pairwise, scan, skipWhile, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { PermitsEffectActions } from './actions';
 import { PermitsComponent } from './permits.component';
 import { PermitsFormTabComponent } from './views/form-tab/form-tab.component';
@@ -19,21 +20,49 @@ import { PermitsTableTabComponent } from './views/table-tab/table-tab.component'
 @Injectable({
   providedIn: 'root'
 })
-export class PermitsTableTabResolver extends TableTabResolver implements Resolve<number> {
+export class PermitsTableTabResolver extends TableTabResolver<boolean> implements Resolve<boolean> {
+
+  isFirstTableVisit: boolean;
 
   constructor(
     protected store: Store<fromPermits.State>,
-  ) { super(); }
+  ) {
+    super();
+    this.isFirstTableVisit = true;
+  }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
-    // take 2 emissions in this stream; first one is from prior to this resolve() being called
-    // and second is post from dispatching `PageViewerActions.preloadEntities`
-    return this.store.select(fromPermits.getLastResponseTime).pipe(
-      tap(() =>
-        this.store.dispatch(PermitsEffectActions.paginateToFirst())
-      ),
-      take(2),
-      catchError(error => throwError(error))
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+
+    /**
+     * Dispatches `paginateToFirst` action, switches to inner observable and observes getDirtyStatus
+     * for a change to `true`.
+     */
+    return of(this.store.dispatch(PermitsEffectActions.paginateToFirst())).pipe(
+
+      switchMap(() => {
+        if (this.isFirstTableVisit === true) {
+          this.isFirstTableVisit = false;
+
+          return this.store.select(fromPermits.getLastResponseTime).pipe(
+            startWith(0),
+            pairwise(),
+            filter(value => value.every((time) => time > 0)),
+            take(1)
+          ).pipe(
+            mapTo(true)
+          );
+
+        } else {
+
+          return this.store.select(fromPermits.getDirtyStatus).pipe(
+            skipWhile(value => value === true),
+            take(1),
+            mapTo(true)
+          );
+
+        }
+      })
+
     );
   }
 }
@@ -140,6 +169,7 @@ export class PermitsCountService {
 
 @NgModule({
   imports: [
+    ObserversModule,
     /**
      * StoreModule.forFeature is used for composing state
      * from feature modules. These modules can be loaded

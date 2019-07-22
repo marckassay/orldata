@@ -33,8 +33,8 @@ import { TableTabComponent } from './table-tab/table-tab.component';
 /**
  * @source https://angular.io/guide/router#resolve-pre-fetching-component-data
  */
-export abstract class TableTabResolver implements Resolve<number> {
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<number> | Observable<never> {
+export abstract class TableTabResolver<T> implements Resolve<T> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<T> {
     return throwError(`PageViewerModule's TableTabResolver() is abstract. It must be extended.`);
   }
 }

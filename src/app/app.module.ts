@@ -8,7 +8,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
@@ -62,9 +61,9 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
      *
      * See: https://github.com/zalmoxisus/redux-devtools-extension
      */
-    StoreDevtoolsModule.instrument({
-      name: 'NgRx - orldata',
-    }),
+    /*     StoreDevtoolsModule.instrument({
+          name: 'NgRx - orldata',
+        }), */
 
     EffectsModule.forRoot(
       [RouterEffects]

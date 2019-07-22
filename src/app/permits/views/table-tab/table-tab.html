@@ -1,5 +1,5 @@
 <ng-template #permitsTable>
-  <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+  <table #orltable mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
     <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
       <th mat-header-cell *matHeaderCellDef> {{ column | labelcase }} </th>
