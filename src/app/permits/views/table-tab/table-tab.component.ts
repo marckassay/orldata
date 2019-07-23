@@ -2,7 +2,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ContentObserver } from '@angular/cdk/observers';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { TableTabComponent } from '@core/containers/page-viewer/table-tab/table-tab.component';
 import { select, Store } from '@ngrx/store';
 import { PermitsTableTabActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
@@ -25,9 +24,6 @@ import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
   ]
 })
 export class PermitsTableTabComponent implements OnInit {
-
-  @ViewChild('orl-table-tab', { static: false })
-  orlTab: TableTabComponent;
 
   @ViewChild('orltable', { static: false })
   table: ElementRef;
@@ -100,11 +96,19 @@ export class PermitsTableTabComponent implements OnInit {
     ).subscribe(() => {
       this.isTableSubscribed = true;
       this.ref.markForCheck();
+      this.scrollToTop();
       this.store.dispatch(PermitsTableTabActions.cleaned);
     });
   }
 
   pageIndexChange(event: PageEvent) {
     this.store.dispatch(PermitsTableTabActions.paginate({ pageIndex: event.pageIndex }));
+  }
+
+  scrollToTop() {
+    // TODO: this may be more robust solution. I attempted to use ` scroll-behavior: smooth;` in
+    // this components scss but with no luck.
+    // @link https://material.angular.io/cdk/scrolling/overview
+    window.scrollTo(0, 0);
   }
 }
