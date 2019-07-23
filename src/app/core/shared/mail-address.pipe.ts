@@ -64,7 +64,7 @@ export class MailAddressPipe implements PipeTransform {
         }
 
         return results;
-      } else if (value.includes('No Address')) {
+      } else {
         value = EMPTY_DESERIALIZED_FIELD_LABEL;
       }
 

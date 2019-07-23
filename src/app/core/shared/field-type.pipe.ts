@@ -18,8 +18,8 @@ export class FieldTypePipe implements PipeTransform {
         return FieldType.Currency.toString();
       } else if (value.includes('date') === true) {
         return FieldType.Date.toString();
-      } else if (value.trim().length === 0) {
-        return FieldType.Empty.toString();
+      } else if ((value.trim().length === 0) || (value.includes('name') === true)) {
+        return FieldType.Label.toString();
       } else {
         return FieldType.Other.toString();
       }

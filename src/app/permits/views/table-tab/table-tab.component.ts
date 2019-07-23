@@ -1,12 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { ContentObserver } from '@angular/cdk/observers';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { select, Store } from '@ngrx/store';
 import { PermitsTableTabActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
-import { defer, iif, Observable, of, throwError } from 'rxjs';
-import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
+import { defer, iif, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, mergeMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'permits-table-tab',
@@ -23,22 +24,30 @@ import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
     ]),
   ]
 })
-export class PermitsTableTabComponent implements OnInit {
+export class PermitsTableTabComponent implements OnInit, OnDestroy {
 
   @ViewChild('orltable', { static: false })
   table: ElementRef;
+
+  private unsubscribe = new Subject<void>();
 
   count: Observable<number>;
   pageIndex: Observable<number>;
   limit: Observable<number>;
 
-  displayedColumns: string[] = ['permit_number', 'application_type', 'processed_date'];
+  displayedColumns: string[] = ['processed_date', 'permit_number', 'permit_address', 'application_type', 'property_owner_name'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Observable<object[]>;
   expandedRecord: object | undefined;
 
   isTableSubscribed: boolean;
 
-  constructor(private store: Store<fromPermits.State>, private domObserver: ContentObserver, private ref: ChangeDetectorRef) {
+  constructor(
+    private store: Store<fromPermits.State>,
+    private breakpoint: BreakpointObserver,
+    private domObserver: ContentObserver,
+    private ref: ChangeDetectorRef
+  ) {
     this.isTableSubscribed = false;
   }
 
@@ -54,6 +63,7 @@ export class PermitsTableTabComponent implements OnInit {
     ) as Observable<object[]>;
 
     this.observeTable();
+    this.observeBreakpoints();
 
     this.count = this.store.pipe(select(fromPermits.getCount));
     this.pageIndex = this.store.pipe(select(fromPermits.getPageIndex));
@@ -62,6 +72,15 @@ export class PermitsTableTabComponent implements OnInit {
     // since this limitation only pretains to subsequent visits, we need to dispatch action now
     // since the current rxjs expression in `observeTable` doesnt.
     this.store.dispatch(PermitsTableTabActions.cleaned);
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+  pageIndexChange(event: PageEvent) {
+    this.store.dispatch(PermitsTableTabActions.paginate({ pageIndex: event.pageIndex }));
   }
 
   private observeTable() {
@@ -84,6 +103,7 @@ export class PermitsTableTabComponent implements OnInit {
      */
 
     this.store.select(fromPermits.getEntities).pipe(
+      takeUntil(this.unsubscribe),
       mergeMap(() => {
         return iif(() =>
           ((typeof this.table !== 'undefined') && (this.isTableSubscribed === false)),
@@ -101,14 +121,39 @@ export class PermitsTableTabComponent implements OnInit {
     });
   }
 
-  pageIndexChange(event: PageEvent) {
-    this.store.dispatch(PermitsTableTabActions.paginate({ pageIndex: event.pageIndex }));
+  private observeBreakpoints() {
+    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
+      .pipe(
+        takeUntil(this.unsubscribe)
+      ).subscribe((bps: BreakpointState) => {
+
+        const cols = this.breakpointsColValue(
+          Object.entries(bps.breakpoints)
+            .find((value: [string, boolean]) => value[1])
+        );
+        console.log('COLS', cols);
+        this.columnsToDisplay = this.displayedColumns.slice(0, cols);
+        this.ref.markForCheck();
+      });
   }
 
-  scrollToTop() {
+  private scrollToTop() {
     // TODO: this may be more robust solution. I attempted to use ` scroll-behavior: smooth;` in
     // this components scss but with no luck.
     // @link https://material.angular.io/cdk/scrolling/overview
     window.scrollTo(0, 0);
+  }
+
+  private breakpointsColValue(key: [string, boolean] | string | undefined): number {
+    const breakpoint = (key && key instanceof Array) ? key[0] : undefined;
+
+    switch (breakpoint) {
+      case Breakpoints.XSmall: return 2;
+      case Breakpoints.Small: return 3;
+      case Breakpoints.Medium: return 4;
+      case Breakpoints.Large: return 5;
+      case Breakpoints.XLarge: return 6;
+      default: return 3;
+    }
   }
 }

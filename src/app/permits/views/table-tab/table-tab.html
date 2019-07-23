@@ -1,16 +1,28 @@
 <ng-template #permitsTable>
   <table #orltable mat-table [dataSource]="dataSource" multiTemplateDataRows>
-
     <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
       <th mat-header-cell *matHeaderCellDef> {{ column | labelcase }} </th>
-      <td mat-cell *matCellDef="let record"> {{ column == 'processed_date' ? (record[column] | date) : record[column] }}
+      <td mat-cell *matCellDef="let record">
+        <!-- TODO: make this ngSwitch block reusable component to be used also in this file -->
+        <div [ngSwitch]="column | fieldtype" class="orl-record-value">
+          <div *ngSwitchCase="'Address'"><span [outerHTML]="record[column] | mailaddress"></span></div>
+          <div *ngSwitchCase="'Currency'">{{ record[column] | currency }}</div>
+          <div *ngSwitchCase="'Date'">{{ record[column] | date }}</div>
+          <div *ngSwitchCase="'Coordinates'">
+            <geo-coordinates [value]="map.value.coordinates[1]" [direction]="1"></geo-coordinates>
+            <geo-coordinates [value]="map.value.coordinates[0]" [direction]="2"></geo-coordinates>
+          </div>
+          <div *ngSwitchCase="'Label'">{{ record[column] | labelcase }}</div>
+          <div *ngSwitchCase="'Other'">{{ record[column] }}</div>
+          <div *ngSwitchDefault>{{ record[column] }}</div>
+        </div>
       </td>
     </ng-container>
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let record" [attr.colspan]="displayedColumns.length">
         <div class="orl-record-detail" [@detailExpand]="record == expandedRecord ? 'expanded' : 'collapsed'">
-          <div class="orl-record-diagram">
+          <div class="orl-record-grid">
             <div *ngFor="let map of record | keyvalue" class="orl-record-keyvalue">
               <div class="orl-record-key">{{map.key | labelcase }}: </div>
               <div [ngSwitch]="map.key | fieldtype" class="orl-record-value">
@@ -21,8 +33,9 @@
                   <geo-coordinates [value]="map.value.coordinates[1]" [direction]="1"></geo-coordinates>
                   <geo-coordinates [value]="map.value.coordinates[0]" [direction]="2"></geo-coordinates>
                 </div>
-                <div *ngSwitchCase="'Empty'">{{ map.value | labelcase }}</div>
-                <div *ngSwitchDefault>{{ map.value | labelcase }}</div>
+                <div *ngSwitchCase="'Label'">{{ map.value | labelcase }}</div>
+                <div *ngSwitchCase="'Other'">{{ map.value }}</div>
+                <div *ngSwitchDefault>{{ map.value }}</div>
               </div>
             </div>
           </div>
@@ -30,9 +43,9 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
 
-    <tr mat-row *matRowDef="let record; columns: displayedColumns;" class="orl-record-row"
+    <tr mat-row *matRowDef="let record; columns: columnsToDisplay;" class="orl-record-row"
       [class.orl-expanded-row]="expandedRecord === record"
       (click)="expandedRecord = expandedRecord === record ? null : record"></tr>
 

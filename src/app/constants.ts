@@ -16,6 +16,6 @@ export const enum FieldType {
   Coordinates = 'Coordinates',
   Currency = 'Currency',
   Date = 'Date',
-  Empty = 'Empty',
+  Label = 'Label',
   Other = 'Other'
 }

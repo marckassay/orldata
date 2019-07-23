@@ -10,16 +10,15 @@ import { EMPTY_DESERIALIZED_FIELD_LABEL } from '@app/constants';
 @Pipe({ name: 'labelcase' })
 export class LabelCasePipe extends TitleCasePipe implements PipeTransform {
   transform(value: string | any): string {
-    const valueType = typeof value;
-    if (valueType !== 'string') {
-      console.warn(`'LabelCasePipe' was expecting value to be 'string' type but recieved '${valueType}' type.`);
-      return super.transform(value);
-    } else {
-      if ((value as string).trim().length === 0) {
-        return value = EMPTY_DESERIALIZED_FIELD_LABEL;
+    if (typeof value === 'string') {
+      if ((value.trim().length === 0) || (value === EMPTY_DESERIALIZED_FIELD_LABEL)) {
+        return EMPTY_DESERIALIZED_FIELD_LABEL;
       } else {
-        return super.transform(value as string).replace(/\_/gi, ' ');
+        // replace underscores with a space
+        return super.transform(value.replace(/\_/gi, ' '));
       }
+    } else {
+      return EMPTY_DESERIALIZED_FIELD_LABEL;
     }
   }
 }
