@@ -1,27 +1,42 @@
 <ng-template #permitsForm>
   <form [formGroup]="form" novalidate>
+
     <orl-check-grid title="Application Types" [formControl]="application_types"
       [dataProvider]="applicationTypesEntities">
     </orl-check-grid>
+
     <mat-card>
-      <mat-card-title>Data Range</mat-card-title>
-      <mat-form-field>
-        <input matInput [matDatepicker]="startPicker" [min]="end_date.value" [max]="maxDateRangeLimit"
-          [formControl]="start_date" placeholder="Start Date">
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
+      <mat-card-title>Dates</mat-card-title>
+
       <mat-form-field>
         <input matInput [matDatepicker]="endPicker" [min]="minDateRangeLimit" [max]="start_date.value"
-          [formControl]="end_date" placeholder="End Date">
+          [formControl]="end_date" placeholder="Between">
         <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
         <mat-datepicker #endPicker></mat-datepicker>
       </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [matDatepicker]="startPicker" [min]="end_date.value" [max]="maxDateRangeLimit"
+          [formControl]="start_date" placeholder="and">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-radio-group [formControl]="radio_date_selection" aria-labelledby="example-radio-group-label"
+        class="example-radio-group">
+        <mat-radio-button class="example-radio-button" type="button" *ngFor="let timeFrame of timeframes | keyvalue"
+          value="{{timeFrame.value}}">
+          {{timeFrame.key | labelcase }}
+        </mat-radio-button>
+      </mat-radio-group>
+
     </mat-card>
+
     <mat-card>
       <mat-card-title>Name</mat-card-title>
-      <mat-form-field>
-        <input type="text" placeholder="filter by name" matInput [formControl]="filter_name">
+      <mat-form-field class="maximize-width">
+        <input type="text" placeholder="filter by (property, parcel and contractor) name" matInput
+          [formControl]="filter_name">
         <!--    TODO: implement typeahead feature
         <input type="text" placeholder="filter by name" matInput [formControl]="filter_name" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">

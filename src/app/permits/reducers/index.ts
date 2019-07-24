@@ -80,6 +80,11 @@ export const getSelectedApplicationTypes = createSelector(
   (state) => state.selectedApplicationTypes
 );
 
+export const getSelectedRadioGroupTime = createSelector(
+  getSearchState,
+  (state) => state.selectedRadioGroupTime
+);
+
 export const getSelectedDates = createSelector(
   getSearchState,
   (state) => state.selectedDates

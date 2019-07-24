@@ -10,6 +10,10 @@ export interface PaginationShape {
 
 export type UpdateEntitiesRequest = UpdateCountRequest & PaginationShape;
 
+/**
+ * Since `selectedRadioGroupTime` value has direct consequence to `selectedDates`, it is omitted
+ * from becoming a member of this interface.
+ */
 export interface UpdateCountRequest {
   selected: {
     selectedApplicationTypes: { application_type: string }[];

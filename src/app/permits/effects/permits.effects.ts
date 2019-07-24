@@ -75,9 +75,11 @@ export class PermitsEffects {
 
         return this.service.getCount(request).pipe(
           tap(() => this.store.dispatch(AppApiActions.serviceInactive)),
+          /* TODO: this will be needed for typeahead feature
           tap(() => {
             this.checkSelectedFilterName(request);
           }),
+          */
           map((response: UpdateCountResponse) => {
             return PermitsApiActions.updateCountSuccess(response);
           }),
@@ -164,10 +166,6 @@ export class PermitsEffects {
   private checkSelectedFilterName = (request: UpdateCountRequest) => {
     this.store.select(fromPermits.isSelectedFilterNameDirty(request.selected.selectedFilterName)).pipe(
       take(1),
-      map((x) => {
-        console.log('tap', x);
-        return x;
-      }),
       filter((val) => val === true),
       map(() => this.store.dispatch(PermitsEffectActions.updateDistinctNames(request)))
     );

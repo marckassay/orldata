@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
@@ -70,6 +71,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatPaginatorModule,
     MatInputModule,
     MatSelectModule,
+    MatRadioModule,
     MatCardModule,
     MatGridListModule,
     MatCheckboxModule,
@@ -98,6 +100,7 @@ export abstract class CanActivateTab implements CanActivate {
     MatSnackBarModule,
     MatDatepickerModule,
     MatSelectModule,
+    MatRadioModule,
     MatCardModule,
     MatGridListModule,
     MatCheckboxModule,

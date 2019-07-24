@@ -131,7 +131,7 @@ export class PermitsTableTabComponent implements OnInit, OnDestroy {
           Object.entries(bps.breakpoints)
             .find((value: [string, boolean]) => value[1])
         );
-        console.log('COLS', cols);
+
         this.columnsToDisplay = this.displayedColumns.slice(0, cols);
         this.ref.markForCheck();
       });
@@ -144,6 +144,10 @@ export class PermitsTableTabComponent implements OnInit, OnDestroy {
     window.scrollTo(0, 0);
   }
 
+  /**
+   *
+   * @link https://material.io/design/layout/responsive-layout-grid.html#breakpoints
+   */
   private breakpointsColValue(key: [string, boolean] | string | undefined): number {
     const breakpoint = (key && key instanceof Array) ? key[0] : undefined;
 

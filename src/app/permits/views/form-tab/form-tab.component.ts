@@ -1,64 +1,23 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RadioGroupTimeMap, toRadioGroupTimeValue } from '@app/constants';
 import { PermitsFormTabActions } from '@app/permits/actions';
+import { getDateFromRadioGroupTime, getDateOneMonthAgo, getISODateFromRadioGroupTime, getToday } from '@app/utils';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
 import { DateConverter, ISODateString } from '@core/shared/date-converter';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, map, startWith, take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'permits-form-tab',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   templateUrl: 'form-tab.html',
-  styles: [`
-  .orl-search-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .orl-search-container > * {
-
-  }
-  .orl-valid-div {
-    margin: 14px 0;
-    p {
-      font-weight: bold;
-    }
-  }
-  .orl-search-section {
-    display: flex;
-    align-content: center;
-    align-items: center;
-  }
-
-  .orl-search-margin {
-    margin: 0 10px;
-  }
-
-  .orl-button-row button,
-  .orl-button-row a {
-    margin-top: 16px;
-    margin-right: 8px;
-  }
-
-  p {
-    font-size: 14px;
-  }
-
-  .mat-grid-tile {
-    font-weight: unset;
-  }
-
-  .mat-grid-tile .mat-figure {
-    justify-content: start;
-  }
-
-  `]
+  styleUrls: ['form-tab.scss']
 })
 export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
@@ -70,6 +29,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   submitValue: any;
+
+  timeframes = RadioGroupTimeMap;
 
   maxDateRangeLimit: Date;
   minDateRangeLimit: Date;
@@ -84,16 +45,15 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     this.maxDateRangeLimit = new Date();
     this.minDateRangeLimit = new Date(2000, 0, 1);
 
-    const startDate = new Date();
-    const endDate = (date = new Date()): Date => {
-      date.setMonth((startDate.getMonth() !== 0) ? startDate.getMonth() - 1 : 11);
-      return date;
-    };
+    const startDate = getToday();
+    const endDate = getDateOneMonthAgo();
+    const radioGroupTime = toRadioGroupTimeValue('Past month');
 
     this.form = this.fb.group({
       application_types: this.fb.control(this.fb.array([])),
+      radio_date_selection: this.fb.control(radioGroupTime.toString()),
       start_date: this.fb.control(startDate),
-      end_date: this.fb.control(endDate()),
+      end_date: this.fb.control(endDate),
       filter_name: this.fb.control('')
     });
 
@@ -102,6 +62,10 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
   get application_types() {
     return this.form.get('application_types') as FormControl;
+  }
+
+  get radio_date_selection() {
+    return this.form.get('radio_date_selection') as FormControl;
   }
 
   get start_date() {
@@ -117,6 +81,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.observeRadioGroupTime();
     this.observeDistinctApplicationTypes();
     this.observeFilteredNames();
     this.observeCount();
@@ -134,16 +99,56 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
       // @link https://stackoverflow.com/questions/30140044/deliver-the-first-item-immediately-debounce-following-items
       debounceTime(1000),
       takeUntil(this.unsubscribe)
-    ).subscribe(val => {
+    ).subscribe(() => {
+
+      // When radioGroup UI changes, it will programatically set `start_date` and/or `end_date`. The
+      // event will porporgate a here with `start_date` as `end_date` pristine (not dirty). Only when
+      // the `start_date` or `end_date` changes in the UI, will the event that gets porporgated here
+      // will have them set to dirty. If so, set them to `markAsPristine()` and 'clear' radio_date_selection
+      // so that the state reflects that the user last interacted with one of the DatePickers.
+      const radioGroupValue = this.radio_date_selection.value;
+      if (this.start_date.dirty || this.end_date.dirty) {
+        this.start_date.markAsPristine();
+        this.end_date.markAsPristine();
+        if (typeof radioGroupValue !== 'undefined') {
+          this.radio_date_selection.setValue(undefined, { onlySelf: true, emitEvent: false });
+        }
+      }
+
       this.store.dispatch(PermitsFormTabActions.updateSelected({
         selectedApplicationTypes: this.getSelectedApplicationTypes(),
-        selectedDates: this.getSelectedDates(),
+        selectedRadioGroupTime: this.radio_date_selection.value,
+        selectedDates: this.getISOSelectedDates(),
         selectedFilterName: this.filter_name.value
       }));
+
+    });
+  }
+
+  private observeRadioGroupTime() {
+
+    this.store.pipe(
+      select(fromPermits.getSelectedRadioGroupTime),
+      take(1),
+      catchError(error => throwError(error))
+    ).subscribe((value) => {
+      //  this.radio_date_selection.setValue(value);
+    });
+
+    this.radio_date_selection.valueChanges.pipe(
+      takeUntil(this.unsubscribe),
+      catchError(error => throwError(error))
+    ).subscribe((value) => {
+      if (typeof value !== 'undefined') {
+        const { start, end } = this.getSelectedDates();
+        this.start_date.setValue(start, { onlySelf: true, emitEvent: false, emitModelToViewChange: true, emitViewToModelChange: true });
+        this.end_date.setValue(end, { onlySelf: true, emitEvent: false, emitModelToViewChange: true, emitViewToModelChange: true });
+      }
     });
   }
 
   private observeDistinctApplicationTypes() {
+
     this.store.pipe(
       select(fromPermits.getDistinctApplicationTypes),
       takeUntil(this.unsubscribe),
@@ -172,9 +177,11 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
         this.form.updateValueAndValidity();
       }
     });
+
   }
 
   private observeFilteredNames(): void {
+
     this.filteredNames = this.store.pipe(
       select(fromPermits.getDistinctFilteredNames),
       map(value => (value === undefined) ? [''] : value),
@@ -182,9 +189,11 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe),
       catchError(error => throwError(error))
     );
+
   }
 
   private observeCount(): void {
+
     this.store.pipe(
       select(fromPermits.getCount),
       takeUntil(this.unsubscribe),
@@ -214,7 +223,21 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     return results;
   }
 
-  private getSelectedDates(): { start: ISODateString, end: ISODateString } {
-    return { start: DateConverter.convert(this.start_date.value), end: DateConverter.convert(this.end_date.value) };
+  private getSelectedDates(): { start: Date, end: Date } {
+    const radioGroupValue: Date | undefined = getDateFromRadioGroupTime(this.radio_date_selection.value) as Date | undefined;
+    if (typeof radioGroupValue !== 'undefined') {
+      return { start: getToday() as Date, end: radioGroupValue as Date };
+    } else {
+      return { start: this.start_date.value as Date, end: this.end_date.value as Date };
+    }
+  }
+
+  private getISOSelectedDates(): { start: ISODateString, end: ISODateString } {
+    const radioGroupValue: ISODateString | undefined = getISODateFromRadioGroupTime(this.radio_date_selection.value);
+    if (radioGroupValue) {
+      return { start: getToday(true) as ISODateString, end: radioGroupValue };
+    } else {
+      return { start: DateConverter.convert(this.start_date.value), end: DateConverter.convert(this.end_date.value) };
+    }
   }
 }
