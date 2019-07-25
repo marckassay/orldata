@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatGridList } from '@angular/material/grid-list';
 import { Subject } from 'rxjs';
@@ -52,7 +52,7 @@ export interface CheckGridItem {
     }
   `]
 })
-export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class CheckboxGridComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   @Input()
   title: string;
@@ -75,17 +75,22 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
 
   onTouched: () => void = () => { };
 
-  ngOnInit() {
-    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
-      .pipe(
-        takeUntil(this.unsubscribe)
-      ).subscribe((state: BreakpointState) => {
-        this.grid.cols = this.breakpointsColValue(
-          Object.entries(state.breakpoints)
-            .find((value: [string, boolean]) => value[1])
-        );
-        this.ref.markForCheck();
-      });
+  ngAfterViewInit() {
+    if (typeof this.grid !== 'undefined') {
+      this.observeBreakpoint();
+    }
+  }
+
+  observeBreakpoint() {
+    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large]).pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe((state: BreakpointState) => {
+      this.grid.cols = this.breakpointsColValue(
+        Object.entries(state.breakpoints)
+          .find((value: [string, boolean]) => value[1])
+      );
+      this.ref.markForCheck();
+    });
   }
 
   ngOnDestroy(): void {
@@ -101,6 +106,7 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
     // subscribe to any changes in FormArray
     this.form.valueChanges.pipe(
       debounceTime(500),
+      takeUntil(this.unsubscribe),
     ).subscribe((res: any) => {
       console.log('Checkbox - valueChanges(res)', res);
       if (this.onChange) {
@@ -124,7 +130,7 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
 
   selectAll(event: MouseEvent) {
     if (this.form) {
-      (this.form.controls as FormControl[]).forEach((control) => {
+      (this.form.controls as Array<FormControl>).forEach((control) => {
         control.setValue(true);
       });
     }
@@ -132,7 +138,7 @@ export class CheckboxGridComponent implements OnInit, OnDestroy, ControlValueAcc
 
   clearAll(event: MouseEvent) {
     if (this.form) {
-      (this.form.controls as FormControl[]).forEach((control) => {
+      (this.form.controls as Array<FormControl>).forEach((control) => {
         control.setValue(false);
       });
     }

@@ -1,6 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { EMPTY_DESERIALIZED_FIELD_LABEL } from '@app/constants';
+import { EMPTY_DESERIALIZED_FIELD_LABEL } from '@core/shared/constants';
 
 interface MailRegExShape {
   numberstreet?: string;
@@ -12,12 +12,14 @@ interface MailRegExShape {
 }
 
 /**
+ * Formats mailing/physical address strings.
  *
+ * @link https://regex101.com/r/BWvpcz/3
  */
 @Pipe({ name: 'mailaddress' })
 export class MailAddressPipe implements PipeTransform {
   /**
-   * @link https://regex101.com/r/BWvpcz/3
+   *
    */
   address: RegExp = new RegExp([
     // tslint:disable-next-line: max-line-length
@@ -80,6 +82,7 @@ export class MailAddressPipe implements PipeTransform {
     if (field) {
       return this.titlecase.transform(field);
     }
+
     return undefined;
   }
 }

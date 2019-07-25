@@ -18,11 +18,13 @@ export class CacheableRoutesUtil<T> {
   }
 
   getEntry(key: keyof T): T[keyof T] {
+
     return this.entries[key];
   }
 
   containsEntry(value: keyof T | any): boolean {
     const check = this.getEntry(value);
+
     return check !== undefined;
   }
 }
@@ -44,6 +46,7 @@ export class AppRouteStrategy implements RouteReuseStrategy {
     }
 
     const results = before.routeConfig === curr.routeConfig;
+
     return results;
   }
 
@@ -56,6 +59,7 @@ export class AppRouteStrategy implements RouteReuseStrategy {
     if (this.util.getEntry(path as keyof AllowRetriveCacheDictionary)) {
       results = this.storedRouteHandles.has(this.getPath(route));
     }
+
     return results;
   }
 
@@ -63,6 +67,7 @@ export class AppRouteStrategy implements RouteReuseStrategy {
    * Retrieves the previously stored route
    */
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+
     return this.storedRouteHandles.get(this.getPath(route)) as DetachedRouteHandle;
   }
 
@@ -72,6 +77,7 @@ export class AppRouteStrategy implements RouteReuseStrategy {
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
     const path = this.getPath(route);
     const results = this.util.containsEntry(path);
+
     return results;
   }
 
@@ -88,6 +94,7 @@ export class AppRouteStrategy implements RouteReuseStrategy {
     if (route.routeConfig !== null && route.routeConfig.path !== undefined) {
       return route.routeConfig.path;
     }
+
     return '';
   }
 }

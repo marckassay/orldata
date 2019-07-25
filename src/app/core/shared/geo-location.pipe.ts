@@ -14,7 +14,7 @@ export class GeoLocationPipe implements PipeTransform {
   transform(value: GeoLocationShape): string {
 
     if (value.type === 'Point') {
-      return 'lat: ' + value.coordinates[1] + '<br>' + 'long: ' + value.coordinates[0];
+      return `lat: ${value.coordinates[1]} <br> long: ${value.coordinates[0]}`;
     } else {
       return value.toString();
     }

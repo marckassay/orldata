@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { DatasetIDs, getMetaDataEndpoint } from '@core/shared/constants';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { DatasetIDs, environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ import { DatasetIDs, environment } from 'src/environments/environment';
  * @ref https://dev.socrata.com/foundry/data.cityoforlando.net/ryhf-m453
  */
 export class CrimesService {
-  private METADATA_ENDPOINT = environment.metadata_endpoint(DatasetIDs.CRIMES);
+  private METADATA_ENDPOINT = getMetaDataEndpoint(DatasetIDs.CRIMES);
   // private API_ENDPOINT = environment.endpoint(DatasetIDs.CRIMES);
   private APP_TOKEN = environment.token || '';
 
@@ -25,11 +26,10 @@ export class CrimesService {
    * Calls the following:
    * `https://data.cityoforlando.net/api/views/metadata/v1/4y9m-jbmz`
    */
-  getMetadata(): Observable<object[]> {
-    return this.http.get<object[]>(this.METADATA_ENDPOINT, this.getHttpHeader())
-      .pipe(
-        catchError(error => throwError(error))
-      );
+  getMetadata(): Observable<Array<object>> {
+    return this.http.get<Array<object>>(this.METADATA_ENDPOINT, this.getHttpHeader()).pipe(
+      catchError(error => throwError(error))
+    );
   }
 
   private getHttpHeader(): { headers: HttpHeaders } {

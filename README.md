@@ -1,29 +1,11 @@
 # OrlData
 
-An Angular app using NgRx to syndicate ['Orlando's Open Data'](https://data.cityoforlando.net/) services.
+ An Angular app that syndicates to ['Orlando's Open Data'](https://data.cityoforlando.net/) services. This application has been developed
+ with [Angular](https://angular.io/) 8.0 with [NgRx](https://ngrx.io/) for state management, and also [Angular Material](https://material.angular.io/) for UI components.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
+ The services are provided by [Socrata](https://dev.socrata.com/)'s DaaS platform using their "rich query functionality" through a query language that they refer to as "Socrata Query Language" or "SoQL".
 
-## Development server
+ The UI design comes from refactoring Angular Material's website into this app. As my objective for this app was to utilize Material
+ components, and not to per se design a website.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+ Hosting is provided by Azure cloud services.

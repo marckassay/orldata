@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 export const permitsMetadata = createAction(
   '[App API] Permits Metadata',
-  props<{ metadata: object[] }>()
+  props<{ metadata: Array<object> }>()
 );
 
 export const permitsMetadataFailure = createAction(
@@ -12,7 +12,7 @@ export const permitsMetadataFailure = createAction(
 
 export const crimesMetadata = createAction(
   '[App API] Crimes Metadata',
-  props<{ metadata: object[] }>()
+  props<{ metadata: Array<object> }>()
 );
 
 export const crimesMetadataFailure = createAction(

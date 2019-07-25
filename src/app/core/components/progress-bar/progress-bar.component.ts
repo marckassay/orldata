@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { ProgressbarDelay } from '@app/constants';
 import * as fromCore from '@core/reducers';
+import { ProgressbarDelay } from '@core/shared/constants';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, timer } from 'rxjs';
 import { delayWhen, distinctUntilChanged, switchMap } from 'rxjs/operators';

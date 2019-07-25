@@ -33,9 +33,9 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
   pageIndex: Observable<number>;
   limit: Observable<number>;
 
-  displayedColumns: string[] = ['processed_date', 'permit_number', 'permit_address', 'application_type', 'property_owner_name'];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
-  dataSource: Observable<object[]>;
+  displayedColumns: Array<string> = ['processed_date', 'permit_number', 'permit_address', 'application_type', 'property_owner_name'];
+  columnsToDisplay: Array<string> = this.displayedColumns.slice();
+  dataSource: Observable<Array<object>>;
   expandedRecord: object | undefined;
 
   isTableSubscribed: boolean;
@@ -58,7 +58,7 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
      */
     this.dataSource = this.store.pipe(
       select(fromPermits.getEntities),
-    ) as Observable<object[]>;
+    ) as Observable<Array<object>>;
 
     this.observeBreakpoints();
 
@@ -68,7 +68,7 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
 
     // since this limitation only pretains to subsequent visits, we need to dispatch action now
     // since the current rxjs expression in `observeTable` doesnt.
-    this.store.dispatch(PermitsTableTabActions.cleaned);
+    this.store.dispatch(PermitsTableTabActions.cleaned());
   }
 
   ngAfterViewInit(): void {
@@ -113,25 +113,24 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
         this.isTableSubscribed = true;
         this.ref.markForCheck();
         this.scrollToTop();
-        this.store.dispatch(PermitsTableTabActions.cleaned);
+        this.store.dispatch(PermitsTableTabActions.cleaned());
       });
     }
   }
 
   private observeBreakpoints() {
-    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
-      .pipe(
-        takeUntil(this.unsubscribe)
-      ).subscribe((bps: BreakpointState) => {
+    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large]).pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe((bps: BreakpointState) => {
 
-        const cols = this.breakpointsColValue(
-          Object.entries(bps.breakpoints)
-            .find((value: [string, boolean]) => value[1])
-        );
+      const cols = this.breakpointsColValue(
+        Object.entries(bps.breakpoints)
+          .find((value: [string, boolean]) => value[1])
+      );
 
-        this.columnsToDisplay = this.displayedColumns.slice(0, cols);
-        this.ref.markForCheck();
-      });
+      this.columnsToDisplay = this.displayedColumns.slice(0, cols);
+      this.ref.markForCheck();
+    });
   }
 
   private scrollToTop() {

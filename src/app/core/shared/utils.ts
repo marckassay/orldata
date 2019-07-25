@@ -2,18 +2,21 @@ import { DateConverter, ISODateString } from '@core/shared/date-converter';
 
 export const getToday = (asISODateString = false): Date | ISODateString => {
   const date = new Date();
+
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
 
 export const getDate24HoursAgo = (asISODateString = false): Date | ISODateString => {
   const date = new Date();
   date.setHours(-24);
+
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
 
 export const getDateOneWeekAgo = (asISODateString = false): Date | ISODateString => {
   const date = new Date();
   date.setHours(-168);
+
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
 
@@ -21,6 +24,7 @@ export const getDateOneMonthAgo = (asISODateString = false): Date | ISODateStrin
   const date = new Date();
   const month = date.getMonth();
   date.setMonth((month !== 0) ? month - 1 : 11);
+
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
 
@@ -28,6 +32,7 @@ export const getDateOneYearAgo = (asISODateString = false): Date | ISODateString
   const date = new Date();
   const year = date.getFullYear();
   date.setFullYear(year - 1);
+
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
 

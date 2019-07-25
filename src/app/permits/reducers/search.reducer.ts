@@ -1,4 +1,4 @@
-import { RadioGroupTime } from '@app/constants';
+import { RadioGroupTime } from '@core/shared/constants';
 import { ISODateString } from '@core/shared/date-converter';
 import { createReducer, on } from '@ngrx/store';
 import { PermitsApiActions, PermitsFormTabActions } from '@permits/actions';
@@ -7,7 +7,7 @@ export interface State {
   /**
    * The application types that the user has selected.
    */
-  selectedApplicationTypes: string[] | undefined;
+  selectedApplicationTypes: Array<string> | undefined;
 
   /**
    * If defined, it is of consequence to the value of `selectedDates`. A value of `undefined`
@@ -22,9 +22,9 @@ export interface State {
   /**
    * The distinct collection of application types (determined by response data from service query).
    */
-  distinctApplicationTypes: { application_type: string }[] | undefined;
+  distinctApplicationTypes: Array<{ application_type: string }> | undefined;
 
-  distinctFilteredNames: object[] | undefined;
+  distinctFilteredNames: Array<object> | undefined;
 }
 
 const initialState: State = {

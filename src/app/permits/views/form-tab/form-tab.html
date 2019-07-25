@@ -22,11 +22,11 @@
         <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
 
-      <mat-radio-group [formControl]="radio_date_selection" aria-labelledby="example-radio-group-label"
-        class="example-radio-group">
-        <mat-radio-button class="example-radio-button" type="button" *ngFor="let timeFrame of timeframes | keyvalue"
+      <mat-radio-group [formControl]="radio_date_selection" aria-labelledby="orl-radio-group-label"
+        class="orl-radio-group">
+        <mat-radio-button class="orl-radio-button" type="button" *ngFor="let timeFrame of timeframes"
           value="{{timeFrame.value}}">
-          {{timeFrame.key | labelcase }}
+          {{timeFrame.key | labelcase}}
         </mat-radio-button>
       </mat-radio-group>
 

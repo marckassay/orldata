@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 /**
  * Class for managing stylesheets. Stylesheets are loaded into named slots so that they can be
@@ -37,6 +37,7 @@ function createLinkElementWithKey(key: string) {
   linkEl.setAttribute('rel', 'stylesheet');
   linkEl.classList.add(getClassNameForKey(key));
   document.head.appendChild(linkEl);
+
   return linkEl;
 }
 

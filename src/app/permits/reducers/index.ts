@@ -1,5 +1,5 @@
-import { ContentName } from '@app/constants';
 import * as fromRoot from '@app/reducers';
+import { ContentName } from '@core/shared/constants';
 import { Action, combineReducers, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromSearch from '@permits/reducers/search.reducer';
 import * as fromTable from '@permits/reducers/table.reducer';

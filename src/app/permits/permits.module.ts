@@ -1,10 +1,10 @@
 import { ObserversModule } from '@angular/cdk/observers';
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { ContentName } from '@app/constants';
 import { CanActivateTab, FormTabResolver, PageViewerModule, TableTabResolver } from '@app/core/containers/page-viewer/page-viewer.module';
 import * as fromRoot from '@app/reducers';
 import { COUNT_TOKEN } from '@core/containers/page-viewer/page-viewer.component';
+import { ContentName } from '@core/shared/constants';
 import { EffectsModule } from '@ngrx/effects';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { PermitsEffects } from '@permits/effects/permits.effects';
@@ -129,7 +129,7 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
      *
      * `'/catalogs/permits/table'` to `'/catalogs/permits/form'`
      */
-    const getRedirectLink = (): string[] => {
+    const getRedirectLink = (): Array<string> => {
       let result;
       if (this.selectUrl && this.selectUrl.match('/')) {
         result = this.selectUrl.split('/');
@@ -139,7 +139,8 @@ export class PermitsCanActivateTableTab extends CanActivateTab {
       } else {
         console.error('Expected redirect link but got this:', this.selectUrl);
       }
-      return result as string[];
+
+      return result as Array<string>;
     };
 
     let count = 0;

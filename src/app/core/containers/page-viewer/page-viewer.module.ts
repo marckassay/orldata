@@ -112,14 +112,14 @@ export abstract class CanActivateTab implements CanActivate {
     CommonModule,
   ],
   declarations: [
-    LabelCasePipe,
     FieldTypePipe,
-    GeoLocationPipe,
-    NumericLimitPipe,
-    MailAddressPipe,
-    TableTabComponent,
     FormTabComponent,
+    GeoLocationPipe,
+    LabelCasePipe,
+    MailAddressPipe,
+    NumericLimitPipe,
     PageViewerComponent,
+    TableTabComponent,
   ],
   providers: [
     CatalogItems

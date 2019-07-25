@@ -12,6 +12,13 @@ import { AppApiActions } from '../actions';
 @Injectable()
 export class RouterEffects {
 
+  constructor(
+    private router: Router,
+    private permitsSvc: PermitsService,
+    private crimesSvc: CrimesService,
+    private store: Store<fromCore.State>
+  ) { }
+
   /**
    * Prefetches metadata on datasets to retrieve last updated, description, name, etc values.
    * Although this does retrieve and startup the progress-bar immediately, it *doesn't* halt Angular's
@@ -32,9 +39,9 @@ export class RouterEffects {
     withLatestFrom(this.store.select(fromCore.getPermitsMetadata)),
     take(1),
     tap(() => console.log(`[RouterEffects - Resolve] Crime's metadata for Catalog page.`)),
-    tap(() => this.store.dispatch(AppApiActions.serviceActive)),
+    tap(() => this.store.dispatch(AppApiActions.serviceActive())),
     switchMap(() => this.permitsSvc.getMetadata().pipe(
-      map((metadata: object[]) =>
+      map((metadata: Array<object>) =>
         AppApiActions.permitsMetadata({ metadata })),
       catchError(err =>
         of(AppApiActions.permitsMetadataFailure({ errorMsg: err }))
@@ -42,7 +49,7 @@ export class RouterEffects {
     )
     ),
     tap(() => console.log(`[RouterEffects - Resolved] Crime's metadata.`)),
-    tap(() => this.store.dispatch(AppApiActions.serviceInactive))
+    tap(() => this.store.dispatch(AppApiActions.serviceInactive()))
   ));
 
   prefetchCrimesMetadata = createEffect(() => this.router.events.pipe(
@@ -51,22 +58,15 @@ export class RouterEffects {
     withLatestFrom(this.store.select(fromCore.getCrimesMetadata)),
     take(1),
     tap(() => console.log(`[RouterEffects - Resolve] Crime's metadata for Catalog page.`)),
-    tap(() => { this.store.dispatch(AppApiActions.serviceActive); }),
+    tap(() => { this.store.dispatch(AppApiActions.serviceActive()); }),
     switchMap(() => this.crimesSvc.getMetadata().pipe(
-      map((metadata: object[]) => AppApiActions.crimesMetadata({ metadata })),
+      map((metadata: Array<object>) => AppApiActions.crimesMetadata({ metadata })),
       catchError(err =>
         of(AppApiActions.crimesMetadataFailure({ errorMsg: err }))
       )
     )
     ),
     tap(() => console.log(`[RouterEffects - Resolved] Crime's metadata.`)),
-    tap(() => { this.store.dispatch(AppApiActions.serviceInactive); })
+    tap(() => { this.store.dispatch(AppApiActions.serviceInactive()); })
   ));
-
-  constructor(
-    private router: Router,
-    private permitsSvc: PermitsService,
-    private crimesSvc: CrimesService,
-    private store: Store<fromCore.State>
-  ) { }
 }

@@ -1,6 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { EMPTY_DESERIALIZED_FIELD_LABEL } from '@app/constants';
+import { EMPTY_DESERIALIZED_FIELD_LABEL } from '@core/shared/constants';
 
 /**
  * Replaces underscores with a space and if the string is empty will return the value of

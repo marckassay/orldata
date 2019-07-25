@@ -24,7 +24,7 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
   private queryParamSubscription = Subscription.EMPTY;
   currentTheme: DocsSiteTheme;
 
-  themes: DocsSiteTheme[] = [
+  themes: Array<DocsSiteTheme> = [
     {
       primary: '#673AB7',
       accent: '#FFC107',
@@ -60,9 +60,10 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.queryParamSubscription = this.activatedRoute.queryParamMap
-      .pipe(map(params => params.get('theme')), filter(Boolean))
-      .subscribe(themeName => this.installTheme(themeName));
+    this.queryParamSubscription = this.activatedRoute.queryParamMap.pipe(
+      map(params => params.get('theme')),
+      filter(Boolean),
+    ).subscribe(themeName => this.installTheme(themeName));
   }
 
   ngOnDestroy() {

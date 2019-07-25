@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { FieldType } from '@app/constants';
+import { FieldType } from '@core/shared/constants';
 
 /**
  *

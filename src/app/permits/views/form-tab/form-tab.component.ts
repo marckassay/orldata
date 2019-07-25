@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewE
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RadioGroupTimeMap, SnackBarActions } from '@app/constants';
 import { PermitsFormTabActions } from '@app/permits/actions';
 import * as fromRoot from '@app/reducers';
-import { getDateFromRadioGroupTime, getDateOneMonthAgo, getISODateFromRadioGroupTime, getToday } from '@app/utils';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
+import { rgtMap, SnackBarActions } from '@core/shared/constants';
 import { DateConverter, ISODateString } from '@core/shared/date-converter';
+import { getDateFromRadioGroupTime, getDateOneMonthAgo, getISODateFromRadioGroupTime, getToday } from '@core/shared/utils';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subject, throwError } from 'rxjs';
@@ -26,18 +26,18 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   @ViewChild('orl-form-tab', { static: false })
   orlTab: FormTabComponent;
 
-  applicationTypesEntities: CheckGridItem[] = [];
+  applicationTypesEntities: Array<CheckGridItem> = [];
   private unsubscribe = new Subject<void>();
 
   form: FormGroup;
   submitValue: any;
 
-  timeframes = RadioGroupTimeMap;
+  timeframes: Array<{ key: string, value: number }>;
 
   maxDateRangeLimit: Date;
   minDateRangeLimit: Date;
 
-  filteredNames: Observable<string[] | any | undefined>;
+  filteredNames: Observable<Array<string> | any | undefined>;
 
   constructor(
     private store: Store<fromPermits.State>,
@@ -49,6 +49,13 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
 
     this.maxDateRangeLimit = new Date();
     this.minDateRangeLimit = new Date(2000, 0, 1);
+
+    // since JavaScript object properties may come in any order, sorting is done here.
+    const rgtArray = new Array(...rgtMap.entries())
+      .map(ent => ({ key: ent[0], value: ent[1] }))
+      .sort((x, y) => x.value - y.value);
+
+    this.timeframes = rgtArray;
 
     const startDate = getToday();
     const endDate = getDateOneMonthAgo();
@@ -97,6 +104,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   }
 
   onFormChanges() {
+
     this.form.valueChanges.pipe(
       // TODO: what I want is to emit first immediately and subsequent emissions in a 'window' of
       // time, to be delayed. But this delays all emissions. The link below talks about this:
@@ -182,7 +190,6 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
         this.form.updateValueAndValidity();
       }
     });
-
   }
 
   private observeFilteredNames(): void {
@@ -194,10 +201,10 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe),
       catchError(error => throwError(error))
     );
-
   }
 
   private observeCount(): void {
+
     // Observing `getLastResponseTime` will still be triggered when the route is on this component
     // or not. Typically that may not be a problem, but since snackBar is shown regardless of where
     // it was called, this is why the `filter()` is here.
@@ -212,11 +219,13 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     ).subscribe(value => this.launchSnackBar(value));
   }
 
-  private getSelectedApplicationTypes(): string[] {
+  private getSelectedApplicationTypes(): Array<string> {
+
     const results = this.application_types.value.value
       .flatMap(
         (currentValue: boolean, index: number) => (currentValue === true) ? this.applicationTypesEntities[index].name : []
       );
+
     return results;
   }
 
@@ -245,7 +254,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     } else if (count === 1) {
       mesg = '1 permit found!';
     } else {
-      mesg = count + ' permits found!';
+      mesg = `${count} permits found!`;
     }
 
     const action = (count > 0) ? SnackBarActions[0] : SnackBarActions[1];

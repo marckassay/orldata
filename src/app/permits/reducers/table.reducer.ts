@@ -6,7 +6,7 @@ export interface State {
   /**
    * The collection of entities for table from `PermitViewerActions.getSelectedSearch` action.
    */
-  entities: object[] | undefined;
+  entities: Array<object> | undefined;
 
   pagination: {
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PERMITS_SEARCHABLE_FILEDS } from '@app/constants';
+import { PERMITS_SEARCHABLE_FILEDS } from '@core/shared/constants';
 import { UpdateCountRequest, UpdateEntitiesRequest } from '@permits/effects/types';
 
 @Injectable({

@@ -1,7 +1,10 @@
 {
   "extends": "tslint:recommended",
   "rules": {
-    "array-type": false,
+    "array-type": [
+      true,
+      "generic"
+    ],
     "arrow-parens": false,
     "component-class-suffix": true,
     "deprecation": {
@@ -13,6 +16,7 @@
       "rxjs/Rx"
     ],
     "interface-name": false,
+    "interface-over-type-literal": true,
     "linebreak-style": [
       true,
       "LF"
@@ -38,7 +42,7 @@
       }
     ],
     "newline-before-return": true,
-    "newline-per-chained-call": true,
+    "newline-per-chained-call": false,
     "no-consecutive-blank-lines": true,
     "no-console": [
       true,
@@ -62,6 +66,7 @@
     "no-outputs-metadata-property": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
+    "no-unsafe-finally": true,
     "no-use-before-declare": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [
@@ -69,7 +74,9 @@
       "as-needed"
     ],
     "object-literal-sort-keys": false,
+    "one-variable-per-declaration": true,
     "ordered-imports": false,
+    "prefer-template": true,
     "quotemark": [
       true,
       "single"

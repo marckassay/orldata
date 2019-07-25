@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ContentName } from '@app/constants';
-import { DatasetIDs } from 'src/environments/environment';
+import { ContentName, DatasetIDs } from '@core/shared/constants';
 
 export interface CatalogItem {
   readonly id: DatasetIDs;
@@ -15,12 +14,12 @@ export interface CatalogItem {
 @Injectable()
 export class CatalogItems {
 
-  CATALOG: CatalogItem[] = [
+  CATALOG: Array<CatalogItem> = [
     { id: DatasetIDs.PERMITS, routeLink: ContentName.Permits, disabled: false },
     { id: DatasetIDs.CRIMES, routeLink: ContentName.Crimes, disabled: true }
   ];
 
-  getAllItems(): CatalogItem[] {
+  getAllItems(): Array<CatalogItem> {
     return this.CATALOG;
   }
 

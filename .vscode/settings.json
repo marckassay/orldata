@@ -12,7 +12,7 @@
     "MD014": false
   },
   "npm.packageManager": "npm",
-  "tslint.configFile": "./node_modules/codelyzer",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "workbench.settings.editor": "json"
+  "workbench.settings.editor": "json",
+  "files.eol": "\n"
 }

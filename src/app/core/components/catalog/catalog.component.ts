@@ -53,7 +53,7 @@ import { CatalogItem, CatalogItems } from './catalog-items';
 export class CatalogComponent implements OnInit {
 
   constructor(
-    private catalogItems: CatalogItems,
+    public catalogItems: CatalogItems,
     private ref: ChangeDetectorRef,
     private router: Router,
     private store: Store<fromCore.State>) { }

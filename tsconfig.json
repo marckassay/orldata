@@ -2,34 +2,35 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
     "lib": [
       "es2018",
       "dom"
     ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "./dist/out-tsc",
     "paths": {
+      "@app/*": [
+        "./src/app/*"
+      ],
       "@core/*": [
         "./src/app/core/*"
       ],
       "@permits/*": [
         "./src/app/permits/*"
-      ],
-      "@app/*": [
-        "./src/app/*"
-      ],
-    }
-  },
+      ]
+    },
+    "sourceMap": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  }
 }

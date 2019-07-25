@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { DatasetIDs, getEndpoint, getMetaDataEndpoint } from '@core/shared/constants';
 import { UpdateCountRequest, UpdateCountResponse, UpdateDistinctFilteredNamesResponse, UpdateEntitiesRequest, UpdateEntitiesResponse } from '@permits/effects/types';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { DatasetIDs, environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { QueryBuilder } from './query-builder';
 
 @Injectable({
@@ -15,8 +16,8 @@ import { QueryBuilder } from './query-builder';
  * @ref https://dev.socrata.com/foundry/data.cityoforlando.net/ryhf-m453
  */
 export class PermitsService {
-  private METADATA_ENDPOINT = environment.metadata_endpoint(DatasetIDs.PERMITS);
-  private API_ENDPOINT = environment.endpoint(DatasetIDs.PERMITS);
+  private METADATA_ENDPOINT = getMetaDataEndpoint(DatasetIDs.PERMITS);
+  private API_ENDPOINT = getEndpoint(DatasetIDs.PERMITS);
   private APP_TOKEN = environment.token || '';
 
   constructor(
@@ -28,11 +29,10 @@ export class PermitsService {
    * Calls the following:
    * `https://data.cityoforlando.net/api/views/metadata/v1/ryhf-m453`
    */
-  getMetadata(): Observable<object[]> {
-    return this.http.get<object[]>(this.METADATA_ENDPOINT, this.getHttpHeader())
-      .pipe(
-        catchError(error => throwError(error))
-      );
+  getMetadata(): Observable<Array<object>> {
+    return this.http.get<Array<object>>(this.METADATA_ENDPOINT, this.getHttpHeader()).pipe(
+      catchError(error => throwError(error))
+    );
   }
 
   /**
@@ -50,55 +50,52 @@ export class PermitsService {
 
     const pageIndex = request.pagination.pageIndex;
 
-    return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
-      .pipe(
-        // simulates network latency
-        // delayWhen(() => (request.pagination && request.pagination.pageIndex === 34) ? timer(5000) : timer(500)),
-        map((value) => {
-          return {
-            entities: value,
-            pagination: { pageIndex },
-            lastResponseTime: Date.now()
-          };
-        }),
-        catchError(error => throwError(error))
-      );
+    return this.http.get<Array<object>>(this.getFullQueryExpression(query), this.getHttpHeader()).pipe(
+      // simulates network latency
+      // delayWhen(() => (request.pagination && request.pagination.pageIndex === 34) ? timer(5000) : timer(500)),
+      map((value) => {
+        return {
+          entities: value,
+          pagination: { pageIndex },
+          lastResponseTime: Date.now()
+        };
+      }),
+      catchError(error => throwError(error))
+    );
   }
 
   getCount(request: UpdateCountRequest): Observable<UpdateCountResponse> {
     const query = this.qb.where(request);
 
-    return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
-      .pipe(
-        map((value) => {
-          const count = parseInt((value[0] as any).COUNT, 10);
-          return {
-            pagination: { pageIndex: 0 as const, count },
-            lastResponseTime: Date.now()
-          };
-        }),
-        catchError(error => throwError(error))
-      );
+    return this.http.get<Array<object>>(this.getFullQueryExpression(query), this.getHttpHeader()).pipe(
+      map((value) => {
+        const count = parseInt((value[0] as any).COUNT, 10);
+
+        return {
+          pagination: { pageIndex: 0 as const, count },
+          lastResponseTime: Date.now()
+        };
+      }),
+      catchError(error => throwError(error))
+    );
   }
 
   getDistinctApplicationTypes(): Observable<Array<{ application_type: string }>> {
     const query = 'select distinct application_type';
 
-    return this.http.get<{ application_type: string }[]>(this.getFullQueryExpression(query, true), this.getHttpHeader())
-      .pipe(
-        map(types => types),
-        catchError(error => throwError(error))
-      );
+    return this.http.get<Array<{ application_type: string }>>(this.getFullQueryExpression(query, true), this.getHttpHeader()).pipe(
+      map(types => types),
+      catchError(error => throwError(error))
+    );
   }
 
   getDistinctFilteredNames(request: UpdateCountRequest): Observable<UpdateDistinctFilteredNamesResponse> {
-    const query = ''; // this.qb.whereForDistinctNames(filteredName);
+    const query = '';
 
-    return this.http.get<object[]>(this.getFullQueryExpression(query), this.getHttpHeader())
-      .pipe(
-        map(types => ({ selectedFilterName: request.selected.selectedFilterName, distinctFilteredNames: types })),
-        catchError(error => throwError(error))
-      );
+    return this.http.get<Array<object>>(this.getFullQueryExpression(query), this.getHttpHeader()).pipe(
+      map(types => ({ selectedFilterName: request.selected.selectedFilterName, distinctFilteredNames: types })),
+      catchError(error => throwError(error))
+    );
   }
 
   private getHttpHeader(): { headers: HttpHeaders } {
@@ -114,6 +111,7 @@ export class PermitsService {
   private getFullQueryExpression(query: string, asFullQueryString = false): string {
     const results = this.API_ENDPOINT + ((asFullQueryString === true) ? '?$query=' : '?$') + query;
     console.log('[PermitsService] Query :', results);
+
     return results;
   }
 }

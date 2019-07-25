@@ -16,7 +16,7 @@ export type UpdateEntitiesRequest = UpdateCountRequest & PaginationShape;
  */
 export interface UpdateCountRequest {
   selected: {
-    selectedApplicationTypes: { application_type: string }[];
+    selectedApplicationTypes: Array<{ application_type: string }>;
     selectedDates: { start: ISODateString, end: ISODateString };
 
     /**
@@ -35,7 +35,7 @@ export interface UpdateEntitiesResponse {
   /**
    * The collection to be rendered in `Table-Tab`.
    */
-  entities: object[];
+  entities: Array<object>;
   pagination: {
     pageIndex: number;
   };
@@ -52,5 +52,5 @@ export interface UpdateCountResponse {
 
 export interface UpdateDistinctFilteredNamesResponse {
   selectedFilterName: string;
-  distinctFilteredNames: object[];
+  distinctFilteredNames: Array<object>;
 }
