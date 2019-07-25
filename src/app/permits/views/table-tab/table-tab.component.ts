@@ -1,13 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { ContentObserver } from '@angular/cdk/observers';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { select, Store } from '@ngrx/store';
 import { PermitsTableTabActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
-import { defer, iif, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, debounceTime, mergeMap, takeUntil } from 'rxjs/operators';
+import { iif, Observable, of, Subject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'permits-table-tab',
@@ -24,10 +24,8 @@ import { catchError, debounceTime, mergeMap, takeUntil } from 'rxjs/operators';
     ]),
   ]
 })
-export class PermitsTableTabComponent implements OnInit, OnDestroy {
-
-  @ViewChild('orltable', { static: false })
-  table: ElementRef;
+export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('orltable', { static: false, read: ElementRef }) table: ElementRef;
 
   private unsubscribe = new Subject<void>();
 
@@ -62,7 +60,6 @@ export class PermitsTableTabComponent implements OnInit, OnDestroy {
       select(fromPermits.getEntities),
     ) as Observable<object[]>;
 
-    this.observeTable();
     this.observeBreakpoints();
 
     this.count = this.store.pipe(select(fromPermits.getCount));
@@ -72,6 +69,12 @@ export class PermitsTableTabComponent implements OnInit, OnDestroy {
     // since this limitation only pretains to subsequent visits, we need to dispatch action now
     // since the current rxjs expression in `observeTable` doesnt.
     this.store.dispatch(PermitsTableTabActions.cleaned);
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isTableSubscribed === false) {
+      this.observeTable();
+    }
   }
 
   ngOnDestroy(): void {
@@ -85,40 +88,34 @@ export class PermitsTableTabComponent implements OnInit, OnDestroy {
 
   private observeTable() {
     /**
-     * Without dispatching `PermitsTableTabActions.updated`, as it is done below, the table on
+     * Without dispatching `PermitsTableTabActions.cleaned`, as it is done below, the table on
      * subsequent viewings, initially, would be still rendering. This happens even using a Router
-     * resolver observing `getLastResponseTime`.
+     * resolver observing for `getLastResponseTime`.
      *
-     * So the stream observes the table DOM and dispatches `updated`. This event is used in the
-     * Router resolver instead of observing `getLastResponseTime`. As suggested in link below, this
-     * stream was developed from that idea.
-     *
-     * The `debounceTime` is there as a hack. My assumpation was that just `observe()` would of
-     * dispatched just one type of event. But its a non-specific and may dispatch more than one.
-     *
-     * TODO: perhaps `observe` a child element would eliminate having more than 1 event
-     * dispatched.
+     * So the stream observes the table DOM and dispatches `cleaned`. This event is used in the
+     * Router resolver instead of observing `getLastResponseTime`.
      *
      * @link https://github.com/angular/components/issues/8068#issuecomment-342307762
+     * @link https://stackoverflow.com/questions/50375156/angular-listen-on-viewchild-changes
+     * @link https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
      */
-
-    this.store.select(fromPermits.getEntities).pipe(
-      takeUntil(this.unsubscribe),
-      mergeMap(() => {
-        return iif(() =>
-          ((typeof this.table !== 'undefined') && (this.isTableSubscribed === false)),
-          defer(() => this.domObserver.observe((this.table as any)._elementRef.nativeElement)),
-          of()).pipe(
-            debounceTime(500),
-            catchError(error => throwError(error))
+    if ((typeof this.table !== 'undefined')) {
+      this.store.select(fromPermits.getEntities).pipe(
+        takeUntil(this.unsubscribe),
+        mergeMap(() => {
+          return iif(() =>
+            this.isTableSubscribed === false,
+            this.domObserver.observe(this.table.nativeElement),
+            of(false)
           );
-      })
-    ).subscribe(() => {
-      this.isTableSubscribed = true;
-      this.ref.markForCheck();
-      this.scrollToTop();
-      this.store.dispatch(PermitsTableTabActions.cleaned);
-    });
+        })
+      ).subscribe(() => {
+        this.isTableSubscribed = true;
+        this.ref.markForCheck();
+        this.scrollToTop();
+        this.store.dispatch(PermitsTableTabActions.cleaned);
+      });
+    }
   }
 
   private observeBreakpoints() {

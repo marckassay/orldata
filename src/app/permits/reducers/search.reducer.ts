@@ -29,7 +29,7 @@ export interface State {
 
 const initialState: State = {
   selectedApplicationTypes: undefined,
-  selectedRadioGroupTime: undefined,
+  selectedRadioGroupTime: RadioGroupTime['Past month'],
   selectedDates: undefined,
   selectedFilterName: undefined,
   distinctApplicationTypes: undefined,

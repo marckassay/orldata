@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { RadioGroupTimeMap, toRadioGroupTimeValue } from '@app/constants';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RadioGroupTimeMap, SnackBarActions } from '@app/constants';
 import { PermitsFormTabActions } from '@app/permits/actions';
+import * as fromRoot from '@app/reducers';
 import { getDateFromRadioGroupTime, getDateOneMonthAgo, getISODateFromRadioGroupTime, getToday } from '@app/utils';
 import { FormTabComponent } from '@core/containers/page-viewer/form-tab/form-tab.component';
 import { CheckGridItem } from '@core/shared/checkbox-grid/checkbox-grid.component';
@@ -10,7 +12,7 @@ import { DateConverter, ISODateString } from '@core/shared/date-converter';
 import { select, Store } from '@ngrx/store';
 import * as fromPermits from '@permits/reducers';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, debounceTime, map, startWith, take, takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, filter, map, mergeMap, skip, startWith, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'permits-form-tab',
@@ -40,18 +42,20 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<fromPermits.State>,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar) {
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
 
     this.maxDateRangeLimit = new Date();
     this.minDateRangeLimit = new Date(2000, 0, 1);
 
     const startDate = getToday();
     const endDate = getDateOneMonthAgo();
-    const radioGroupTime = toRadioGroupTimeValue('Past month');
 
     this.form = this.fb.group({
       application_types: this.fb.control(this.fb.array([])),
-      radio_date_selection: this.fb.control(radioGroupTime.toString()),
+      radio_date_selection: this.fb.control(undefined),
       start_date: this.fb.control(startDate),
       end_date: this.fb.control(endDate),
       filter_name: this.fb.control('')
@@ -132,7 +136,8 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
       take(1),
       catchError(error => throwError(error))
     ).subscribe((value) => {
-      //  this.radio_date_selection.setValue(value);
+      const val = (typeof value !== 'undefined') ? value.toString() : undefined;
+      this.radio_date_selection.setValue(val, { onlySelf: true, emitEvent: false });
     });
 
     this.radio_date_selection.valueChanges.pipe(
@@ -193,26 +198,18 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
   }
 
   private observeCount(): void {
-
-    this.store.pipe(
-      select(fromPermits.getCount),
+    // Observing `getLastResponseTime` will still be triggered when the route is on this component
+    // or not. Typically that may not be a problem, but since snackBar is shown regardless of where
+    // it was called, this is why the `filter()` is here.
+    this.store.select(fromPermits.getLastResponseTime).pipe(
+      mergeMap(() => this.store.select(fromRoot.selectUrl)),
+      filter((url) => url === '/catalog/permits/form'),
+      skip(1),
+      withLatestFrom(this.store.select(fromPermits.getCount)),
+      map((value) => value[1]),
       takeUntil(this.unsubscribe),
       catchError(error => throwError(error))
-    ).subscribe(value => {
-      let mesg: string;
-      if (value === 0) {
-        mesg = 'No permit found.';
-      } else if (value === 1) {
-        mesg = '1 permit found!';
-      } else {
-        mesg = value + ' permits found!';
-      }
-      this.snackBar.open(mesg, undefined, {
-        duration: 2000,
-        horizontalPosition: 'center',
-        verticalPosition: 'bottom',
-      });
-    });
+    ).subscribe(value => this.launchSnackBar(value));
   }
 
   private getSelectedApplicationTypes(): string[] {
@@ -239,5 +236,41 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     } else {
       return { start: DateConverter.convert(this.start_date.value), end: DateConverter.convert(this.end_date.value) };
     }
+  }
+
+  private launchSnackBar(count: number): void {
+    let mesg: string;
+    if (count === 0) {
+      mesg = 'No permit found.';
+    } else if (count === 1) {
+      mesg = '1 permit found!';
+    } else {
+      mesg = count + ' permits found!';
+    }
+
+    const action = (count > 0) ? SnackBarActions[0] : SnackBarActions[1];
+    const currentSnackBar = this.snackBar.open(mesg, (action as keyof typeof SnackBarActions), {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
+    currentSnackBar.onAction().pipe(
+      take(1),
+      takeUntil(this.unsubscribe),
+    ).subscribe(() => {
+      if (action === SnackBarActions[0]) {
+        currentSnackBar.dismissWithAction();
+      }
+    });
+    currentSnackBar.afterDismissed().pipe(
+      take(1),
+      takeUntil(this.unsubscribe)
+    ).subscribe((x) => {
+      if (x.dismissedByAction === true) {
+        this.router.navigate(['table'], { relativeTo: this.activatedRoute }).then(() => {
+          this.snackBar.dismiss();
+        });
+      }
+    });
   }
 }

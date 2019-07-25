@@ -49,3 +49,8 @@ export const toRadioGroupTimeKey = (value: 0 | 1 | 2 | 3 | 4): RadioGroupTimeKey
 export const toRadioGroupTimeValue = (key: RadioGroupTimeKeyType): number => {
   return RadioGroupTimeMap.get(key) as number;
 };
+
+export enum SnackBarActions {
+  'SEE RESULTS',
+  'DISMISS'
+}
