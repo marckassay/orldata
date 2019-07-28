@@ -6,6 +6,7 @@
     "ng": "ng",
     "start:sass:dev": "npm run build-themes-ps && ng serve --configuration=dev",
     "start:dev": "ng serve --configuration=dev",
+    "start:production": "ng serve --configuration=production --poll=1000",
     "start-jit": "npm run build-themes && ng serve --aot=false",
     "build": "ng build",
     "build-themes": "bash ./tools/build-themes.sh",

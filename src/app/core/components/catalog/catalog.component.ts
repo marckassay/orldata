@@ -27,6 +27,7 @@ import { CatalogItem, CatalogItems } from './catalog-items';
         mat-list-item
         class="orl-catalog-item"
         [matTooltip]="item.description"
+        [matTooltipClass]="orl-tooltip-color"
         (click)="onClick(item)">
 
       <mat-icon matListIcon color="primary">folder</mat-icon>
