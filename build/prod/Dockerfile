@@ -19,7 +19,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install and cache app dependencies
 COPY package.json /app/package.json
 RUN npm install
-RUN npm install -g @angular/cli@~8.0.0
+RUN npm install -g @angular/cli@~8.0.2
 
 # add app
 COPY . /app
@@ -29,7 +29,7 @@ COPY . /app
 # RUN ng e2e --port 4202
 
 # generate build
-RUN ng build --output-path=dist
+RUN ng build --output-path=dist --configuration production
 
 ############
 ### prod ###

@@ -1,0 +1,11 @@
+@host = data.cityoforlando.net/resource
+@dataset = ryhf-m453
+
+@expression = $query=select * where ((starts_with(upper(permit_address), upper('2 E King St')))) limit 100 |> SELECT COUNT(*)
+
+// @expression = $query=SELECT DISTINCT worktype |> SELECT COUNT(*)
+
+GET https://{{host}}/{{dataset}}.json?{{expression}}
+
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

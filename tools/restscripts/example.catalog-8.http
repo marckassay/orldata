@@ -1,0 +1,14 @@
+GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select * where (application_type = 'Building Permit' AND processed_date between '2019-06-16T03:32:48.623' and '2019-07-16T03:32:48.622')|> SELECT COUNT(*)
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu
+
+
+
+// good
+//select * where (application_type = 'Building Permit' AND processed_date IS NOT NULL AND processed_date between '2019-02-10T12:00:00' and '2019-07-10T14:00:00')|> SELECT COUNT(*)
+
+// bad
+//select * where (application_type = 'Building Permit' AND processed_date IS NOT NULL) AND processed_date between '2019-06-16T03:08:21.305Z' and '2019-07-16T03:08:21.304Z'|> SELECT COUNT(*)
+
+
+//select * where (application_type = 'Building Permit' AND processed_date between '2019-06-16T03:32:48.623Z' and '2019-07-16T03:32:48.622Z')|> SELECT COUNT(*)

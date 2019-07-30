@@ -1,0 +1,20 @@
+@host = data.cityoforlando.net/resource
+@dataset = ryhf-m453
+
+// @expression = $q='VERGE' |> SELECT DISTINCT contractor_name
+
+// good
+// @expression = $where=contractor_name like '%25VERGE PROPERTIES%25' OR contractor like '%25VERGE PROPERTIES%25' |> SELECT COUNT(*)
+// (application_type = 'Building Permit' OR application_type = 'GAS')
+// good
+// @expression = $where=(application_type = 'Building Permit' OR application_type = 'GAS') AND contractor_name like upper('%25verg%25') OR contractor like upper('%25verg%25') |> SELECT DISTINCT contractor_name, contractor
+
+// good
+@expression = $where=(application_type = 'Building Permit' OR application_type = 'GAS') AND contractor_name like upper('%25verg%25') OR contractor like upper('%25verg%25')
+
+
+GET https://{{host}}/{{dataset}}.json?{{expression}}
+
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu
+

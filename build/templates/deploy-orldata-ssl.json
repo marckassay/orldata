@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sslKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Raw string value of SSL Key."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Container Group name."
+      }
+    },
+    "registeredContainerName": {
+      "type": "string",
+      "defaultValue": "orldatacontainerregistry16232870.azurecr.io/orldata:prod",
+      "metadata": {
+        "description": "Container registered as an Azure Container."
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-10-01",
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('containerGroupName')]",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "properties": {
+        "osType": "Linux",
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": "443"
+            }
+          ],
+          "type": "Public"
+        },
+        "volumes": [
+          {
+            "name": "nginx-config",
+            "secret": {
+              "ssl.key": "[base64(parameters('sslKey'))]",
+              "ssl.crt": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tTUlJQ2NEQ0NBZG1nQXdJQkFnSUVCa3NwNXpBTkJna3Foa2lHOXcwQkFRc0ZBREJyTVFzd0NRWURWUVFHRXdKVlV6RVFNQTRHQTFVRUNCTUhSbXh2Y21sa1lURVFNQTRHQTFVRUJ4TUhUM0pzWVc1a2J6RVFNQTRHQTFVRUNoTUhWVzVyYm05M2JqRVFNQTRHQTFVRUN4TUhWVzVyYm05M2JqRVVNQklHQTFVRUF4TUxUV0Z5WXlCTFlYTnpZWGt3SGhjTk1Ua3dPREF5TVRjek9ESXdXaGNOTWpRd056TXhNVGN6T0RJd1dqQnJNUXN3Q1FZRFZRUUdFd0pWVXpFUU1BNEdBMVVFQ0JNSFJteHZjbWxrWVRFUU1BNEdBMVVFQnhNSFQzSnNZVzVrYnpFUU1BNEdBMVVFQ2hNSFZXNXJibTkzYmpFUU1BNEdBMVVFQ3hNSFZXNXJibTkzYmpFVU1CSUdBMVVFQXhNTFRXRnlZeUJMWVhOellYa3dnWjh3RFFZSktvWklodmNOQVFFQkJRQURnWTBBTUlHSkFvR0JBSWplT25lQVdHNGY2TFBOU3dmMnJqbVY1ZDFHbDZFTVYzOEpYU3h5NWkxY2dlOGphZHRMNXFBVStJajF3WTI3VUlxOVJQUXNpajFpckh0aDM5b1Bxb3QraWQ4NDdBZ1RVTGJ5WmJlWDVBdmV0OWtqZklIWWdkeW1FUDJtSXlFelF4TjJXSERDc3BtU3JmWjcybmFWTkE4UDRDRzg5K2pYNVl2L051R0RHMWxKQWdNQkFBR2pJVEFmTUIwR0ExVWREZ1FXQkJRdzUyaUFOODlyNjNlNE5GdEN1Q3g5UmF4dGJEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQmdRQi9KYi9TVlJvUHNnMmhkc2s3ZFZtcHR0NkxHenh1QWVBT1puK3Myd0JIUW50WW5Fck50eXlBeEVwN3FtN0MrYURBeHpkT2NyaTU5RHp2aEEwOU9KbEUxR2xEdExvTFJKUVBxb2RaU2hUTWYvN1ppYWxMRm1OV0hMS0FRRmxXRjhuNHZBUFk2VzNIODlURlNlSC91dEFralc5Z1hDNGc3Z2pVcFgycUFybG1hdz09LS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+              "nginx.conf": "IyBuZ2lueCBDb25maWd1cmF0aW9uIEZpbGUjIGh0dHBzOi8vd2lraS5uZ2lueC5vcmcvQ29uZmlndXJhdGlvbiMgUnVuIGFzIGEgbGVzcyBwcml2aWxlZ2VkIHVzZXIgZm9yIHNlY3VyaXR5IHJlYXNvbnMudXNlciBuZ2lueDt3b3JrZXJfcHJvY2Vzc2VzIGF1dG87ZXZlbnRzIHsgIHdvcmtlcl9jb25uZWN0aW9ucyAxMDI0O31waWQgICAgICAgIC92YXIvcnVuL25naW54LnBpZDtodHRwIHsgICAgI1JlZGlyZWN0IHRvIGh0dHBzLCB1c2luZyAzMDcgaW5zdGVhZCBvZiAzMDEgdG8gcHJlc2VydmUgcG9zdCBkYXRhICAgIHNlcnZlciB7ICAgICAgICBsaXN0ZW4gWzo6XTo0NDMgc3NsOyAgICAgICAgbGlzdGVuIDQ0MyBzc2w7ICAgICAgICBzZXJ2ZXJfbmFtZSBsb2NhbGhvc3Q7ICAgICAgICAjIFByb3RlY3QgYWdhaW5zdCB0aGUgQkVBU1QgYXR0YWNrIGJ5IG5vdCB1c2luZyBTU0x2MyBhdCBhbGwuIElmIHlvdSBuZWVkIHRvIHN1cHBvcnQgb2xkZXIgYnJvd3NlcnMgKElFNikgeW91IG1heSBuZWVkIHRvIGFkZCAgICAgICAgIyBTU0x2MyB0byB0aGUgbGlzdCBvZiBwcm90b2NvbHMgYmVsb3cuICAgICAgICBzc2xfcHJvdG9jb2xzICAgICAgICAgICAgICBUTFN2MSBUTFN2MS4xIFRMU3YxLjI7ICAgICAgICAjIENpcGhlcnMgc2V0IHRvIGJlc3QgYWxsb3cgcHJvdGVjdGlvbiBmcm9tIEJlYXN0LCB3aGlsZSBwcm92aWRpbmcgZm9yd2FyZGluZyBzZWNyZWN5LCBhcyBkZWZpbmVkIGJ5IE1vemlsbGEgLSBodHRwczovL3dpa2kubW96aWxsYS5vcmcvU2VjdXJpdHkvU2VydmVyX1NpZGVfVExTI05naW54ICAgICAgICBzc2xfY2lwaGVycyAgICAgICAgICAgICAgICBFQ0RIRS1SU0EtQUVTMTI4LUdDTS1TSEEyNTY6RUNESEUtRUNEU0EtQUVTMTI4LUdDTS1TSEEyNTY6RUNESEUtUlNBLUFFUzI1Ni1HQ00tU0hBMzg0OkVDREhFLUVDRFNBLUFFUzI1Ni1HQ00tU0hBMzg0OkRIRS1SU0EtQUVTMTI4LUdDTS1TSEEyNTY6REhFLURTUy1BRVMxMjgtR0NNLVNIQTI1NjprRURIK0FFU0dDTTpFQ0RIRS1SU0EtQUVTMTI4LVNIQTI1NjpFQ0RIRS1FQ0RTQS1BRVMxMjgtU0hBMjU2OkVDREhFLVJTQS1BRVMxMjgtU0hBOkVDREhFLUVDRFNBLUFFUzEyOC1TSEE6RUNESEUtUlNBLUFFUzI1Ni1TSEEzODQ6RUNESEUtRUNEU0EtQUVTMjU2LVNIQTM4NDpFQ0RIRS1SU0EtQUVTMjU2LVNIQTpFQ0RIRS1FQ0RTQS1BRVMyNTYtU0hBOkRIRS1SU0EtQUVTMTI4LVNIQTI1NjpESEUtUlNBLUFFUzEyOC1TSEE6REhFLURTUy1BRVMxMjgtU0hBMjU2OkRIRS1SU0EtQUVTMjU2LVNIQTI1NjpESEUtRFNTLUFFUzI1Ni1TSEE6REhFLVJTQS1BRVMyNTYtU0hBOkFFUzEyOC1HQ00tU0hBMjU2OkFFUzI1Ni1HQ00tU0hBMzg0OkVDREhFLVJTQS1SQzQtU0hBOkVDREhFLUVDRFNBLVJDNC1TSEE6QUVTMTI4OkFFUzI1NjpSQzQtU0hBOkhJR0g6IWFOVUxMOiFlTlVMTDohRVhQT1JUOiFERVM6ITNERVM6IU1ENTohUFNLOyAgICAgICAgc3NsX3ByZWZlcl9zZXJ2ZXJfY2lwaGVycyAgb247ICAgICAgICAjIE9wdGltaXplIFNTTCBieSBjYWNoaW5nIHNlc3Npb24gcGFyYW1ldGVycyBmb3IgMTAgbWludXRlcy4gVGhpcyBjdXRzIGRvd24gb24gdGhlIG51bWJlciBvZiBleHBlbnNpdmUgU1NMIGhhbmRzaGFrZXMuICAgICAgICAjIFRoZSBoYW5kc2hha2UgaXMgdGhlIG1vc3QgQ1BVLWludGVuc2l2ZSBvcGVyYXRpb24sIGFuZCBieSBkZWZhdWx0IGl0IGlzIHJlLW5lZ290aWF0ZWQgb24gZXZlcnkgbmV3L3BhcmFsbGVsIGNvbm5lY3Rpb24uICAgICAgICAjIEJ5IGVuYWJsaW5nIGEgY2FjaGUgKG9mIHR5cGUgInNoYXJlZCBiZXR3ZWVuIGFsbCBOZ2lueCB3b3JrZXJzIiksIHdlIHRlbGwgdGhlIGNsaWVudCB0byByZS11c2UgdGhlIGFscmVhZHkgbmVnb3RpYXRlZCBzdGF0ZS4gICAgICAgICMgRnVydGhlciBvcHRpbWl6YXRpb24gY2FuIGJlIGFjaGlldmVkIGJ5IHJhaXNpbmcga2VlcGFsaXZlX3RpbWVvdXQsIGJ1dCB0aGF0IHNob3VsZG4ndCBiZSBkb25lIHVubGVzcyB5b3Ugc2VydmUgcHJpbWFyaWx5IEhUVFBTLiAgICAgICAgc3NsX3Nlc3Npb25fY2FjaGUgICAgc2hhcmVkOlNTTDoxMG07ICMgYSAxbWIgY2FjaGUgY2FuIGhvbGQgYWJvdXQgNDAwMCBzZXNzaW9ucywgc28gd2UgY2FuIGhvbGQgNDAwMDAgc2Vzc2lvbnMgICAgICAgIHNzbF9zZXNzaW9uX3RpbWVvdXQgIDI0aDsgICAgICAgICMgVXNlIGEgaGlnaGVyIGtlZXBhbGl2ZSB0aW1lb3V0IHRvIHJlZHVjZSB0aGUgbmVlZCBmb3IgcmVwZWF0ZWQgaGFuZHNoYWtlcyAgICAgICAga2VlcGFsaXZlX3RpbWVvdXQgMzAwOyAjIHVwIGZyb20gNzUgc2VjcyBkZWZhdWx0ICAgICAgICAjIHJlbWVtYmVyIHRoZSBjZXJ0aWZpY2F0ZSBmb3IgYSB5ZWFyIGFuZCBhdXRvbWF0aWNhbGx5IGNvbm5lY3QgdG8gSFRUUFMgICAgICAgIGFkZF9oZWFkZXIgU3RyaWN0LVRyYW5zcG9ydC1TZWN1cml0eSAnbWF4LWFnZT0zMTUzNjAwMDsgaW5jbHVkZVN1YkRvbWFpbnMnOyAgICAgICAgc3NsX2NlcnRpZmljYXRlICAgICAgL2V0Yy9uZ2lueC9zc2wuY3J0OyAgICAgICAgc3NsX2NlcnRpZmljYXRlX2tleSAgL2V0Yy9uZ2lueC9zc2wua2V5OyAgICAgICAgbG9jYXRpb24gLyB7ICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vbG9jYWxob3N0OjgwOyAjIFRPRE86IHJlcGxhY2UgcG9ydCBpZiBhcHAgbGlzdGVucyBvbiBwb3J0IG90aGVyIHRoYW4gODAgICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIENvbm5lY3Rpb24gIiI7ICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBIb3N0ICRob3N0OyAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsgICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIFgtRm9yd2FyZGVkLUZvciAkcmVtb3RlX2FkZHI7ICAgICAgICB9ICAgIH19"
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "nginx-with-ssl",
+            "properties": {
+              "image": "nginx",
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": "443"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": "1.5",
+                  "cpu": "1.0"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "nginx-config",
+                  "mountPath": "/etc/nginx"
+                }
+              ]
+            }
+          },
+          {
+            "name": "orldata-app",
+            "properties": {
+              "image": "[parameters('registeredContainerName')]",
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": "80"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": "1.5",
+                  "cpu": "1.0"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
