@@ -21,4 +21,4 @@ RUN npm install -g @angular/cli@~8.0.2
 COPY . /app
 
 # start app
-CMD npm run start:dev
+CMD ["npm", "run", "start:dev"]
