@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { ContentObserver } from '@angular/cdk/observers';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { scrollToTop } from '@app/core/shared/constants';
 import { select, Store } from '@ngrx/store';
 import { PermitsTableTabActions } from '@permits/actions';
 import * as fromPermits from '@permits/reducers';
@@ -112,7 +113,7 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
       ).subscribe(() => {
         this.isTableSubscribed = true;
         this.ref.markForCheck();
-        this.scrollToTop();
+        scrollToTop();
         this.store.dispatch(PermitsTableTabActions.cleaned());
       });
     }
@@ -131,13 +132,6 @@ export class PermitsTableTabComponent implements OnInit, AfterViewInit, OnDestro
       this.columnsToDisplay = this.displayedColumns.slice(0, cols);
       this.ref.markForCheck();
     });
-  }
-
-  private scrollToTop() {
-    // TODO: this may be more robust solution. I attempted to use ` scroll-behavior: smooth;` in
-    // this components scss but with no luck.
-    // @link https://material.angular.io/cdk/scrolling/overview
-    window.scrollTo(0, 0);
   }
 
   /**

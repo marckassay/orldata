@@ -61,3 +61,10 @@ export const toRadioGroupTimeKey = (value: 0 | 1 | 2 | 3 | 4): RGTKeyType => {
 export const toRadioGroupTimeValue = (key: RGTKeyType): number => {
   return rgtMap.get(key) as number;
 };
+
+export const scrollToTop = () => {
+  // TODO: this may be more robust solution. I attempted to use ` scroll-behavior: smooth;` in
+  // this components scss but with no luck.
+  // @link https://material.angular.io/cdk/scrolling/overview
+  window.scrollTo(0, 0);
+};

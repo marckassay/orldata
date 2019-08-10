@@ -82,14 +82,20 @@ export class CheckboxGridComponent implements AfterViewInit, OnDestroy, ControlV
   }
 
   observeBreakpoint() {
-    this.breakpoint.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large]).pipe(
+    this.breakpoint.observe([
+      Breakpoints.HandsetPortrait,
+      Breakpoints.HandsetLandscape,
+      Breakpoints.Tablet,
+      Breakpoints.Web
+    ]).pipe(
       takeUntil(this.unsubscribe)
     ).subscribe((state: BreakpointState) => {
       this.grid.cols = this.breakpointsColValue(
         Object.entries(state.breakpoints)
           .find((value: [string, boolean]) => value[1])
       );
-      this.ref.markForCheck();
+      // this call on grid is more effective than `this.ref.markForCheck()`
+      this.grid.ngAfterContentChecked();
     });
   }
 
@@ -148,12 +154,11 @@ export class CheckboxGridComponent implements AfterViewInit, OnDestroy, ControlV
     const breakpoint = (key && key instanceof Array) ? key[0] : undefined;
 
     switch (breakpoint) {
-      case Breakpoints.XSmall: return 1;
-      case Breakpoints.Small: return 2;
-      case Breakpoints.Medium: return 3;
-      case Breakpoints.Large: return 4;
-      case Breakpoints.XLarge: return 4;
-      default: return this.grid.cols;
+      case Breakpoints.HandsetPortrait: return 1;
+      case Breakpoints.HandsetLandscape: return 2;
+      case Breakpoints.Tablet: return 3;
+      case Breakpoints.Web: return 3;
+      default: return 3;
     }
   }
 }
