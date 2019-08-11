@@ -8,7 +8,7 @@
     "start:production": "ng serve --configuration production",
     "start-jit": "npm run build-themes && ng serve --aot=false",
     "build": "ng build",
-    "build:production": "ng build --output-path dist --configuration production",
+    "build:production": "npm run build-themes && ng build --output-path dist --configuration production",
     "build-themes": "bash ./tools/build-themes.sh",
     "build-themes-ps": "pwsh ./tools/build-themes.ps1",
     "test": "ng test",

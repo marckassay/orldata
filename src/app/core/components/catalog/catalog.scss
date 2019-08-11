@@ -7,7 +7,6 @@ app-catalog {
 }
 
 .orl-catalog-list {
-  flex-grow: 1;
   margin: $content-padding-side;
 
   @media (max-width: $small-breakpoint-width) {

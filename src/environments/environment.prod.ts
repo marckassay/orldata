@@ -3,6 +3,7 @@
  * `--configuration=dev` or `--configuration=production` for development and production, respectively.
  */
 export const environment = {
-  production: false,
+  production: true,
+  // TODO: Yeah, I know. This is used exclusively for read-only queries. Setup Azure for OAuth for services.
   token: 'XsVdIPvgqvEmIgHOmFowjVeOu'
 };

@@ -10,8 +10,23 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 RUN apt-get update && apt-get install -yq google-chrome-stable
 
+# ssh
+ENV SSH_PASSWD "root:Docker!"
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends dialog \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends openssh-server \
+  && echo "$SSH_PASSWD" | chpasswd
+
+COPY build/sshd_config /etc/ssh/
+COPY build/init.sh /usr/local/bin/
+
+RUN chmod u+x /usr/local/bin/init.sh
+
 # set working directory
 WORKDIR /app
+
+RUN ["init.sh"]
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
@@ -41,8 +56,7 @@ FROM nginx:1.16.0-alpine
 # copy artifact build from the 'build environment'
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# expose port 80
-EXPOSE 80
+EXPOSE 80 2222
 
 # run nginx
 CMD ["nginx", "-g", "daemon off;"]
