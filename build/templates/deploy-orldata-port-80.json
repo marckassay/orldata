@@ -2,24 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "sslKey": {
-      "type": "string",
-      "metadata": {
-        "description": "The private ssl key. Must be encoded in base64."
-      }
-    },
-    "sslCrt": {
-      "type": "string",
-      "metadata": {
-        "description": "The ssl certificate. Must be encoded in base64."
-      }
-    },
-    "nginxConf": {
-      "type": "string",
-      "metadata": {
-        "description": "The nginx configuration file. Must be encoded in base64."
-      }
-    },
     "containerGroupName": {
       "type": "string",
       "metadata": {
@@ -55,45 +37,11 @@
           "ports": [
             {
               "protocol": "TCP",
-              "port": "443"
+              "port": "80"
             }
           ]
         },
-        "volumes": [
-          {
-            "name": "nginx-config",
-            "secret": {
-              "ssl.key": "[parameters('sslKey')]",
-              "ssl.crt": "[parameters('sslCrt')]",
-              "nginx.conf": "[parameters('nginxConf')]"
-            }
-          }
-        ],
         "containers": [
-          {
-            "name": "nginx-with-ssl",
-            "properties": {
-              "image": "nginx",
-              "ports": [
-                {
-                  "protocol": "TCP",
-                  "port": "443"
-                }
-              ],
-              "resources": {
-                "requests": {
-                  "memoryInGB": "1.5",
-                  "cpu": "1.0"
-                }
-              },
-              "volumeMounts": [
-                {
-                  "name": "nginx-config",
-                  "mountPath": "/etc/nginx"
-                }
-              ]
-            }
-          },
           {
             "name": "orldata-app",
             "properties": {

@@ -1,3 +1,0 @@
-GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=select * where (application_type = 'Building Permit' OR application_type = 'GAS') AND starts_with(permit_number, 'BLD____-') order by permit_number DESC |> SELECT COUNT(*)
-Accept: application/json
-X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

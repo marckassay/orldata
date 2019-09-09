@@ -1,6 +1,0 @@
-GET https://data.cityoforlando.net/resource/ryhf-m453.json?$query=SELECT DISTINCT worktype |> SELECT COUNT(*)
-
-Accept: application/json
-X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu
-
-query=select * where processed_date is not null order by processed_date DESC limit 1

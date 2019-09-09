@@ -75,6 +75,8 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
+              "progress": true,
+              "deleteOutputPath": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,

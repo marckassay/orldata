@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      args:
+        - ALPINE_VER=3.10.2
+      context: ./
+      dockerfile: ./build/install/Dockerfile
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /usr/src/app/node_modules
+
+volumes:
+  node_modules:

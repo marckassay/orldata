@@ -114,7 +114,7 @@ export class PermitsFormTabComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
 
       // When radioGroup UI changes, it will programatically set `start_date` and/or `end_date`. The
-      // event will porporgate a here with `start_date` as `end_date` pristine (not dirty). Only when
+      // event will propagate a here with `start_date` as `end_date` pristine (not dirty). Only when
       // the `start_date` or `end_date` changes in the UI, will the event that gets porporgated here
       // will have them set to dirty. If so, set them to `markAsPristine()` and 'clear' radio_date_selection
       // so that the state reflects that the user last interacted with one of the DatePickers.

@@ -1,0 +1,13 @@
+@host = data.cityoforlando.net/resource
+@dataset = ryhf-m453
+
+// BAD
+//@expression = $where=(application_type = 'Building Permit') AND (processed_date between '2019-06-17T21:36:10.335' and '2019-07-17T21:36:10.332') AND (property_owner_name like upper('%25Verg%25') or parcel_owner_name like upper('%25Verg%25') or contractor like upper('%25Verg%25') or contractor_name like upper('%25Verg%25')) |> SELECT DISTINCT * |> SELECT COUNT(*) order by processed_date DESC limit 40 offset 0
+
+// working
+@expression = $where=(application_type = 'Building Permit') AND (processed_date between '2019-06-17T21:36:10.335' and '2019-07-17T21:36:10.332') AND (property_owner_name like upper('%25Verg%25') or parcel_owner_name like upper('%25Verg%25') or contractor like upper('%25Verg%25') or contractor_name like upper('%25Verg%25')) order by processed_date DESC limit 40 offset 0
+
+GET https://{{host}}/{{dataset}}.json?{{expression}}
+
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu

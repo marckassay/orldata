@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  app:
+    command: yarn run serve:dev
+    volumes:
+      - type: bind
+        source: ./
+        target: /usr/src/app

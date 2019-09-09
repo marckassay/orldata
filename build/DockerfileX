@@ -1,0 +1,35 @@
+# base image
+FROM alpine:3.10.2 as depBuild
+
+# install chromium for protractor tests, yarn for node package manager and nginx for web server
+RUN apk add --no-cache \
+  ca-certificates \
+  chromium \
+  nodejs \
+  yarn \
+  nginx
+
+# create and set working directory
+WORKDIR /usr/src/app
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+# install and cache app dependencies
+COPY package.json yarn* ./
+
+# dont have any post install scripts to be executed, because COPY will execute next which only then will src files be avail.
+RUN yarn install --production=true --ignore-engines --pure-lockfile
+
+# add app
+COPY ./ /usr/src/app
+
+# start app
+CMD ["yarn", "run", "build:production"]
+
+# base image
+FROM depBuild
+
+RUN yarn install --production=false --ignore-engines
+
+CMD ["yarn", "run", "serve:dev"]

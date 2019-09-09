@@ -1,0 +1,9 @@
+GET https://data.cityoforlando.net/api/views/metadata/v1/ryhf-m453
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu
+
+###
+
+GET https://data.cityoforlando.net/api/views/metadata/v1/4y9m-jbmz
+Accept: application/json
+X-App-Token: XsVdIPvgqvEmIgHOmFowjVeOu
