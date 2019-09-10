@@ -2,7 +2,10 @@ version: "3.7"
 
 services:
   app:
+    image: orldata:dev
     command: yarn run serve:dev
+    ports:
+      - "4201:4200"
     volumes:
       - type: bind
         source: ./

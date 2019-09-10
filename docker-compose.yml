@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   app:
+    image: orldata:1.0.1
     build:
       args:
         - ALPINE_VER=3.10.2

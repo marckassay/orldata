@@ -21,7 +21,7 @@ COPY package.json yarn.lock? ./
 
 RUN yarn install --ignore-engines
 
-# start build (via ng cli)
+# Start Build (via ng cli)
 
 COPY ./ ./
 

@@ -19,11 +19,11 @@ done
 echo Finished building CSS.
 
 if [ -d /usr/src/app/dist ]; then
-  echo dist directory exists!
+  echo /usr/src/app/dist directory exist
 fi
 
 if [ ! -d /usr/src/app/dist ]; then
-  echo dist directory does not exists!
+  echo /usr/src/app/dist directory does not exist
 fi
 
 
