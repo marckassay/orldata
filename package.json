@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:themes": "bash ./tools/build-themes.sh",
     "build:production": "yarn run build:themes && ng build --configuration production",
-    "serve:dev": "yarn run build:themes && ng serve --host 0.0.0.0 --configuration dev",
+    "serve:dev": "yarn run build:themes && ng serve --configuration dev",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -108,7 +108,9 @@
               "browserTarget": "OrlData:build:production"
             },
             "dev": {
-              "browserTarget": "OrlData:build:dev"
+              "browserTarget": "OrlData:build:dev",
+              "poll": 100,
+              "host": "0.0.0.0"
             }
           }
         },
