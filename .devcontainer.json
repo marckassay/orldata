@@ -1,7 +1,10 @@
 // See https://aka.ms/vscode-remote/devcontainer.json for format details or
 // https://aka.ms/vscode-dev-containers/definitions for sample configurations.
 {
-  "dockerComposeFile": "docker-compose.dev.yml",
+  "dockerComposeFile": [
+    "docker-compose.yml",
+    "docker-compose.dev.yml"
+  ],
   "service": "app",
   "workspaceFolder": "/",
   "extensions": []
