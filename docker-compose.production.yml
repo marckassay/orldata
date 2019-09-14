@@ -10,8 +10,7 @@ services:
   server:
     depends_on:
       - app
-    image: "nginx:${ALPINE_VER}"
-    command: nginx -g 'daemon off;'
+    image: "nginx:alpine"
     ports:
       - "80:80"
     volumes:

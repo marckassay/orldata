@@ -26,4 +26,4 @@ RUN yarn install --ignore-engines
 COPY ./ ./
 
 # docker-compose yml files override the following CMD
-CMD yarn -v
+CMD exit 1

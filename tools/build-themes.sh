@@ -3,7 +3,6 @@
 DEST_PATH=src/assets
 INPUT_PATH=$DEST_PATH/custom-themes/
 
-
 echo Building custom theme scss files.
 
 # Get the files
@@ -17,13 +16,3 @@ do
 done
 
 echo Finished building CSS.
-
-if [ -d /usr/src/app/dist ]; then
-  echo /usr/src/app/dist directory exist
-fi
-
-if [ ! -d /usr/src/app/dist ]; then
-  echo /usr/src/app/dist directory does not exist
-fi
-
-
