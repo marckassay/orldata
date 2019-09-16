@@ -3,7 +3,7 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "start:dev",
+      "script": "serve:dev",
       "isBackground": true,
       "presentation": {
         "focus": true,

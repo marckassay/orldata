@@ -2,18 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
-      "request": "attach",
-      "name": "Attach to Chrome",
-      "port": 4201,
-      "webRoot": "${workspaceFolder}"
-    },
-    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "npm: start:dev",
-      "url": "http://localhost:4200/#",
+      "preLaunchTask": "npm: serve:dev",
+      "url": "http://localhost:4201",
       "webRoot": "${workspaceFolder}"
     },
     {
