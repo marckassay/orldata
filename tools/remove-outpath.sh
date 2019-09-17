@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo 'Start removing contents in ./dist'
 
 rm -rf ./dist/*

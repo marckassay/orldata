@@ -5,4 +5,5 @@
 export const environment = {
   production: false,
   token: 'SODA_APP_TOKEN',
+  semver: ''
 };
