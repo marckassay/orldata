@@ -7,5 +7,8 @@
   ],
   "service": "app",
   "workspaceFolder": "/usr/src/app",
-  "extensions": []
+  "extensions": [
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "msjsdiag.debugger-for-chrome"
+  ]
 }

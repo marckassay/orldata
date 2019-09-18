@@ -5,10 +5,12 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build",
-    "pre:build": "bash ./tools/update-semver.sh && bash ./tools/move-out.sh && bash ./tools/build-themes.sh",
-    "pre:serve": "bash ./tools/update-semver.sh && bash ./tools/build-themes.sh",
+    "pre:build": "bash -c -i ./tools/update-semver.sh && bash ./tools/move-out.sh && bash ./tools/build-themes.sh",
+    "pre:serve": "bash ./tools/build-themes.sh",
     "build:production": "yarn run pre:build && ng build --configuration production",
-    "serve:dev": "yarn run serve:dev && ng serve --configuration dev",
+    "serve:dev": "yarn run pre:serve && ng serve --configuration dev",
+    "up:production": "bash -c -i ./tools/update-semver.sh && docker-compose -f .\\docker-compose.yml -f .\\docker-compose.production.yml up --build",
+    "up:dev": "bash -c -i ./tools/update-semver.sh && bash -i ./tools/set-image-tag.sh dev && docker-compose -f .\\docker-compose.yml -f .\\docker-compose.dev.yml up --build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

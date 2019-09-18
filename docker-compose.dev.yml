@@ -2,6 +2,8 @@ version: "3.7"
 
 services:
   app:
+    environment:
+      - NODE_ENV=development
     image: orldata:dev
     command: yarn run serve:dev
     ports:
@@ -10,3 +12,13 @@ services:
       - type: bind
         source: ./
         target: /usr/src/app
+      - type: volume
+        source: node_modules_dev
+        target: /usr/src/app/node_modules
+      - type: volume
+        source: lockfile
+        target: /tmp
+
+volumes:
+  node_modules_dev:
+  lockfile:

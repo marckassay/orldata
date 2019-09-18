@@ -2,6 +2,8 @@ version: "3.7"
 
 services:
   app:
+    environment:
+      - NODE_ENV=production
     command: yarn run build:production
     volumes:
       - type: volume
@@ -17,6 +19,10 @@ services:
       - type: volume
         source: dist
         target: /usr/share/nginx/html
+      - type: volume
+        source: node_modules
+        target: /usr/src/app/node_modules
 
 volumes:
   dist:
+  node_modules:

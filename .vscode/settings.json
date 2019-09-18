@@ -11,7 +11,7 @@
   "markdownlint.config": {
     "MD014": false
   },
-  "npm.packageManager": "npm",
+  "npm.packageManager": "yarn",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "workbench.settings.editor": "json",
   "files.eol": "\n"

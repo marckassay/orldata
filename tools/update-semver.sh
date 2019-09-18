@@ -8,9 +8,6 @@
 #   Updates package.json, .env, and Angular environment files with the git branch name if its a valid semver format. This file can be
 #   benefical if used as a hook, such as before `ng serve` or `ng build` is called.
 #
-# .PARAMETER WhatIf
-#   Dry-run; outputs what it intends to do if executed without `-WhatIf`
-#
 # .EXAMPLE
 #   /mnt/e/marckassay/orldata$ bash -c -i tools/update-semver.sh
 #
@@ -30,9 +27,11 @@ validate-version (){
 
 semver="$(git describe --contains --all)"
 semver_result=$(validate-version $semver)
+currenttag_result=$(grep -F "TAG=$semver" .env)
 
-if [ "$semver_result" = 0 ]; then
-  echo "Current $semver branch has been determined to be a valid semver value."
+if [ "$semver_result" -eq 0 ] && [ -z "$currenttag_result" ]
+then
+  echo "Current '$semver' branch has been determined to be a valid semver value."
 
   echo "Updating .env with semver"
   sed -i "s/TAG=.*/TAG=$semver/" .env
@@ -47,9 +46,17 @@ if [ "$semver_result" = 0 ]; then
   sed -i "s/\"version\".*\:.*/\"version\": \"$semver\"\,/" package.json
 
   exit 0
+elif [ ! -z "$currenttag_result" ]
+then
+  echo "Current '$semver' branch has been determined to be a valid semver value but no provisioning will be performed"
+  echo "since '.env' file has already been updated with this value."
+
+  exit 0
 else
-  echo "Current branch was not determined to be a valid semver value."
+  echo "Current branch has been determined to not be a valid semver value. No provisioning will be performed."
+
   exit 0
 fi
 
+echo "An unknown error occurred in ./tools/update-semver.sh file."
 exit 1
