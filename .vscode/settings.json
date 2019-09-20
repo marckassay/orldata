@@ -12,6 +12,7 @@
     "MD014": false
   },
   "npm.packageManager": "yarn",
+  "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "workbench.settings.editor": "json",
   "files.eol": "\n"
