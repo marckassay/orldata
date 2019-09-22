@@ -25,7 +25,14 @@ validate-version (){
   fi
 }
 
-semver="$(git describe --contains --all)"
+if [ ! -x "$(which git)" ] ; then
+  echo "No git executable found. Aborting update-semver script."
+  exit 0
+fi
+
+# this works only if its local and remote branch
+# semver="$(git describe --contains --all)"
+semver="$(git branch | grep \* | cut -d ' ' -f2)"
 semver_result=$(validate-version $semver)
 currenttag_result=$(grep -F "TAG=$semver" .env)
 

@@ -1,11 +1,11 @@
 {
   "name": "orldata",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "ng": "ng",
     "build": "ng build",
-    "pre:build": "bash -c -i ./tools/update-semver.sh && bash ./tools/move-out.sh && bash ./tools/build-themes.sh",
+    "pre:build": "bash ./tools/update-semver.sh && bash ./tools/remove-outpath.sh && bash ./tools/build-themes.sh",
     "pre:serve": "bash ./tools/build-themes.sh",
     "build:production": "yarn run pre:build && ng build --configuration production",
     "serve:dev": "yarn run pre:serve && ng serve --configuration dev",

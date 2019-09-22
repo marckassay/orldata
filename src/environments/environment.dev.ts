@@ -5,5 +5,5 @@
 export const environment = {
   production: false,
   token: 'XsVdIPvgqvEmIgHOmFowjVeOu',
-  semver: '1.0.1'
+  semver: '1.0.2'
 };

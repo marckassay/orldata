@@ -5,6 +5,8 @@ services:
     environment:
       - NODE_ENV=production
     command: yarn run build:production
+    build:
+      target: install
     volumes:
       - type: volume
         source: dist
