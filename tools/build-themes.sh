@@ -3,7 +3,7 @@
 DEST_PATH=src/assets
 INPUT_PATH=$DEST_PATH/custom-themes/
 
-echo Building custom theme scss files.
+echo "Executing 'build-themes.sh' ..."
 
 # Get the files
 FILES=$(find src/assets/custom-themes -name "*.scss")
@@ -12,7 +12,9 @@ for FILE in $FILES
 do
   FILENAME=${FILE#$INPUT_PATH}
   BASENAME=${FILENAME%.scss}
+  echo "  Building '${FILENAME%.scss}'"
   $(yarn bin)/node-sass $FILE > $DEST_PATH/$BASENAME.css
 done
 
-echo Finished building CSS.
+echo "Finished executing 'build-themes.sh'."
+exit 0

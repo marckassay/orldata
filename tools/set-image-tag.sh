@@ -13,5 +13,10 @@
 #
 ############################################################################################################################################
 
-echo "Updating .env TAG variable with '$1'"
+echo "Executing 'set-image-tag.sh' ..."
+
+echo "  Updating .env TAG variable with '$1'"
 sed -i "s/TAG=.*/TAG=$1/" .env
+
+echo "Finished executing 'set-image-tag.sh'."
+exit 0

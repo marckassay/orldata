@@ -2,9 +2,14 @@ version: "3.7"
 
 services:
   app:
-    image: "orldata:${TAG}"
+    environment:
+      - NODE_ENV=development
     build:
       args:
         - ALPINE_VER=3.10.2
       context: ./
       dockerfile: ./build/install/Dockerfile
+
+volumes:
+  node_modules:
+  lockfile:

@@ -1,7 +1,9 @@
 #!/bin/bash
 
-echo 'Start removing contents in ./dist'
+echo "Executing 'remove-outpath.sh' ..."
 
+echo "  Removing files in ./dist"
 rm -rf ./dist/*
 
-echo 'Completed removing contents in ./dist'
+echo "Finished executing 'remove-outpath.sh'."
+exit 0
