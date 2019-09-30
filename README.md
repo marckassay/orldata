@@ -2,7 +2,7 @@
 
 An Angular app that syndicates to ['Orlando's Open Data'](https://data.cityoforlando.net/) services. This application has been developed using [Angular](https://angular.io/) 8.0 with [NgRx](https://ngrx.io/) for state management, and also [Angular Material](https://material.angular.io/) for UI components.
 
-![OrlData](resources/web_screenshot.png)
+![OrlData](resources/media/web_screenshot.png)
 
 The UI layout is derived from Angular Material's website, whereas my objective for the UI was to simply utilize Material components by styling and programming them. The services are provided by [Socrata](https://dev.socrata.com/)'s DaaS platform using their "rich query functionality" through a query language that they refer to as "Socrata Query Language" or "SoQL".
 
@@ -10,3 +10,15 @@ Development environment contains a Docker image that is able to hot-reload the b
 
 Visit the following link to see 'OrlData':
 [orldatawebapp.azurewebsites.net](https://orldatawebapp.azurewebsites.net)
+
+## Build Processes
+
+The requirements for 
+
+# production
+
+To build and deploy to nginx webserver, simply call:
+
+```
+yarn run up:production
+```

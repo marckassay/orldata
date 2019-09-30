@@ -2,15 +2,20 @@ version: "3.7"
 
 services:
   app:
-    environment:
-      - NODE_ENV=production
-    command: yarn run build:production
+    image: "orldata:${TAG}"
     build:
-      target: install
+      target: production-1
     volumes:
       - type: volume
         source: dist
         target: /usr/src/app/dist
+      - type: volume
+        source: node_modules
+        target: /usr/src/app/node_modules
+      - type: volume
+        source: lockfile
+        target: /tmp
+
   server:
     depends_on:
       - app
@@ -21,10 +26,6 @@ services:
       - type: volume
         source: dist
         target: /usr/share/nginx/html
-      - type: volume
-        source: node_modules
-        target: /usr/src/app/node_modules
 
 volumes:
   dist:
-  node_modules:
