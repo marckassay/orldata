@@ -27,7 +27,7 @@ FROM install as development
 WORKDIR /usr/src/app
 RUN apk add --no-cache \
   git
-
+ENTRYPOINT ["bash"]
 
 # Stage 2 of 2: install for production
 FROM install as production-0

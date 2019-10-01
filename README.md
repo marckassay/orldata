@@ -22,3 +22,18 @@ To build and deploy to nginx webserver, simply call:
 ```
 yarn run up:production
 ```
+
+# development
+
+To build development image, simply call:
+
+```
+yarn run up:dev
+```
+
+Afterwards, ideally, use VSCode's remote feature to work inside of container.
+
+Once VSCode is running in the container, `bash` prompt should be at the project. Now call:
+```
+yarn run serve:dev
+```
