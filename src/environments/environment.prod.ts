@@ -6,5 +6,5 @@ export const environment = {
   production: true,
   // TODO: Yeah, I know. This is used exclusively for read-only queries. Setup Azure for OAuth for services.
   token: 'XsVdIPvgqvEmIgHOmFowjVeOu',
-  semver: '1.0.3'
+  semver: '1.0.4'
 };

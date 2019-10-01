@@ -73,7 +73,7 @@
           {
             "name": "nginx-with-ssl",
             "properties": {
-              "image": "nginx",
+              "image": "nginx:alpine",
               "ports": [
                 {
                   "protocol": "TCP",
