@@ -109,7 +109,6 @@
             },
             "dev": {
               "browserTarget": "OrlData:build:dev",
-              "poll": 100,
               "host": "0.0.0.0"
             }
           }

@@ -11,14 +11,3 @@ Development environment contains a Docker image that is able to hot-reload the b
 Visit the following link to see 'OrlData':
 [orldatawebapp.azurewebsites.net](https://orldatawebapp.azurewebsites.net)
 
-## Build Processes
-
-The requirements for 
-
-# production
-
-To build and deploy to nginx webserver, simply call:
-
-```
-yarn run up:production
-```

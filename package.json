@@ -10,7 +10,7 @@
     "build:production": "yarn run pre:build && ng build --configuration production",
     "serve:dev": "yarn run pre:serve && ng serve --configuration dev",
     "up:production": "bash ./tools/update-semver.sh && docker-compose -f .\\docker-compose.yml -f .\\docker-compose.production.yml up -d --build",
-    "up:dev": "bash ./tools/update-semver.sh && bash ./tools/set-image-tag.sh dev && docker-compose -f .\\docker-compose.yml -f .\\docker-compose.dev.yml up --build",
+    "up:dev": "bash ./tools/update-semver.sh && bash ./tools/set-image-tag.sh dev && docker-compose -f .\\docker-compose.yml -f .\\docker-compose.dev.yml up -d --build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

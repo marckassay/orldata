@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
+      "name": "serve orldata",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: serve:dev",
@@ -10,7 +10,7 @@
       "webRoot": "${workspaceFolder}"
     },
     {
-      "name": "ng test",
+      "name": "test orldata",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:9876/debug.html",
@@ -24,7 +24,7 @@
       }
     },
     {
-      "name": "ng e2e",
+      "name": "e2e orldata",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
