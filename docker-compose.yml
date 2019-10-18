@@ -7,6 +7,7 @@ services:
     build:
       args:
         - ALPINE_VER=3.10.2
+        - NGINX_VER=1.17.4
       context: ./
       dockerfile: ./build/install/Dockerfile
 

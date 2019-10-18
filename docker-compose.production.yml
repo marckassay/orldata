@@ -3,29 +3,10 @@ version: "3.7"
 services:
   app:
     image: "orldata:${TAG}"
-    build:
-      target: production-1
     volumes:
-      - type: volume
-        source: dist
-        target: /usr/src/app/dist
       - type: volume
         source: node_modules
         target: /usr/src/app/node_modules
       - type: volume
         source: lockfile
         target: /tmp
-
-  server:
-    depends_on:
-      - app
-    image: "nginx:alpine"
-    ports:
-      - "80:80"
-    volumes:
-      - type: volume
-        source: dist
-        target: /usr/share/nginx/html
-
-volumes:
-  dist:

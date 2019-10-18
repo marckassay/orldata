@@ -1,2 +1,4 @@
-node_modules
+build/install/Dockerfile
 dist
+node_modules
+docker-compose.*
