@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceGroupName": {
+      "value": "orldataResourceGroup"
+    },
+    "resourceGroupLocation": {
+      "value": "East US"
+    },
+    "containerRegistryName": {
+      "value": "orldataContainerRegistry"
+    },
+    "containerDNSName": {
+      "value": "orldata-stage"
+    },
+    "sslCrtPath": {
+      "value": "build/ssl.crt"
+    },
+    "nginxConfPath": {
+      "value": "build/nginx.conf"
+    }
+  }
+}

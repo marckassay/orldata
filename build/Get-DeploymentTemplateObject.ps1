@@ -2,7 +2,8 @@ function Get-DeploymentTemplateObject {
 
   <#
     .SYNOPSIS
-    A project specific PS function for OrlData to be piped into `New-XAzResourceGroupDeployment`
+    A project specific PowerShell function for OrlData project that will process `deploy-orladata.parameters.json` along with other data as
+    parameters that will be passed into the `deploy-orladata.json` template.
 
     .DESCRIPTION
     Encodes SSL and nginx files into a hashtable that is intended to be used in `New-ResourceGroupDeployment`. This hashtable is used in the `build/templates/*.json` file.
@@ -29,25 +30,29 @@ function Get-DeploymentTemplateObject {
   begin {
     $SslKeyPath = Resolve-Path -Path $SslKeyPath;
     [string]$KeyContent = Get-Content -Path $SslKeyPath -ReadCount 0 | ConvertTo-Base64
-    [string]$CrtContent = ConvertTo-Base64 -Path $(Resolve-Path -Path 'build/ssl.crt')
-    [string]$NginxConfContent = ConvertTo-Base64 -Path $(Resolve-Path -Path 'build/nginx.conf')
+
+    $TemplateParameters = Get-Content '.\build\templates\deploy-orldata.parameters.json' | ConvertFrom-Json | Select-Object -ExpandProperty parameters
+    [string]$CrtContent = ConvertTo-Base64 -Path $(Resolve-Path -Path $($TemplateParameters.sslCrtPath.value)).Path
+    [string]$NginxConfContent = ConvertTo-Base64 -Path $(Resolve-Path -Path $($TemplateParameters.nginxConfPath.value)).Path
   }
 
   end {
-    <#     $ACI_PERS_RESOURCE_GROUP = 'orldataResourceGroup'
-    $ACI_PERS_STORAGE_ACCOUNT_NAME = 'orldatastorageaccount1'
-    $ACI_PERS_SHARE_NAME = 'orldatafileshare'
 
-    $ACI_PERS_STORAGE_ACCOUNT_KEY = az storage account keys list `
-      --resource-group $ACI_PERS_RESOURCE_GROUP `
-      --account-name $ACI_PERS_STORAGE_ACCOUNT_NAME `
-      --query "[0].value" `
-      --output 'tsv' #>
+    $OrlDataContainerRegistry = Get-AzContainerRegistry -ResourceGroupName $($TemplateParameters.resourceGroupName.value) -Name $($TemplateParameters.containerRegistryName.value)
+    $ContainerRegistryCredentials = Get-AzContainerRegistryCredential -Registry $OrlDataContainerRegistry
+    # TODO: waiting for this issue to be resolved. Otherwize login process will start: https://github.com/Azure/azure-cli/issues/10979
+    # $CRCredentials.Password | docker login $OrlDataCR.LoginServer -u $CRCredentials.Username --password-stdin
 
     @{
-      sslKey    = $KeyContent
-      sslCrt    = $CrtContent
-      nginxConf = $NginxConfContent
+      resourceGroupName            = $TemplateParameters.resourceGroupName
+      resourceGroupLocation        = $TemplateParameters.resourceGroupLocation
+      deploymentName               = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
+      containerRegistryCredentials = $ContainerRegistryCredentials
+      containerDNSName             = $TemplateParameters.containerDNSName
+      containerTag                 = $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
+      sslKey                       = $KeyContent
+      sslCrt                       = $CrtContent
+      nginxConf                    = $NginxConfContent
     }
   }
 }
