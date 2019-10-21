@@ -31,28 +31,34 @@ function Get-DeploymentTemplateObject {
     $SslKeyPath = Resolve-Path -Path $SslKeyPath;
     [string]$KeyContent = Get-Content -Path $SslKeyPath -ReadCount 0 | ConvertTo-Base64
 
-    $TemplateParameters = Get-Content '.\build\templates\deploy-orldata.parameters.json' | ConvertFrom-Json | Select-Object -ExpandProperty parameters
-    [string]$CrtContent = ConvertTo-Base64 -Path $(Resolve-Path -Path $($TemplateParameters.sslCrtPath.value)).Path
-    [string]$NginxConfContent = ConvertTo-Base64 -Path $(Resolve-Path -Path $($TemplateParameters.nginxConfPath.value)).Path
+    $TemplateParameters = Get-Content '.\build\templates\deploy-orldata.parameters.json' | `
+        ConvertFrom-Json | `
+        Select-Object -ExpandProperty parameters
+
+    [string]$CrtContent = ConvertTo-Base64 `
+      -Path $(Resolve-Path -Path $($TemplateParameters.sslCrtPath.value)).Path
+
+    [string]$NginxConfContent = ConvertTo-Base64 `
+      -Path $(Resolve-Path -Path $($TemplateParameters.nginxConfPath.value)).Path
   }
 
   end {
+    $ContainerRegistryCredentials = Get-XAzRegistryCredentials ($TemplateParameters.containerRegistryName.value)
 
-    $OrlDataContainerRegistry = Get-AzContainerRegistry -ResourceGroupName $($TemplateParameters.resourceGroupName.value) -Name $($TemplateParameters.containerRegistryName.value)
-    $ContainerRegistryCredentials = Get-AzContainerRegistryCredential -Registry $OrlDataContainerRegistry
     # TODO: waiting for this issue to be resolved. Otherwize login process will start: https://github.com/Azure/azure-cli/issues/10979
     # $CRCredentials.Password | docker login $OrlDataCR.LoginServer -u $CRCredentials.Username --password-stdin
 
     @{
-      resourceGroupName            = $TemplateParameters.resourceGroupName
-      resourceGroupLocation        = $TemplateParameters.resourceGroupLocation
-      deploymentName               = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
-      containerRegistryCredentials = $ContainerRegistryCredentials
-      containerDNSName             = $TemplateParameters.containerDNSName
-      containerTag                 = $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
-      sslKey                       = $KeyContent
-      sslCrt                       = $CrtContent
-      nginxConf                    = $NginxConfContent
+      resGroupName             = $TemplateParameters.resGroupName.value
+      resGroupLocation         = $TemplateParameters.resGroupLocation.value
+      deployName               = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
+      containerGroupName       = "containerGroup-" + $(Get-Date -Format FileDateTimeUniversal)
+      imageRegistryCredentials = $ContainerRegistryCredentials.Image
+      imageUri                 = $ContainerRegistryCredentials.Image.server + "/orldata/prod:" + $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
+      containerDNSName         = $TemplateParameters.containerDNSName.value
+      sslKey                   = $KeyContent
+      sslCrt                   = $CrtContent
+      nginxConf                = $NginxConfContent
     }
   }
 }
