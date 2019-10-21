@@ -11,31 +11,3 @@ Development environment contains a Docker image that is able to hot-reload the b
 Visit the following link to see 'OrlData':
 [orldatawebapp.azurewebsites.net](https://orldatawebapp.azurewebsites.net)
 
-
-
-docker tag e3248054277986e1c3 orldatacontainerregistry.azurecr.io/orldata/prod:1.0.7
-docker push orldatacontainerregistry.azurecr.io/orldata/prod:1.0.7
-az webapp config container set --resource-group orldataResourceGroup --name corldata --multicontainer-config-type compose --multicontainer-config-file .\docker-compose.azure.yml
-
-
-
-
-az webapp config storage-account add -g "orldataResourceGroup" -n "corldata" 
- --custom-id Dist 
- --storage-type AzureFiles 
- --accountName "orldatastorageaccount1" 
- --share-name "DistShare" 
- --access-key ***
-
-
-  app:
-    image: orldatacontainerregistry.azurecr.io/orldata/prod:1.0.7
-    init: true
-    ports:
-      - "4200:4200"
-    privileged: true
-    stdin_open: true
-    volumes:
-      - dist:/usr/src/app/dist
-      - node_modules:/usr/src/app/node_modules
-      - lockfile:/tmp
