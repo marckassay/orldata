@@ -11,14 +11,11 @@
     "containerRegistryName": {
       "value": "orldataContainerRegistry"
     },
-    "containerDNSName": {
+    "hostName": {
       "value": "orldata-stage"
     },
-    "sslCrtPath": {
-      "value": "build/ssl.crt"
-    },
-    "nginxConfPath": {
-      "value": "build/nginx.conf"
+    "appServicePlan": {
+      "value": "serviceplan"
     }
   }
 }

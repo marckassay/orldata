@@ -21,25 +21,25 @@ function Get-DeploymentTemplateObject {
   [CmdletBinding()]
   [OutputType([hashtable])]
   Param(
-    [Parameter(Mandatory = $true,
+    [Parameter(Mandatory = $false,
       HelpMessage = "The 'ssl.key' file path.",
       Position = 0)]
     [string]$SslKeyPath
   )
 
   begin {
-    $SslKeyPath = Resolve-Path -Path $SslKeyPath;
-    [string]$KeyContent = Get-Content -Path $SslKeyPath -ReadCount 0 | ConvertTo-Base64
-
     $TemplateParameters = Get-Content '.\build\templates\deploy-orldata.parameters.json' | `
         ConvertFrom-Json | `
         Select-Object -ExpandProperty parameters
+
+    <#     $SslKeyPath = Resolve-Path -Path $SslKeyPath;
+    [string]$KeyContent = Get-Content -Path $SslKeyPath -ReadCount 0 | ConvertTo-Base64
 
     [string]$CrtContent = ConvertTo-Base64 `
       -Path $(Resolve-Path -Path $($TemplateParameters.sslCrtPath.value)).Path
 
     [string]$NginxConfContent = ConvertTo-Base64 `
-      -Path $(Resolve-Path -Path $($TemplateParameters.nginxConfPath.value)).Path
+      -Path $(Resolve-Path -Path $($TemplateParameters.nginxConfPath.value)).Path #>
   }
 
   end {
@@ -49,16 +49,13 @@ function Get-DeploymentTemplateObject {
     # $CRCredentials.Password | docker login $OrlDataCR.LoginServer -u $CRCredentials.Username --password-stdin
 
     @{
-      resGroupName             = $TemplateParameters.resGroupName.value
-      resGroupLocation         = $TemplateParameters.resGroupLocation.value
-      deployName               = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
-      containerGroupName       = "containerGroup-" + $(Get-Date -Format FileDateTimeUniversal)
-      imageRegistryCredentials = $ContainerRegistryCredentials.Image
-      imageUri                 = $ContainerRegistryCredentials.Image.server + "/orldata/prod:" + $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
-      containerDNSName         = $TemplateParameters.containerDNSName.value
-      sslKey                   = $KeyContent
-      sslCrt                   = $CrtContent
-      nginxConf                = $NginxConfContent
+      resGroupName     = $TemplateParameters.resGroupName.value
+      resGroupLocation = $TemplateParameters.resGroupLocation.value
+      deployName       = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
+      hostName         = $TemplateParameters.hostName.value
+      appServicePlan   = $TemplateParameters.appServicePlan.value
+      dockerRegistry   = $ContainerRegistryCredentials.Image[0]
+      imageUri         = $ContainerRegistryCredentials.Image.server + "/orldata/prod:" + $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
     }
   }
 }
