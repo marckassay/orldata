@@ -28,10 +28,12 @@ function Get-DeploymentTemplateObject {
   )
 
   begin {
+    $ReplaceToken = "<key-vault-resource-id>"
+    $KeyVaultResourceId = Get-AzKeyVault -VaultName orldataKeyVault | Select-Object -ExpandProperty ResourceId
     $TemplateParameters = Get-Content '.\build\templates\deploy-orldata.parameters.json' | `
-        ConvertFrom-Json | `
+        ForEach-Object { $_ -Replace $ReplaceToken, $KeyVaultResourceId } | `
+        ConvertFrom-Json -Depth 5 -AsHashtable | `
         Select-Object -ExpandProperty parameters
-
     <#     $SslKeyPath = Resolve-Path -Path $SslKeyPath;
     [string]$KeyContent = Get-Content -Path $SslKeyPath -ReadCount 0 | ConvertTo-Base64
 
@@ -48,14 +50,20 @@ function Get-DeploymentTemplateObject {
     # TODO: waiting for this issue to be resolved. Otherwize login process will start: https://github.com/Azure/azure-cli/issues/10979
     # $CRCredentials.Password | docker login $OrlDataCR.LoginServer -u $CRCredentials.Username --password-stdin
 
+    # Since:
+    # "You can't use the reference function or any of the list functions in the parameters section. These functions get the runtime state of a resource, and can't be executed before deployment when parameters are resolved."
+    # Adding docker credentials here.
+
     @{
-      resGroupName     = $TemplateParameters.resGroupName.value
-      resGroupLocation = $TemplateParameters.resGroupLocation.value
-      deployName       = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
-      hostName         = $TemplateParameters.hostName.value
-      appServicePlan   = $TemplateParameters.appServicePlan.value
-      dockerRegistry   = $ContainerRegistryCredentials.Image[0]
-      imageUri         = $ContainerRegistryCredentials.Image.server + "/orldata/prod:" + $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
+      resGroupName                 = $TemplateParameters.resGroupName.value
+      resGroupLocation             = $TemplateParameters.resGroupLocation.value
+      deployName                   = "deployment-" + $(Get-Date -Format FileDateTimeUniversal)
+      hostName                     = $TemplateParameters.hostName.value
+      appServicePlan               = $TemplateParameters.appServicePlan.value
+      imageUri                     = $ContainerRegistryCredentials.Image.server + "/orldata/prod:" + $(Get-Content -Path '.env' -Delimiter '=' -Tail 1).Trim()
+      dockerRegistryServerUsername = $TemplateParameters.dockerRegistryServerUsername
+      dockerRegistryServerPassword = $TemplateParameters.dockerRegistryServerPassword
+      dockerRegistryServerUrl      = $TemplateParameters.dockerRegistryServerUrl
     }
   }
 }

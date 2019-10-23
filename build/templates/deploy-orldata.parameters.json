@@ -16,6 +16,30 @@
     },
     "appServicePlan": {
       "value": "serviceplan"
+    },
+    "dockerRegistryServerUsername": {
+      "reference": {
+        "keyVault": {
+          "id": "<key-vault-resource-id>"
+        },
+        "secretName": "DOCKER-REGISTRY-SERVER-USERNAME"
+      }
+    },
+    "dockerRegistryServerPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "<key-vault-resource-id>"
+        },
+        "secretName": "DOCKER-REGISTRY-SERVER-PASSWORD"
+      }
+    },
+    "dockerRegistryServerUrl": {
+      "reference": {
+        "keyVault": {
+          "id": "<key-vault-resource-id>"
+        },
+        "secretName": "DOCKER-REGISTRY-SERVER-URL"
+      }
     }
   }
 }
