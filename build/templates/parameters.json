@@ -3,19 +3,25 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "resGroupName": {
-      "value": "orldataResourceGroup"
+      "value": "orldataTest"
+    },
+    "containerRegistryName": {
+      "value": "orldataTCR"
+    },
+    "keyVaultName": {
+      "value": "orldataTKV"
+    },
+    "userAssignedId": {
+      "value": "orldataTId"
+    },
+    "hostName": {
+      "value": "orldataTHN"
+    },
+    "appServicePlanName": {
+      "value": "serviceplanT"
     },
     "resGroupLocation": {
       "value": "East US"
-    },
-    "containerRegistryName": {
-      "value": "orldataContainerRegistry"
-    },
-    "hostName": {
-      "value": "orldata-stage"
-    },
-    "appServicePlan": {
-      "value": "serviceplan"
     },
     "dockerRegistryServerUsername": {
       "reference": {
