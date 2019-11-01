@@ -41,28 +41,34 @@ function Get-InitialDeploymentTemplateObject {
     [string]$TemplateParameterFile = '.\build\templates\parameters.json'
   )
 
-  end {
-    $Exit = $false
+  begin {
+    $TotalSteps = 5
+    $CurrentStep = 0
+  }
 
-    Write-Verbose "Checking for a subscription"
-    $Subscription = Get-AzSubscription -ErrorAction SilentlyContinue
-    if ($null -eq $Subscription) {
-      Write-Warning "Found no connected sessions in Azure. You can login using: Connect-AzAccount"
-      $Exit = $true
-    }
-    else {
-      Write-Verbose "Checked subscription"
-      Write-Verbose "  Subscription Id is: /subscriptions/$($Subscription.id)"
+  end {
+    $Exit = Connect-XAzAccount -PassThru -OutVariable Subscription | `
+      Measure-Object | `
+      ForEach-Object { $($_.Count -eq 0) }
+
+    if ($Exit -eq $false) {
+      Write-StepMessage (++$CurrentStep) $TotalSteps
+
+      $TemplateParameters = Get-XAzTemplateParameterObject -Path $TemplateParameterFile
+
+      $Exit = $null -eq $TemplateParameters
     }
 
     if ($Exit -eq $false) {
-      Write-Verbose "Loading $(Resolve-Path $TemplateParameterFile) file"
-      $ParameterContent = Get-Content $(Resolve-Path $TemplateParameterFile)
+      Write-StepMessage (++$CurrentStep) $TotalSteps
 
-      Write-Verbose "Converting 'parameters.json' into object"
-      $TemplateParameters = $ParameterContent | `
-        ConvertFrom-Json -Depth 5 -AsHashtable | `
-        Select-Object -ExpandProperty parameters
+      $Exit = Confirm-XAzResourceGroup -Name ($TemplateParameters.resGroupName.value) -Location ($TemplateParameters.resGroupLocation.value) -Prompt | `
+        Measure-Object | `
+        ForEach-Object { $($_.Count -eq 0) }
+    }
+
+    if ($Exit -eq $false) {
+      Write-StepMessage (++$CurrentStep) $TotalSteps
 
       $ContainerRegistryName = Approve-XAzRegistryName `
         -Name ($TemplateParameters.containerRegistryName.value) `
@@ -72,6 +78,8 @@ function Get-InitialDeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
+      Write-StepMessage (++$CurrentStep) $TotalSteps
+
       $HostName = Approve-XAzDomainName `
         -Name $($TemplateParameters.hostName.value)
 
@@ -79,6 +87,8 @@ function Get-InitialDeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
+      Write-StepMessage (++$CurrentStep) $TotalSteps
+
       [hashtable]$TemplateParameterObject = @{
         keyVaultName          = $TemplateParameters.keyVaultName.value
         userAssignedIdName    = $TemplateParameters.userAssignedId.value
@@ -94,9 +104,7 @@ function Get-InitialDeploymentTemplateObject {
       }
     }
     else {
-      if ($PSCmdlet.MyInvocation.BoundParameters['Verbose'] -eq $false) {
-        Write-Error "This script has failed. If needed, execute with Verbose switch."
-      }
+      Write-Error "This script has failed. If needed, execute with Verbose switch."
     }
   }
 }

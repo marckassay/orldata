@@ -32,7 +32,32 @@ This will eventually call: `docker-compose up ...production.yml ... -d --build`.
 ## Deployment Process
 
 This section is still being worked on.
+
+```powershell
+Get-InitialDeploymentTemplateObject -PipelineVariable PreObj | New-AzResourceGroupDeployment -TemplateParameterObject $PreObj.TemplateParameterObject -Verbose
+yarn run build:production
+docker build -f .\build\install\Dockerfile -t orldatacontainerregistry.azurecr.io/orldata/prod:1.0.8 --rm  .
+$OrlDataCR = Get-AzContainerRegistry
+$CRCredentials = Get-AzContainerRegistryCredential -ResourceGroupName orldataResourceGroup -Name orldataContainerRegistry
+$CRCredentials.Password | docker login $OrlDataCR.LoginServer -u $CRCredentials.Username --password-stdin
+docker push orldatacontainerregistry.azurecr.io/orldata/prod:1.0.8
+Update-XAzAppDeployment -WithImageTag 1.0.8
 ```
-Get-DeploymentTemplateObject -SslKeyPath '~\ssl.key' | Deploy-XAzOrldataStage
-Update-XAzOrldata -WithTag 1.0.8
+
+```powershell
+New-XAzAppDeployment
+Build-XAzApp -Tag 1.0.8
+Update-XAzAppDeployment -WithImageTag orldata/prod:1.0.8
+```
+
+```powershell
+New-XAzAppDeployment
+Build-XAzApp -Tag 1.0.8
+Update-XAzAppDeployment -ResourceGroupName orldataResourceGroup -ContainerRegistryName orldataContainerRegistry -WithImageTag 1.0.8
+```
+
+```powershell
+yarn run new:deployment
+yarn run build:deployment
+yarn run update:deployment
 ```

@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "resGroupName": {
-      "value": "orldataTest"
+      "value": "orldataResourceGroup"
     },
     "containerRegistryName": {
-      "value": "orldataTCR"
+      "value": "orldataContainerRegistry"
     },
     "keyVaultName": {
       "value": "orldataTKV"
