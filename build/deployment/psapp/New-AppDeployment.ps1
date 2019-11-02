@@ -1,4 +1,4 @@
-function New-OrldataDeployment {
+function New-AppDeployment {
   [CmdletBinding()]
   param(
   )

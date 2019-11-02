@@ -32,13 +32,13 @@ function Get-UpdateDeploymentTemplateObject {
       Mandatory = $false,
       Position = 1
     )]
-    [string]$TemplateFile = '.\build\templates\update-deployment.json',
+    [string]$TemplateFile = (Join-Path $PWD '.\build\templates\update-deployment.json'),
 
     [Parameter(
       Mandatory = $false,
       Position = 2
     )]
-    [string]$TemplateParameterFile = '.\build\templates\parameters.json'
+    [string]$TemplateParameterFile = (Join-Path $PWD '.\build\templates\parameters.json')
   )
 
   begin {

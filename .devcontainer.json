@@ -2,8 +2,8 @@
 // https://aka.ms/vscode-dev-containers/definitions for sample configurations.
 {
   "dockerComposeFile": [
-    "docker-compose.yml",
-    "docker-compose.dev.yml"
+    "./build/image/docker-compose.yml",
+    "./build/image/docker-compose.dev.yml"
   ],
   "service": "app",
   "workspaceFolder": "/usr/src/app",

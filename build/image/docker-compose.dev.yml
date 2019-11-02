@@ -2,7 +2,8 @@ version: "3.7"
 
 services:
   app:
-    image: orldata:dev
+    image: "${NAME}:dev"
+    working_dir: /usr/src/app
     command: yarn run serve:dev
     build:
       target: development
@@ -10,7 +11,7 @@ services:
       - "4201:4200"
     volumes:
       - type: bind
-        source: ./
+        source: ../../
         target: /usr/src/app
       - type: volume
         source: node_modules

@@ -32,13 +32,13 @@ function Get-InitialDeploymentTemplateObject {
       Mandatory = $false,
       Position = 0
     )]
-    [string]$TemplateFile = '.\build\templates\initial-deployment.json',
+    [string]$TemplateFile = (Join-Path $PWD '.\build\templates\initial-deployment.json'),
 
     [Parameter(
       Mandatory = $false,
       Position = 1
     )]
-    [string]$TemplateParameterFile = '.\build\templates\parameters.json'
+    [string]$TemplateParameterFile = (Join-Path $PWD '.\build\templates\parameters.json')
   )
 
   begin {
