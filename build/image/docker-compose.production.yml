@@ -3,6 +3,10 @@ version: "3.7"
 services:
   app:
     image: "${NAME}:${TAG}"
+    build:
+      target: deployment
+    ports:
+      - "80:80"
     volumes:
       - type: volume
         source: node_modules

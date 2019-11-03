@@ -40,7 +40,7 @@ WORKDIR /usr/src/app
 RUN yarn run build:production
 
 
-# Stage 5 of 5: reduces production-0 to just the output directory from running `ng build` in previous stage. This path is bound to volume mount.
+# Stage 5 of 5: reduces production to just its output directory from running `ng build`. This path is bound to volume mount.
 FROM nginx:${NGINX_VER}-alpine as deployment
 
 COPY --from=production /usr/src/app/dist /usr/share/nginx/html
