@@ -3,25 +3,25 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "resGroupName": {
-      "value": "orldataResourceGroup"
+      "value": "zedasResourceGroup"
     },
     "containerRegistryName": {
-      "value": "orldataContainerRegistry"
+      "value": "zedasContainerRegistry"
     },
     "keyVaultName": {
-      "value": "orldataTKV"
+      "value": "zedasKV"
     },
     "userAssignedId": {
-      "value": "orldataTId"
+      "value": "zedasId"
     },
     "hostName": {
-      "value": "orldataTHN"
+      "value": "zedas"
     },
     "appServicePlanName": {
-      "value": "serviceplanT"
+      "value": "zedasSP"
     },
     "resGroupLocation": {
-      "value": "East US"
+      "value": "Central US"
     },
     "dockerRegistryServerUsername": {
       "reference": {

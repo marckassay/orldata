@@ -7,6 +7,6 @@ function New-AppDeployment {
     $VerbosePreference = $PSCmdlet.GetVariableValue('VerbosePreference')
   }
 
-  Get-InitialDeploymentTemplateObject -PipelineVariable Obj | `
-    New-AzResourceGroupDeployment -TemplateParameterObject $Obj.TemplateParameterObject -Confirm
+  $Obj = Get-InitialDeploymentTemplateObject
+  $Obj | New-AzResourceGroupDeployment -TemplateParameterObject ($Obj.TemplateParameterObject) -Confirm
 }

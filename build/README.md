@@ -33,7 +33,7 @@ To build for production, simply call:
 yarn run up:production
 ```
 
-This will eventually call: `docker-compose up ...production.yml ... -d --build`. After build, you can test production build of the app at: `localhost:80`.
+This will eventually call: `docker-compose up ...production.yml ... -d --build`. After build, you can test production build of the app at: `localhost:80`. If at this point the app is approved for production, you may stop docker container and continue to the deployment section of this document.
 
 ## .\build\deployment\
 
@@ -48,13 +48,19 @@ yarn run new:deployment
 After the preceeding command has been executed successfully, the command below will build a docker image, publish it to Azure Container Registry and update the Azure App that was created prior. This deployment method performs the most computing in comparsion of the two others that follows.
 
 ```powershell
-yarn run update:deployment -BuildAndPublish
+yarn run update:deployment
 ```
 
 This is to be used when a local image has already been built. It will publish and update the Azure App similar to the deployment method just mentioned.
 
 ```powershell
-yarn run update:deployment -PublishOnly
+yarn run update:deployment -Force
+```
+
+This is to be used when a local image has already been built. It will publish and update the Azure App similar to the deployment method just mentioned.
+
+```powershell
+yarn run update:deployment -Force -RollOut
 ```
 
 If the desired image has already been published to Azure Container Registry, this method (no switch) will list all images available in the registry so that the user can select for deployment.

@@ -48,3 +48,6 @@ COPY --from=production /usr/src/app/dist /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
+# TODO:
+# Stage 6?: linux, az, pwsh image and pass credentials into it to deploy
