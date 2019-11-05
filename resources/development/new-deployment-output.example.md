@@ -41,7 +41,7 @@ VERBOSE: Importing function 'Get-UpdateDeploymentTemplateObject'.
 VERBOSE: Importing function 'New-AppDeployment'.
 VERBOSE: Importing function 'Update-AppDeployment'.
 VERBOSE: Checking for a connected Azure session
-VERBOSE: Connected to Azure with the following subscription: 781f611e-03bd-4373-b934-d6bd2eddab35
+VERBOSE: Connected to Azure with the following subscription: XXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXXX
 VERBOSE: Step 1 out of 5 steps completed
 VERBOSE:
 VERBOSE: Loading file: E:\marckassay\orldata\build\deployment\templates\parameters.json

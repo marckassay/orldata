@@ -9,7 +9,7 @@ The UI layout is derived from Angular Material's website, whereas my objective f
 Development environment contains a Docker image that is able to hot-reload the browser. This is particularly helpful when simultaneously debugging on an attached Android phone, thanks to the robust Chrome browser. Production image is pushed to an Azure Container Registry for containerization by Azure App Service which is where the app is being hosted. PowerShell has been used to supplement automating CLI expressions with Azure ARM templates.
 
 Visit the following link to see 'OrlData':
-[orldatawebapp.azurewebsites.net](https://orldatawebapp.azurewebsites.net)
+[orldata.azurewebsites.net](https://orldata.azurewebsites.net)
 
 ## Other READMEs
 

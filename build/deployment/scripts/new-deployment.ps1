@@ -11,13 +11,17 @@ it to the underlying function. Since node package managers (npm, yarn) executes 
 yarn run new:deployment
 
 .EXAMPLE
-yarn run new:deployment -Verbose
+yarn run new:deployment -SkipApprovals
+
+.EXAMPLE
+yarn run new:deployment -Verbose -SkipApprovals
 #>
 
-$Verbose.Contains('Verbose')
+$SkipApprovals = $args.Contains('-SkipApprovals')
+$Verbose = $args.Contains('-Verbose')
 
 $args | ForEach-Object {
-  if ($_ -ne '-Verbose') {
+  if (($_ -ne '-Verbose') -and ($_ -ne '-SkipApprovals')) {
     Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Verbose'."
     Write-Warning "This argument will be ignored."
   }
@@ -26,4 +30,4 @@ $args | ForEach-Object {
 Import-Module XAz -SkipEditionCheck -Verbose:$Verbose
 Import-Module $(Join-Path $PWD 'build\deployment\psapp\PSApp.psd1') -SkipEditionCheck -Force -Verbose:$Verbose
 
-New-AppDeployment -Verbose:$Verbose
+New-AppDeployment -SkipApprovals:$SkipApprovals -Verbose:$Verbose

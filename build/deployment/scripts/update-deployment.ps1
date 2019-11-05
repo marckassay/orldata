@@ -11,30 +11,24 @@ it to the underlying function. Since node package managers (npm, yarn) executes 
 yarn run update:deployment
 
 .EXAMPLE
-yarn run update:deployment -Force
+yarn run update:deployment -Build
 
 .EXAMPLE
-yarn run update:deployment -Force -RollOut
+yarn run update:deployment -Push
 #>
 
-
-$Verbose = $Verbose.Contains('Verbose')
-
-$VerifedArgs = ''
+$Build = $args.Contains('-Build')
+$Push = $args.Contains('-Push')
+$Verbose = $args.Contains('-Verbose')
 
 $args | ForEach-Object {
-  if (($_ -ne '-Force') -and ($_ -ne '-RollOut') -and ($_ -ne '-Verbose')) {
+  if (($_ -ne '-Build') -and ($_ -ne '-Push') -and ($_ -ne '-Verbose')) {
     Write-Warning "Argument '$_' is not a member in the parameter set for Update-AppDeployment. This function accepts only 'Force' 'RollOut' and/or 'Verbose'  switch."
     Write-Warning "This argument will be ignored."
-  }
-  else {
-    if ($_ -ne '-Verbose') {
-      $VerifedArgs += "$_,"
-    }
   }
 }
 
 Import-Module XAz -SkipEditionCheck -Verbose:$Verbose
 Import-Module $(Join-Path $PWD 'build\deployment\psapp\PSApp.psd1') -SkipEditionCheck -Force -Verbose:$Verbose
 
-Update-AppDeployment @($VerifedArgs.TrimEnd(',')) -Verbose:$Verbose
+Update-AppDeployment -Build:$Build -Push:$Push -Verbose:$Verbose

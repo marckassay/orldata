@@ -11,10 +11,8 @@ it to the underlying function. Since node package managers (npm, yarn) executes 
 Update-AppDeployment
 
 .EXAMPLE
-Update-AppDeployment -Force
+Update-AppDeployment -Build
 
-.EXAMPLE
-Update-AppDeployment -Force -RollOut
 #>
 function Update-AppDeployment {
   [CmdletBinding()]
@@ -27,11 +25,15 @@ function Update-AppDeployment {
     $VerbosePreference = $PSCmdlet.GetVariableValue('VerbosePreference')
   }
 
-  $Obj = Get-UpdateDeploymentTemplateObject
+  $Obj = Get-UpdateDeploymentTemplateObject -Verbose
 
   # if the image is already in the Azure container registry
   if (($Build.IsPresent -eq $false) -and ($Push.IsPresent -eq $false)) {
-    $Images = Get-XAzContainerRegistryTags -ContainerRegistryName $Obj.ContainerRegistryName
+
+    Write-Verbose "Attempting to retrieve ContainerRegistry tags. This typically takes around 30 seconds." -Verbose
+
+    # cast as an array, if just one tag image is returned it will fail later
+    [array]$Images = Get-XAzContainerRegistryTags -ContainerRegistryName $Obj.ContainerRegistryName
 
     if ($Images.Count -gt 0) {
       $Images | ForEach-Object -Begin {
@@ -53,55 +55,58 @@ function Update-AppDeployment {
           $ImageUri = ($Obj.ContainerRegistryName).ToLower() + ".azurecr.io/" + $Image
           $Obj.TemplateParameterObject.Add('imageUri', $ImageUri)
 
+
+
           New-AzResourceGroupDeployment `
             -ResourceGroupName $Obj.ResourceGroupName `
             -TemplateFile $Obj.TemplateFile `
-            -TemplateParameterObject $Obj.TemplateParameterObject
+            -TemplateParameterObject $Obj.TemplateParameterObject `
+            -Verbose `
+            -Debug
         }
       }
     }
     else {
-      Write-Error "No container repository has been found with the name of: $($Obj.ContainerRegistryName)" `
-        -RecommendedAction "Check parameter file for correct container registry name" `
-        -Category InvalidResult
+      # Write-Warning "No container repository has been found with the name of: $($Obj.ContainerRegistryName)"
+      Write-Verbose "A build and push will now be performed."
+      $Build = $true;
     }
   }
-  else {
 
-    if ($Build.IsPresent -eq $true) {
-      yarn run up:production
+  if ($Build.IsPresent -eq $true) {
+    yarn run up:production
+  }
+  # since Build is a superset of Push, need to check for both at this point
+  if (($Build.IsPresent -eq $true) -or ($Push.IsPresent -eq $true)) {
+    # if `-Build` has been switched, then first find a local image of value in `.env` file.
+    # if that is not available, build image. Afterwards tag it and push to ContainerRegistry and update app with it.
+    $CR = Get-AzContainerRegistry -ResourceGroupName $($Obj.ResourceGroupName) -Name $($Obj.ContainerRegistryName)
+
+    # TODO: use Azure identity resource instead
+    $CRCredentials = Get-AzContainerRegistryCredential -ResourceGroupName $($Obj.ResourceGroupName) -Name $($Obj.ContainerRegistryName)
+
+    # .env file must have NAME and TAG, with values assigned to them
+    $Image = Get-Content .\.env | ForEach-Object {
+      $Entry = $_.ToString().Split('=')
+      @{ $Entry[0].ToLower() = $Entry[1] }
     }
+    $Image = $Image.name + ":" + $Image.tag
+    $ImageUri = "$($CR.LoginServer)/$Image"
 
-    if (($Build.IsPresent -eq $true) -or ($Push.IsPresent -eq $true)) {
-      # if `-Build` has been switched, then first find a local image of value in `.env` file.
-      # if that is not available, build image. Afterwards tag it and push to ContainerRegistry and update app with it.
-      $CR = Get-AzContainerRegistry -ResourceGroupName $($Obj.ResourceGroupName) -Name $($Obj.ContainerRegistryName)
+    $Obj.TemplateParameterObject.Add('imageUri', $ImageUri)
 
-      # TODO: use Azure identity resource instead
-      $CRCredentials = Get-AzContainerRegistryCredential -ResourceGroupName $($Obj.ResourceGroupName) -Name $($Obj.ContainerRegistryName)
+    Write-Verbose "Executing docker login" -Verbose
+    $CRCredentials.Password | docker login $CR.LoginServer -u $CRCredentials.Username --password-stdin
 
-      $Image = Get-Content .\.env | ForEach-Object {
-        $Entry = $_.ToString().Split('=')
-        @{$Entry[0].ToLower() = $Entry[1] }
-      }
-      $Image = $Image.name + ":" + $Image.tag
-      $ImageUri = "$($CR.LoginServer)/$Image"
+    Write-Verbose "Executing docker tag" -Verbose
+    docker tag $Image $ImageUri
 
-      $Obj.TemplateParameterObject.Add('imageUri', $ImageUri)
+    Write-Verbose "Executing docker push" -Verbose
+    docker push $ImageUri
 
-      Write-Verbose "Executing docker login"
-      $CRCredentials.Password | docker login $CR.LoginServer -u $CRCredentials.Username --password-stdin
-
-      Write-Verbose "Executing docker tag"
-      docker tag $Image $ImageUri
-
-      Write-Verbose "Executing docker push"
-      docker push $ImageUri
-
-      New-AzResourceGroupDeployment `
-        -ResourceGroupName $Obj.ResourceGroupName `
-        -TemplateFile $Obj.TemplateFile `
-        -TemplateParameterObject $Obj.TemplateParameterObject
-    }
+    New-AzResourceGroupDeployment `
+      -ResourceGroupName $Obj.ResourceGroupName `
+      -TemplateFile $Obj.TemplateFile `
+      -TemplateParameterObject $Obj.TemplateParameterObject
   }
 }

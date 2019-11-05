@@ -38,7 +38,9 @@ function Get-InitialDeploymentTemplateObject {
       Mandatory = $false,
       Position = 1
     )]
-    [string]$TemplateParameterFile = (Join-Path $PWD 'build\deployment\templates\parameters.json')
+    [string]$TemplateParameterFile = (Join-Path $PWD 'build\deployment\templates\parameters.json'),
+
+    [switch]$SkipApprovals
   )
 
   begin {
@@ -69,21 +71,31 @@ function Get-InitialDeploymentTemplateObject {
 
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
+      if ($SkipApprovals.IsPresent -eq $false) {
+        $ContainerRegistryName = Approve-XAzRegistryName `
+          -Name ($TemplateParameters.containerRegistryName.value) `
+          -AcceptExisting
 
-      $ContainerRegistryName = Approve-XAzRegistryName `
-        -Name ($TemplateParameters.containerRegistryName.value) `
-        -AcceptExisting
-
-      $Exit = $null -eq $ContainerRegistryName
+        $Exit = $null -eq $ContainerRegistryName
+      }
+      else {
+        Write-Verbose "Skipping step $($CurrentStep+1)"
+        $ContainerRegistryName = $TemplateParameters.containerRegistryName.value
+      }
     }
 
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
+      if ($SkipApprovals.IsPresent -eq $false) {
+        $HostName = Approve-XAzDomainName `
+          -Name $($TemplateParameters.hostName.value)
 
-      $HostName = Approve-XAzDomainName `
-        -Name $($TemplateParameters.hostName.value)
-
-      $Exit = $null -eq $HostName
+        $Exit = $null -eq $HostName
+      }
+      else {
+        Write-Verbose "Skipping step $($CurrentStep+1)"
+        $HostName = $TemplateParameters.hostName.value
+      }
     }
 
     if ($Exit -eq $false) {
