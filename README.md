@@ -13,6 +13,6 @@ Visit the following link to see 'OrlData':
 
 ## Other READMEs
 
-- ['.\tools\'](tools\README.md)
+- ['.\tools\'](tools/README.md)
 
-- ['.\build\'](build\README.md)
+- ['.\build\'](build/README.md)
