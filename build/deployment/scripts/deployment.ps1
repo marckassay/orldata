@@ -8,21 +8,18 @@ it to the underlying function. Since node package managers (npm, yarn) executes 
 `pwsh` must be used to initiate PowerShell. And since it creates a new PowerShell session, modules need to be imported.
 
 .EXAMPLE
-yarn run new:deployment
+yarn run deployment
 
 .EXAMPLE
-yarn run new:deployment -SkipApprovals
-
-.EXAMPLE
-yarn run new:deployment -Verbose -SkipApprovals
+yarn run deployment -Rebuild
 #>
 
-$SkipApprovals = $args.Contains('-SkipApprovals')
+$Rebuild = $args.Contains('-Rebuild')
 $Verbose = $args.Contains('-Verbose')
 
 $args | ForEach-Object {
-  if (($_ -ne '-Verbose') -and ($_ -ne '-SkipApprovals')) {
-    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Verbose'."
+  if (($_ -ne '-Rebuild') -and ($_ -ne '-Verbose')) {
+    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Rebuild', 'Verbose'."
     Write-Warning "This argument will be ignored."
   }
 }
@@ -30,4 +27,4 @@ $args | ForEach-Object {
 Import-Module XAz -SkipEditionCheck -Verbose:$Verbose
 Import-Module $(Join-Path $PWD 'build\deployment\psapp\PSApp.psd1') -SkipEditionCheck -Force -Verbose:$Verbose
 
-New-AppDeployment -SkipApprovals:$SkipApprovals -Verbose:$Verbose
+New-AppDeployment -Rebuild:$Rebuild -Verbose:$Verbose

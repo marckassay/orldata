@@ -1,4 +1,4 @@
-function Get-InitialDeploymentTemplateObject {
+function Get-DeploymentTemplateObject {
 
   <#
   .SYNOPSIS
@@ -15,7 +15,7 @@ function Get-InitialDeploymentTemplateObject {
   The `parameters.json` file to be parsed.
 
   .EXAMPLE
-  Get-InitialDeploymentTemplateObject | New-AzResourceGroupDeployment
+  Get-DeploymentTemplateObject | New-AzResourceGroupDeployment
 
   .NOTES
   This requires [XAz](https://github.com/marckassay/XAz).
@@ -32,15 +32,13 @@ function Get-InitialDeploymentTemplateObject {
       Mandatory = $false,
       Position = 0
     )]
-    [string]$TemplateFile = (Join-Path $PWD 'build\deployment\templates\initial-deployment.json'),
+    [string]$TemplateFile = (Join-Path $PWD 'build\deployment\templates\app-deployment.json'),
 
     [Parameter(
       Mandatory = $false,
       Position = 1
     )]
-    [string]$TemplateParameterFile = (Join-Path $PWD 'build\deployment\templates\parameters.json'),
-
-    [switch]$SkipApprovals
+    [string]$TemplateParameterFile = (Join-Path $PWD 'build\deployment\templates\app-deployment.parameters.json')
   )
 
   begin {
@@ -56,7 +54,8 @@ function Get-InitialDeploymentTemplateObject {
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
 
-      $TemplateParameters = Get-XAzTemplateParameterObject -Path $TemplateParameterFile
+      $TemplateParameters = Get-XAzTemplateObject -Path $TemplateParameterFile | `
+        Select-Object -ExpandProperty parameters
 
       $Exit = $null -eq $TemplateParameters
     }
@@ -64,38 +63,31 @@ function Get-InitialDeploymentTemplateObject {
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
 
-      $Exit = Confirm-XAzResourceGroup -Name ($TemplateParameters.resGroupName.value) -Location ($TemplateParameters.resGroupLocation.value) -Prompt | `
-        Measure-Object | `
-        ForEach-Object { $($_.Count -eq 0) }
+      $OutRGCheck = Confirm-XAzResourceGroup -Name ($TemplateParameters.resGroupName.value) `
+        -Location ($TemplateParameters.resGroupLocation.value) `
+        -Prompt
+
+      $Exit = ($OutRGCheck.Id.Length -eq 0)
     }
 
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
-      if ($SkipApprovals.IsPresent -eq $false) {
-        $ContainerRegistryName = Approve-XAzRegistryName `
-          -Name ($TemplateParameters.containerRegistryName.value) `
-          -AcceptExisting
 
-        $Exit = $null -eq $ContainerRegistryName
-      }
-      else {
-        Write-Verbose "Skipping step $($CurrentStep+1)"
-        $ContainerRegistryName = $TemplateParameters.containerRegistryName.value
-      }
+      $OutRegistryNameCheck = Approve-XAzRegistryName `
+        -ResourceGroupName ($OutRGCheck.Name) `
+        -Name ($TemplateParameters.containerRegistryName.value) `
+
+      $Exit = ($OutRegistryNameCheck.Approved -eq $false)
     }
 
     if ($Exit -eq $false) {
       Write-StepMessage (++$CurrentStep) $TotalSteps
-      if ($SkipApprovals.IsPresent -eq $false) {
-        $HostName = Approve-XAzDomainName `
-          -Name $($TemplateParameters.hostName.value)
 
-        $Exit = $null -eq $HostName
-      }
-      else {
-        Write-Verbose "Skipping step $($CurrentStep+1)"
-        $HostName = $TemplateParameters.hostName.value
-      }
+      $OutDomainNameCheck = Approve-XAzDomainName `
+        -ResourceGroupName ($OutRGCheck.Name) `
+        -Name $($TemplateParameters.hostName.value)
+
+      $Exit = ($OutDomainNameCheck.Approved -eq $false)
     }
 
     if ($Exit -eq $false) {
@@ -103,10 +95,10 @@ function Get-InitialDeploymentTemplateObject {
 
       [hashtable]$TemplateParameterObject = @{
         keyVaultName          = $TemplateParameters.keyVaultName.value
-        userAssignedIdName    = $TemplateParameters.userAssignedId.value
+        userAssignedIdName    = $TemplateParameters.userAssignedIdName.value
         appServicePlanName    = $TemplateParameters.appServicePlanName.value
-        containerRegistryName = $ContainerRegistryName
-        hostName              = $HostName
+        containerRegistryName = $OutRegistryNameCheck.Name
+        hostName              = $OutDomainNameCheck.SubDomainName
       }
 
       [pscustomobject]@{

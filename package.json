@@ -11,8 +11,7 @@
     "serve:dev": "yarn run pre:serve && ng serve --configuration dev",
     "up:production": "bash ./build/image/scripts/update-semver.sh && docker-compose -f ./build/image/docker-compose.yml -f ./build/image/docker-compose.production.yml up -d --build",
     "up:dev": "bash ./build/image/scripts/update-semver.sh && bash ./build/image/scripts/set-image-tag.sh dev && docker-compose -f ./build/image/docker-compose.yml -f ./build/image/docker-compose.dev.yml up -d --build",
-    "new:deployment": "pwsh -f ./build/deployment/scripts/new-deployment.ps1",
-    "update:deployment": "pwsh -f ./build/deployment/scripts/update-deployment.ps1",
+    "deployment": "pwsh -f ./build/deployment/scripts/deployment.ps1",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -42,34 +42,22 @@ Contents of this folder includes a PowerShell module named, PSApp, and Azure ARM
 The following command will deploy an Azure ARM template. This template will create several resources on Azure that will be used in commands that follows. All variables need to be set in the `parameters.json` file. This is to be executed only once as it sets-up Azure for future update deployments. Currently, this doesn't assign a container to the Azure App. Container assignmnet can be done by the `update:deployment` commands.
 
 ```powershell
-yarn run new:deployment
-```
-
-After the preceeding command has been executed successfully, the command below will build a docker image, publish it to Azure Container Registry and update the Azure App that was created prior. This deployment method performs the most computing in comparsion of the two others that follows.
-
-```powershell
-yarn run update:deployment
+yarn run deployment
 ```
 
 This is to be used when image needs to be built. Since this is applied to deployment command, it will push the image to the registry and update Azure App with it.
 
 ```powershell
-yarn run update:deployment -Build
-```
-
-This is to be used when a local image has already been built. If `yarn run up:production` was executed as mentioned in the previous section, this command below can be used. It will push the image to the registry and update the Azure App.
-
-```powershell
-yarn run update:deployment -Push
+yarn run deployment -Rebuild
 ```
 
 If the desired image has already been published to Azure Container Registry, this method (no switch) will list all images available in the registry so that the user can select for deployment.
 
 ```powershell
-yarn run update:deployment
-Press '1' for: orldata/prod:1.0.6
-Press '2' for: orldata/prod:1.0.7
-Press '3' for: orldata/prod:1.0.8
+yarn run deployment
+Press '1' for: orldata:1.0.6
+Press '2' for: orldata:1.0.7
+Press '3' for: orldata:1.0.8
 Press 'ENTER' to halt deployment.
 Select image for deployment and press 'ENTER': 3
 ```

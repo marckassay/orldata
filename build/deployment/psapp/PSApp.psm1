@@ -1,7 +1,6 @@
-using module .\Get-InitialDeploymentTemplateObject.ps1
-using module .\Get-UpdateDeploymentTemplateObject.ps1
+using module .\Get-DeploymentTemplateObject.ps1
+using module .\Set-DeploymentTemplateParameterFile.ps1
 using module .\New-AppDeployment.ps1
-using module .\Update-AppDeployment.ps1
 
 Param(
   [Parameter(Mandatory = $False)]

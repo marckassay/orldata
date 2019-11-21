@@ -70,10 +70,9 @@
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
   FunctionsToExport    = @(
-    'Get-InitialDeploymentTemplateObject',
-    'Get-UpdateDeploymentTemplateObject',
+    'Get-DeploymentTemplateObject',
     'New-AppDeployment',
-    'Update-AppDeployment'
+    'Set-DeploymentTemplateParameterFile'
   )
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
