@@ -24,7 +24,8 @@ $args | ForEach-Object {
   }
 }
 
-Import-Module XAz -SkipEditionCheck -Verbose:$Verbose
+# Import-Module XAz -SkipEditionCheck -Verbose:$Verbose
+Import-Module 'E:\marckassay\XAz\XAz.psd1' -SkipEditionCheck -Verbose:$Verbose
 Import-Module $(Join-Path $PWD 'build\deployment\psapp\PSApp.psd1') -SkipEditionCheck -Force -Verbose:$Verbose
 
 New-AppDeployment -Rebuild:$Rebuild -Verbose:$Verbose

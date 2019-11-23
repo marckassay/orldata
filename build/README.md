@@ -61,3 +61,15 @@ Press '3' for: orldata:1.0.8
 Press 'ENTER' to halt deployment.
 Select image for deployment and press 'ENTER': 3
 ```
+
+### Authenicate with Certificate and Authorize with Assigned Role
+
+Perferably, authorize with cert and deploy using a Service prinicapal with assigned Role.
+
+TODO: replace OneNotes
+
+- <https://onedrive.live.com/view.aspx?resid=7379D0E122DADE4B%2129518&id=documents&wd=target%28Azure.one%7C9597BC96-E738-492A-90FA-6FFA2A251C04%2F%5Bdemo%5D%20Credential%20Manager%7C9FAF76D9-2BBE-4E21-A3C6-E2523FAEFE4D%2F%29>
+onenote:<https://d.docs.live.net/7379d0e122dade4b/Documents/Programming%20Notes/Azure.one#%5bdemo%5d%20Credential%20Manager&section-id={9597BC96-E738-492A-90FA-6FFA2A251C04}&page-id={9FAF76D9-2BBE-4E21-A3C6-E2523FAEFE4D}&end>
+
+- <https://onedrive.live.com/view.aspx?resid=7379D0E122DADE4B%2129518&id=documents&wd=target%28Azure.one%7C9597BC96-E738-492A-90FA-6FFA2A251C04%2F%5Bdemo%5D%20Connect%20to%20AZ%20with%20SP%20by%20Cert%7C809EEDB4-F2A4-4B42-BCD1-88DAF93DEA70%2F%29>
+onenote:<https://d.docs.live.net/7379d0e122dade4b/Documents/Programming%20Notes/Azure.one#%5bdemo%5d%20Connect%20to%20AZ%20with%20SP%20by%20Cert&section-id={9597BC96-E738-492A-90FA-6FFA2A251C04}&page-id={809EEDB4-F2A4-4B42-BCD1-88DAF93DEA70}&end>

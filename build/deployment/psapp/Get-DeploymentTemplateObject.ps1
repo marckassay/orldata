@@ -41,18 +41,18 @@ function Get-DeploymentTemplateObject {
     [string]$TemplateParameterFile = (Join-Path $PWD 'build\deployment\templates\app-deployment.parameters.json')
   )
 
-  begin {
-    $TotalSteps = 5
-    $CurrentStep = 0
-  }
-
   end {
+    Write-Verbose ""
+
+    # indicates that the current values in the file has been changed in at least one of the Approve functions below.
+    [int32]$Dirty = 0
+
     $Exit = Connect-XAzAccount -PassThru -OutVariable Subscription | `
       Measure-Object | `
       ForEach-Object { $($_.Count -eq 0) }
 
     if ($Exit -eq $false) {
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      Write-StepMessage
 
       $TemplateParameters = Get-XAzTemplateObject -Path $TemplateParameterFile | `
         Select-Object -ExpandProperty parameters
@@ -61,7 +61,7 @@ function Get-DeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      Write-StepMessage
 
       $OutRGCheck = Confirm-XAzResourceGroup -Name ($TemplateParameters.resGroupName.value) `
         -Location ($TemplateParameters.resGroupLocation.value) `
@@ -71,27 +71,31 @@ function Get-DeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      Write-StepMessage
 
       $OutRegistryNameCheck = Approve-XAzRegistryName `
         -ResourceGroupName ($OutRGCheck.Name) `
         -Name ($TemplateParameters.containerRegistryName.value) `
 
+      $Dirty += $OutRegistryNameCheck.Dirty
+
       $Exit = ($OutRegistryNameCheck.Approved -eq $false)
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      Write-StepMessage
 
       $OutDomainNameCheck = Approve-XAzDomainName `
         -ResourceGroupName ($OutRGCheck.Name) `
-        -Name $($TemplateParameters.hostName.value)
+        -SubDomainName $($TemplateParameters.hostName.value)
+
+      $Dirty += $OutRegistryNameCheck.Dirty
 
       $Exit = ($OutDomainNameCheck.Approved -eq $false)
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      Write-StepMessage
 
       [hashtable]$TemplateParameterObject = @{
         keyVaultName          = $TemplateParameters.keyVaultName.value
@@ -105,6 +109,7 @@ function Get-DeploymentTemplateObject {
         ResourceGroupName       = $TemplateParameters.resGroupName.value
         TemplateFile            = $TemplateFile
         TemplateParameterObject = $TemplateParameterObject
+        Dirty                   = $Dirty
       }
     }
     else {

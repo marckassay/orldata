@@ -38,26 +38,33 @@ function Set-DeploymentTemplateParameterFile {
     [string]$Path = (Join-Path $PWD 'build\deployment\templates\app-deployment.parameters.json')
   )
 
-  begin {
-    $TotalSteps = 5
-    $CurrentStep = 0
-  }
-
   end {
     $Exit = $false
 
-    Write-StepMessage (++$CurrentStep) $TotalSteps
-
     $TemplateObject = Get-XAzTemplateObject -Path $Path
+
+    Write-StepMessage
 
     $Exit = $null -eq $TemplateObject
 
     if ($Exit -eq $false) {
-      $TemplateObject.parameters = $TemplateParameterObject
+      # TODO: replace all values so that this function lives up to its name
+      $TemplateObject.parameters.hostName = @"
+{
+  "value": "$($TemplateParameterObject.hostName)"
+}
+"@ | ConvertFrom-Json
 
-      Write-StepMessage (++$CurrentStep) $TotalSteps
+      $TemplateObject.parameters.containerRegistryName = @"
+{
+  "value": "$($TemplateParameterObject.containerRegistryName)"
+}
+"@ | ConvertFrom-Json
 
+      Write-Verbose "Converting object to json, to be set in file"
       $TemplateObject | ConvertTo-Json | Set-Content -Path $Path
+
+      Write-StepMessage
     }
   }
 }

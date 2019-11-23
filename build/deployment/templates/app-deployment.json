@@ -16,28 +16,28 @@
     },
     "hostName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 2 resource. Empty (default) value implies containerRegistry deployment."
       }
     },
     "keyVaultName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 2 resource. Empty (default) value implies containerRegistry deployment."
       }
     },
     "appServicePlanName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 2 resource. This plan may have multiple App Services associated with it."
       }
     },
     "imageUri": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 2 value. The registry path with image name. This is the image Uri."
       }
@@ -45,11 +45,60 @@
   },
   "variables": {
     "tenantId": "[subscription().tenantId]",
-    "bootstrapRoleAssignmentId": "[guid(concat(resourceGroup().id, 'arc push'))]",
-    "arcPushId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]"
+    "ARMTemplateRoleDefinitionName": "[guid(parameters('hostName'), 'Contributor')]",
+    "RoleDefinitionName": "[concat(toUpper(first(parameters('hostName'))),skip(parameters('hostName'),1),' Contributor')]",
+    "customRoleAssignmentNameId": "[guid(concat(resourceGroup().id, 'contributor'))]"
   },
   "resources": [
-    { // STAGE 1
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "[parameters('userAssignedIdName')]",
+      "location": "[resourceGroup().location]"
+    },
+    {
+      "name": "[variables('ARMTemplateRoleDefinitionName')]",
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2018-01-01-preview",
+      "properties": {
+        "roleName": "[variables('RoleDefinitionName')]",
+        "description": "Contributor to Container Registry, Key Vault and Web",
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.KeyVault/*",
+              "Microsoft.Web/sites/*",
+              "Microsoft.ContainerRegistry/registries/pull/read",
+              "Microsoft.ContainerRegistry/registries/push/write"
+            ],
+            "notActions": [
+            ],
+            "dataActions": [
+            ],
+            "notDataActions": [
+            ]
+          }
+        ],
+        "assignableScopes": [
+          "[resourceGroup().id]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2019-04-01-preview",
+      "name": "[variables('customRoleAssignmentNameId')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]",
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions',variables('ARMTemplateRoleDefinitionName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('customRoleAssignmentNameId')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
       "type": "Microsoft.ContainerRegistry/registries",
       "apiVersion": "2019-05-01",
       "name": "[parameters('containerRegistryName')]",
@@ -75,118 +124,12 @@
         }
       }
     },
-    { // STAGE 1
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2018-11-30",
-      "name": "[parameters('userAssignedIdName')]",
-      "location": "[resourceGroup().location]"
-    },
-    { // STAGE 1
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2017-09-01",
-      "name": "[variables('bootstrapRoleAssignmentId')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[variables('arcPushId')]",
-        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]",
-        "scope": "[resourceGroup().id]",
-        "principalType": "ServicePrincipal"
-      }
-    },
-    { // STAGE 2
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2016-10-01",
-      "name": "[parameters('keyVaultName')]",
-      "location": "[resourceGroup().location]",
-      "condition": "[not(empty(parameters('keyVaultName')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]"
-      ],
-      "properties": {
-        "sku": {
-          "family": "A",
-          "name": "Standard"
-        },
-        "tenantId": "[variables('tenantId')]",
-        "enabledForDeployment": true,
-        "enabledForDiskEncryption": false,
-        "enabledForTemplateDeployment": true,
-        "accessPolicies": [
-          {
-            "tenantId": "[variables('tenantId')]",
-            "objectId": "[reference(parameters('userAssignedIdName'), '2018-11-30','Full').principalId]",
-            "permissions": {
-              "secrets": [
-                "Get",
-                "List",
-                "Set",
-                "Delete",
-                "Recover",
-                "Backup",
-                "Restore",
-                "Purge"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    { // STAGE 2
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-PASSWORD')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
-      ],
-      "properties": {
-        "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), '2019-05-01').passwords[0].value]",
-        "attributes": {
-          "enabled": true
-        }
-      }
-    },
-    { // STAGE 2
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-URL')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
-      ],
-      "properties": {
-        "value": "[concat(parameters('containerRegistryName'),'.azurecr.io')]",
-        "attributes": {
-          "enabled": true
-        }
-      }
-    },
-    { // STAGE 2
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-USERNAME')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
-      ],
-      "properties": {
-        "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), '2019-05-01').username]",
-        "attributes": {
-          "enabled": true
-        }
-      }
-    },
-    { // STAGE 2
+    {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2018-02-01",
       "name": "[parameters('appServicePlanName')]",
       "location": "[resourceGroup().location]",
-      "condition": "[not(empty(parameters('appServicePlanName')))]",
+      "condition": "[not(startsWith(parameters('appServicePlanName'),'null'))]",
       "sku": {
         "name": "B1",
         "tier": "Basic",
@@ -203,26 +146,19 @@
         "targetWorkerSizeId": 0
       }
     },
-    { // STAGE 2
+    {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2019-08-01",
       "name": "[parameters('hostName')]",
+      "condition": "[not(startsWith(parameters('hostName'),'null'))]",
       "location": "[resourceGroup().location]",
       "kind": "app,linux,container",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ],
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]": {
-          }
-        }
-      },
       "properties": {
-        "enabled": true,
+        "enabled": false,
         "hostNameSslStates": [
           {
             "name": "[concat(parameters('hostName'), '.azurewebsites.net')]",
@@ -281,15 +217,15 @@
           "appSettings": [
             {
               "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-              "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+              "value": ""
             },
             {
               "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-              "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+              "value": ""
             },
             {
               "name": "DOCKER_REGISTRY_SERVER_URL",
-              "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+              "value": ""
             }
           ],
           "linuxFxVersion": "[if(not(empty(parameters('imageUri'))),concat('DOCKER|',parameters('imageUri')),'')]",
@@ -311,10 +247,11 @@
         "httpsOnly": false
       }
     },
-    { // STAGE 2
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
       "name": "[concat(parameters('hostName'), '/', parameters('hostName'), '.azurewebsites.net')]",
+      "condition": "[not(startsWith(parameters('hostName'),'null'))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('hostName'))]"
@@ -323,12 +260,105 @@
         "siteName": "[parameters('hostName')]",
         "hostNameType": "Verified"
       }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2016-10-01",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[resourceGroup().location]",
+      "condition": "[not(startsWith(parameters('keyVaultName'),'null'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]"
+      ],
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "Standard"
+        },
+        "tenantId": "[variables('tenantId')]",
+        "enabledForDeployment": true,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": true,
+        "accessPolicies": [
+          {
+            "tenantId": "[variables('tenantId')]",
+            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]",
+            "permissions": {
+              "secrets": [
+                "Get",
+                "List",
+                "Set",
+                "Delete",
+                "Recover",
+                "Backup",
+                "Restore",
+                "Purge"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-PASSWORD')]",
+      "location": "[resourceGroup().location]",
+      "condition": "[not(startsWith(parameters('keyVaultName'),'null'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
+      ],
+      "properties": {
+        "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), '2019-05-01').passwords[0].value]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-URL')]",
+      "location": "[resourceGroup().location]",
+      "condition": "[not(startsWith(parameters('keyVaultName'),'null'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
+      ],
+      "properties": {
+        "value": "[concat(parameters('containerRegistryName'),'.azurecr.io')]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(parameters('keyVaultName'), '/DOCKER-REGISTRY-SERVER-USERNAME')]",
+      "location": "[resourceGroup().location]",
+      "condition": "[not(startsWith(parameters('keyVaultName'),'null'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
+      ],
+      "properties": {
+        "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), '2019-05-01').username]",
+        "attributes": {
+          "enabled": true
+        }
+      }
     }
   ],
   "outputs": {
-    "valueC": {
+    "roleDefinitionId": {
       "type": "string",
-      "value": "-------------"
+      "value": "[variables('customRoleAssignmentNameId')]"
+    },
+    "principalId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]"
     }
   }
 }

@@ -1,27 +1,27 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
   "parameters": {
-    "resGroupName": {
-      "value": "orldatastageRG"
-    },
     "containerRegistryName": {
       "value": "orldatastageCR"
     },
-    "keyVaultName": {
-      "value": "orldatastageKV"
+    "hostName": {
+      "value": "orldatastage"
     },
     "userAssignedIdName": {
       "value": "orldatastageUAId"
     },
-    "hostName": {
-      "value": "orldatastage"
+    "keyVaultName": {
+      "value": "orldatastageKV"
     },
     "appServicePlanName": {
       "value": "orldatastageSP"
     },
     "resGroupLocation": {
       "value": "Central US"
+    },
+    "resGroupName": {
+      "value": "orldatastageRG"
     }
-  }
+  },
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0"
 }

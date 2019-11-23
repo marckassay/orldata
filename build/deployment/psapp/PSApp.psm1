@@ -11,3 +11,5 @@ $script:SUT = $SUT
 if ($script:SUT -eq $False) {
   # Start-Module
 }
+
+Set-StepMessage 11 -ShowElapsedTime

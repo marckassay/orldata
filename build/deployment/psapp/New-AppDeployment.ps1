@@ -8,30 +8,71 @@ function New-AppDeployment {
     $VerbosePreference = $PSCmdlet.GetVariableValue('VerbosePreference')
   }
 
+  ##################
   # Stage 0
+  ##################
+
   # process and approve when needed domain name and container registry.
   $Obj = Get-DeploymentTemplateObject -Verbose:$Verbose
+  if ($null -eq $Obj) {
+    Write-Error 'Get-DeploymentTemplateObject returned null value' -ErrorAction Stop
+  }
 
-  # set parameterobject back to the file on disk; domain name or container registry name may have changed from Get-DeploymentTemplateObject
-  $Obj.TemplateParameterObject | Set-DeploymentTemplateParameterFile -Verbose:$Verbose
+  # remove property after reading value to prevent any issues with piping it into cmdlet
+  $Dirty = $Obj.Dirty
+  $Obj.PSObject.Properties.Remove('Dirty')
+  if ($Dirty -gt 0) {
 
-  $CheckForLocalImage = $false
+    # set parameterobject back to the file on disk; domain name or container registry name may have changed from Get-DeploymentTemplateObject
+    $Obj | Set-DeploymentTemplateParameterFile -Verbose:$Verbose
+  }
+
+
+  ##################
+  # Stage 1
+  ##################
 
   $CRName = $Obj.TemplateParameterObject.containerRegistryName
+  $UAIdName = $Obj.TemplateParameterObject.userAssignedIdName
 
-  # Stage 1
-  # Create, resourcegroup, container registry, user-assigned Id so that a local image can be pushed if needed. Since mode set to 'Incremental', this
-  # will have an idompotent behavior.
-  $Stage1Obj = @(
-    containerRegistryName = $CRName
-    userAssignedIdName = ($Obj.TemplateParameterObject.userAssignedIdName)
-  )
+  $SkipStage1 = $false
 
-  New-AzResourceGroupDeployment -ResourceGroupName ($Obj.ResourceGroupName) `
-    -TemplateFile ($Obj.TemplateFile) `
-    -TemplteParameterObject $Stage1Obj `
-    -Mode 'Incremental' `
-    -Confirm
+  # check to see if stage1 deployment can be skipped
+  $SkipStage1 += Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -ErrorAction SilentlyContinue | `
+    Measure-Object | `
+    Select-Object -ExpandProperty Count
+
+  $SkipStage1 += Get-AzADServicePrincipal -DisplayName $UAIdName -ErrorAction SilentlyContinue | `
+    Measure-Object | `
+    Select-Object -ExpandProperty Count
+
+  if ($SkipStage1 -eq $false) {
+
+    Write-Verbose "Stage 1 needs to be deployed."
+
+    $Exit = New-AzResourceGroupDeployment -ResourceGroupName ($Obj.ResourceGroupName) `
+      -TemplateFile ($Obj.TemplateFile) `
+      -TemplateParameterObject ($Obj.TemplateParameterObject) `
+      -Mode 'Incremental' `
+      -Confirm
+
+    if ($Exit.ProvisioningState -ne 'Succeeded') {
+      Write-Error "New-AzResourceGroupDeployment must succeed before continuing" -ErrorAction Stop
+    }
+
+    Write-StepMessage
+  }
+
+
+  ##################
+  # Stage 2
+  ##################
+
+  # at this point in execution, Azure resources should have been created or *is creating*. If it is creating, and since it seems that ARM
+  # template deployment can't be *truly* syncronously deployed, it might be best to detemrine if a Start-Sleep is needed here.
+
+  # all code below here is to detemrine if docker image needs to be built and update app service with imageUri and set app settings in PS
+  $CheckForLocalImage = $false
 
   # this stand-alone if statement is to have user select value for 'imageUri'
   if ($Rebuild.IsPresent -eq $false) {
@@ -40,6 +81,8 @@ function New-AppDeployment {
 
     # cast as an array, if just one tag image is returned it will fail later
     [array]$Images = Get-XAzContainerRegistryTags -ContainerRegistryName $CRName
+
+    Write-StepMessage
 
     if ($Images.Count -gt 0) {
       $Images | ForEach-Object -Begin {
@@ -69,13 +112,18 @@ function New-AppDeployment {
     }
   }
 
+  # TODO: if the user is Connected with SP that has Roles versus a user that has Azure Creds, what conditions need to apply?
+
   if (($Rebuild.IsPresent -eq $true) -or ($CheckForLocalImage -eq $true)) {
+
     # if `-Rebuild` has been switched, then first find a local image of value in `.env` file.
     # if that is not available, build image. Afterwards tag it and push to ContainerRegistry and update app with it.
     $CR = Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName
 
     # TODO: use Azure identity resource instead
     $CRCredentials = Get-AzContainerRegistryCredential -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName
+
+    Write-StepMessage
 
     Write-Verbose "Executing docker login" -Verbose
     $CRCredentials.Password | docker login $CR.LoginServer -u $CRCredentials.Username --password-stdin
@@ -93,15 +141,21 @@ function New-AppDeployment {
     $Obj.TemplateParameterObject.Add('imageUri', $ImageUri)
 
     if ($CheckForLocalImage -eq $true) {
-      $DoesLocalImageExist = docker image inspect $Image | `
+
+      Write-Verbose "Executing docker image inspect" -Verbose
+
+      # redirect docker error to success stream. also it seems docker return at least 2 items on error; compare Count with 5. A success
+      # return seems to be over 100.
+      $DoesLocalImageExist = docker image inspect $Image 2>&1 | `
         Measure-Object | `
-        ForEach-Object { $_.Count -gt 1 }
+        ForEach-Object { $_.Count -gt 5 }
 
       $Rebuild = $DoesLocalImageExist -eq $false
     }
 
     # intermediate stage
     if ($Rebuild.IsPresent -eq $true) {
+      Write-Verbose "Building image" -Verbose
       yarn run up:production
     }
 
@@ -112,11 +166,21 @@ function New-AppDeployment {
     docker push $ImageUri
   }
 
-  # Stage 2
-  # After stage 1 (and if build was performed), this is executed to create the remaining resources and update the web app with image
-  $Obj | New-AzResourceGroupDeployment -TemplateParameterObject ($Obj.TemplateParameterObject) `
-    -Verbose `
-    -Debug `
-    -Mode 'Incremental' `
-    -Confirm
+
+  ##################
+  # Stage 3
+  ##################
+
+  <#
+  $AppSettings = @{
+    "DOCKER_REGISTRY_SERVER_USERNAME" = ""
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = ""
+    "DOCKER_REGISTRY_SERVER_URL"      = ""
+  }
+  #>
+  Set-AzWebApp -ResourceGroupName ($Obj.ResourceGroupName) `
+    -Name ($Obj.TemplateParameterObject.hostName) `
+    -AppServicePlan $AppSettings
+
+  Write-StepMessage
 }
