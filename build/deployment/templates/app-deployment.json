@@ -4,12 +4,14 @@
   "parameters": {
     "containerRegistryName": {
       "type": "string",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 1 resource."
       }
     },
     "userAssignedIdName": {
       "type": "string",
+      "defaultValue": "null",
       "metadata": {
         "description": "A stage 1 resource."
       }
@@ -45,31 +47,32 @@
   },
   "variables": {
     "tenantId": "[subscription().tenantId]",
-    "ARMTemplateRoleDefinitionName": "[guid(parameters('hostName'), 'Contributor')]",
-    "RoleDefinitionName": "[concat(toUpper(first(parameters('hostName'))),skip(parameters('hostName'),1),' Contributor')]",
-    "customRoleAssignmentNameId": "[guid(concat(resourceGroup().id, 'contributor'))]"
+    "roleDefinitionName": "[concat(toUpper(first(parameters('hostName'))),skip(parameters('hostName'),1),' Contributor')]"
   },
   "resources": [
     {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2018-11-30",
-      "name": "[parameters('userAssignedIdName')]",
-      "location": "[resourceGroup().location]"
-    },
-    {
-      "name": "[variables('ARMTemplateRoleDefinitionName')]",
       "type": "Microsoft.Authorization/roleDefinitions",
+      "name": "[guid(variables('roleDefinitionName'))]",
       "apiVersion": "2018-01-01-preview",
       "properties": {
-        "roleName": "[variables('RoleDefinitionName')]",
+        "roleName": "[variables('roleDefinitionName')]",
         "description": "Contributor to Container Registry, Key Vault and Web",
         "permissions": [
           {
             "actions": [
+              "Microsoft.Resources/*",
               "Microsoft.KeyVault/*",
               "Microsoft.Web/sites/*",
+              "Microsoft.KeyVault/vaults/accessPolicies/write",
+              "Microsoft.ContainerRegistry/registries/read",
               "Microsoft.ContainerRegistry/registries/pull/read",
-              "Microsoft.ContainerRegistry/registries/push/write"
+              "Microsoft.ContainerRegistry/registries/push/write",
+              "Microsoft.ContainerRegistry/registries/listCredentials/action",
+              "Microsoft.ContainerRegistry/registries/listPolicies/read",
+              "Microsoft.ContainerRegistry/registries/listUsages/read",
+              "Microsoft.ContainerRegistry/registries/metadata/read",
+              "Microsoft.ContainerRegistry/registries/metadata/write",
+              "Microsoft.ContainerRegistry/registries/operationStatuses/read"
             ],
             "notActions": [
             ],
@@ -82,20 +85,6 @@
         "assignableScopes": [
           "[resourceGroup().id]"
         ]
-      }
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2019-04-01-preview",
-      "name": "[variables('customRoleAssignmentNameId')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]",
-        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions',variables('ARMTemplateRoleDefinitionName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[variables('customRoleAssignmentNameId')]",
-        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]",
-        "principalType": "ServicePrincipal"
       }
     },
     {
@@ -148,13 +137,12 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2019-08-01",
+      "apiVersion": "2018-11-01",
       "name": "[parameters('hostName')]",
       "condition": "[not(startsWith(parameters('hostName'),'null'))]",
       "location": "[resourceGroup().location]",
       "kind": "app,linux,container",
       "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]",
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ],
       "properties": {
@@ -233,8 +221,7 @@
           "minTlsVersion": "1.2",
           "ftpsState": "AllAllowed",
           "fileChangeAuditEnabled": false,
-          "functionsRuntimeScaleMonitoringEnabled": false,
-          "preWarmedInstanceCount": 0
+          "functionsRuntimeScaleMonitoringEnabled": false
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "reserved": true,
@@ -267,9 +254,6 @@
       "name": "[parameters('keyVaultName')]",
       "location": "[resourceGroup().location]",
       "condition": "[not(startsWith(parameters('keyVaultName'),'null'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName'))]"
-      ],
       "properties": {
         "sku": {
           "family": "A",
@@ -280,22 +264,6 @@
         "enabledForDiskEncryption": false,
         "enabledForTemplateDeployment": true,
         "accessPolicies": [
-          {
-            "tenantId": "[variables('tenantId')]",
-            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]",
-            "permissions": {
-              "secrets": [
-                "Get",
-                "List",
-                "Set",
-                "Delete",
-                "Recover",
-                "Backup",
-                "Restore",
-                "Purge"
-              ]
-            }
-          }
         ]
       }
     },
@@ -352,13 +320,6 @@
     }
   ],
   "outputs": {
-    "roleDefinitionId": {
-      "type": "string",
-      "value": "[variables('customRoleAssignmentNameId')]"
-    },
-    "principalId": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdName')), '2018-11-30').principalId]"
-    }
+
   }
 }

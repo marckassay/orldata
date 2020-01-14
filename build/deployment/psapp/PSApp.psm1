@@ -12,4 +12,4 @@ if ($script:SUT -eq $False) {
   # Start-Module
 }
 
-Set-StepMessage 11 -ShowElapsedTime
+Set-StepMessage 6 -ShowElapsedTime

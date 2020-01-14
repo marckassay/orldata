@@ -6,9 +6,6 @@
     "hostName": {
       "value": "orldatastage"
     },
-    "userAssignedIdName": {
-      "value": "orldatastageUAId"
-    },
     "keyVaultName": {
       "value": "orldatastageKV"
     },

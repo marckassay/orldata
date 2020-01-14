@@ -43,8 +43,6 @@ function Set-DeploymentTemplateParameterFile {
 
     $TemplateObject = Get-XAzTemplateObject -Path $Path
 
-    Write-StepMessage
-
     $Exit = $null -eq $TemplateObject
 
     if ($Exit -eq $false) {
@@ -63,8 +61,6 @@ function Set-DeploymentTemplateParameterFile {
 
       Write-Verbose "Converting object to json, to be set in file"
       $TemplateObject | ConvertTo-Json | Set-Content -Path $Path
-
-      Write-StepMessage
     }
   }
 }

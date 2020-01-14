@@ -47,21 +47,12 @@ function Get-DeploymentTemplateObject {
     # indicates that the current values in the file has been changed in at least one of the Approve functions below.
     [int32]$Dirty = 0
 
-    $Exit = Connect-XAzAccount -PassThru -OutVariable Subscription | `
-      Measure-Object | `
-      ForEach-Object { $($_.Count -eq 0) }
+    $TemplateParameters = Get-XAzTemplateObject -Path $TemplateParameterFile | `
+      Select-Object -ExpandProperty parameters
+
+    $Exit = $null -eq $TemplateParameters
 
     if ($Exit -eq $false) {
-      Write-StepMessage
-
-      $TemplateParameters = Get-XAzTemplateObject -Path $TemplateParameterFile | `
-        Select-Object -ExpandProperty parameters
-
-      $Exit = $null -eq $TemplateParameters
-    }
-
-    if ($Exit -eq $false) {
-      Write-StepMessage
 
       $OutRGCheck = Confirm-XAzResourceGroup -Name ($TemplateParameters.resGroupName.value) `
         -Location ($TemplateParameters.resGroupLocation.value) `
@@ -71,7 +62,6 @@ function Get-DeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage
 
       $OutRegistryNameCheck = Approve-XAzRegistryName `
         -ResourceGroupName ($OutRGCheck.Name) `
@@ -83,7 +73,6 @@ function Get-DeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage
 
       $OutDomainNameCheck = Approve-XAzDomainName `
         -ResourceGroupName ($OutRGCheck.Name) `
@@ -95,11 +84,9 @@ function Get-DeploymentTemplateObject {
     }
 
     if ($Exit -eq $false) {
-      Write-StepMessage
 
       [hashtable]$TemplateParameterObject = @{
         keyVaultName          = $TemplateParameters.keyVaultName.value
-        userAssignedIdName    = $TemplateParameters.userAssignedIdName.value
         appServicePlanName    = $TemplateParameters.appServicePlanName.value
         containerRegistryName = $OutRegistryNameCheck.Name
         hostName              = $OutDomainNameCheck.SubDomainName
@@ -113,7 +100,7 @@ function Get-DeploymentTemplateObject {
       }
     }
     else {
-      Write-Error "This script has failed. If needed, execute with Verbose switch."
+      Write-Error "This script has failed. If needed, execute with Verbose switch." -ErrorAction Stop
     }
   }
 }
