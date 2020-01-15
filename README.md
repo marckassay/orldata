@@ -11,8 +11,8 @@ Development environment contains a Docker image that is able to hot-reload the b
 Visit the following link to see 'OrlData':
 [orldata.azurewebsites.net](https://orldata.azurewebsites.net)
 
-## Other READMEs
+## Other README
 
-- ['.\tools\'](tools/README.md)
+For information on how to use this repository in regards to development and deployment, see the following README file:
 
 - ['.\build\'](build/README.md)

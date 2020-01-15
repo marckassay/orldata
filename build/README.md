@@ -37,19 +37,33 @@ This will eventually call: `docker-compose up ...production.yml ... -d --build`.
 
 ## .\build\deployment\
 
-Contents of this folder includes a PowerShell module named, PSApp, and Azure ARM templates, to be used to deploy to Azure.
+Contents of this folder includes a PowerShell module named, PSApp, and Azure ARM templates, to be used to deploy to Azure. PSApp has a dependency listed in its `RequiredModules` array. This dependecy is named `XAz`, which will get downloaded and installed automatically
 
-The following command will deploy an Azure ARM template. This template will create several resources on Azure that will be used in commands that follows. All variables need to be set in the `parameters.json` file. This is to be executed only once as it sets-up Azure for future update deployments. Currently, this doesn't assign a container to the Azure App. Container assignmnet can be done by the `update:deployment` commands.
+The following command will deploy the Azure ARM template (`.\templates\app-deployment.json`). This template will create several resources on Azure that will be used in commands that follows. All variables need to be set in the `.\templates\app-deployment.parameters.json` file. When executed initially, an account in both in 'az cli' and 'Az PowerShell module' needs have at least a role to create new resource on Azure. All subsequent deployments can use the service principal created in the initial deployment.
+
+For an example of output to a successful initial deployment, see `.\output-of-initial-deployment.md`  
 
 ```powershell
 yarn run deployment
 ```
 
-This is to be used when image needs to be built. Since this is applied to deployment command, it will push the image to the registry and update Azure App with it.
+### Rebuild
+
+This is to be used when docker image needs to be built. Since this is applied to deployment command, it will push the image to the registry and update Azure App with it.
 
 ```powershell
 yarn run deployment -Rebuild
 ```
+
+### RollOver
+
+The service principal to be used in deployments (expect for initial deployment), is created in the `.\scripts\deployment.ps1` file. This principal is authenicated using a x509 certificate, which is stored in the certificate store. As the certificate has an expiration date, it will need to be rolled over at times. This switch indicates that prior to deployment, rollover this certificate.
+
+```powershell
+yarn run deployment -RollOver
+```
+
+### RollBack
 
 If the desired image has already been published to Azure Container Registry, this method (no switch) will list all images available in the registry so that the user can select for deployment.
 
@@ -62,14 +76,6 @@ Press 'ENTER' to halt deployment.
 Select image for deployment and press 'ENTER': 3
 ```
 
-### Authenicate with Certificate and Authorize with Assigned Role
+### Authenticate with Certificate and Authorize with Assigned Role
 
-Perferably, authorize with cert and deploy using a Service prinicapal with assigned Role.
-
-TODO: replace OneNotes
-
-- <https://onedrive.live.com/view.aspx?resid=7379D0E122DADE4B%2129518&id=documents&wd=target%28Azure.one%7C9597BC96-E738-492A-90FA-6FFA2A251C04%2F%5Bdemo%5D%20Credential%20Manager%7C9FAF76D9-2BBE-4E21-A3C6-E2523FAEFE4D%2F%29>
-onenote:<https://d.docs.live.net/7379d0e122dade4b/Documents/Programming%20Notes/Azure.one#%5bdemo%5d%20Credential%20Manager&section-id={9597BC96-E738-492A-90FA-6FFA2A251C04}&page-id={9FAF76D9-2BBE-4E21-A3C6-E2523FAEFE4D}&end>
-
-- <https://onedrive.live.com/view.aspx?resid=7379D0E122DADE4B%2129518&id=documents&wd=target%28Azure.one%7C9597BC96-E738-492A-90FA-6FFA2A251C04%2F%5Bdemo%5D%20Connect%20to%20AZ%20with%20SP%20by%20Cert%7C809EEDB4-F2A4-4B42-BCD1-88DAF93DEA70%2F%29>
-onenote:<https://d.docs.live.net/7379d0e122dade4b/Documents/Programming%20Notes/Azure.one#%5bdemo%5d%20Connect%20to%20AZ%20with%20SP%20by%20Cert&section-id={9597BC96-E738-492A-90FA-6FFA2A251C04}&page-id={809EEDB4-F2A4-4B42-BCD1-88DAF93DEA70}&end>
+In the `.\scripts\deployment.ps1` file is where creation of service principal is located. Having `XAz` automatically installed into PowerShell session, creating a self-signed certificate and assigned to service principal for authenicationg to Azure, can be achieved. With this method of authenication, it seems that Azure doesn't allow system identities for WebApps to be able to authenicate to container registry too. Because of this, no managed identities are currently being used.
