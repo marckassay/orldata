@@ -58,18 +58,23 @@ function New-AppDeployment {
   # silence AzAppServicePlan and AzWebApp progress bar activities
   $ProgressPreference = 'SilentlyContinue'
 
-  # check to see if stage1 deployment can be skipped
-  $ExecuteStage1 += Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -ErrorAction 'SilentlyContinue' | `
-    Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+  if ($Rebuild.IsPresent -ne $true) {
+    # check to see if stage1 deployment can be skipped
+    $ExecuteStage1 += Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -ErrorAction 'SilentlyContinue' | `
+      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-  $ExecuteStage1 += Get-AzKeyVault -Name $KeyVaultName -ErrorAction 'SilentlyContinue' | `
-    Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+    $ExecuteStage1 += Get-AzKeyVault -Name $KeyVaultName -ErrorAction 'SilentlyContinue' | `
+      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-  $ExecuteStage1 += Get-AzAppServicePlan -Name $AppServicePlanName -ErrorAction 'SilentlyContinue' | `
-    Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+    $ExecuteStage1 += Get-AzAppServicePlan -Name $AppServicePlanName -ErrorAction 'SilentlyContinue' | `
+      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-  $ExecuteStage1 += Get-AzWebApp -Name $HostName -ErrorAction 'SilentlyContinue' | `
-    Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+    $ExecuteStage1 += Get-AzWebApp -Name $HostName -ErrorAction 'SilentlyContinue' | `
+      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+  }
+  else {
+    $ExecuteStage1 = 1
+  }
 
   if ($ExecuteStage1 -ge 1) {
 
@@ -98,12 +103,12 @@ function New-AppDeployment {
         $AzADGroup = Get-AzADGroup -DisplayName ($HostName + 'ADG')
         $RoleDef = Get-AzRoleDefinition -Name ($HostName + ' Contributor') -ErrorAction SilentlyContinue
 
-        if ($null -ne $RoleDef) {
+        if (($null -ne $AzADGroup) -and ($null -ne $RoleDef)) {
           New-AzRoleAssignment -ObjectId $AzADGroup.Id -RoleDefinitionId $RoleDef.Id -Scope ($RoleDef.AssignableScopes[0]) | `
             Out-Null
         }
 
-      } until ($null -ne $RoleDef)
+      } until (($null -ne $AzADGroup) -and ($null -ne $RoleDef))
 
       # now that we have AzADGroup.Id, assign it here versus in template.
       Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName `
