@@ -23,6 +23,3 @@ function Find-RequiredPrograms {
 }
 
 Find-RequiredPrograms @('az', 'docker')
-
-Write-Warning "HARDCODING 'XAZ' PATH TO IMPORT-MODULE. REMOVE AFTER TESTING!"
-Import-Module 'E:\marckassay\XAz\XAz.psd1' 

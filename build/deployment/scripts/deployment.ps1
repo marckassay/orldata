@@ -22,8 +22,8 @@ Import-Module '.\build\deployment\psapp\'
 
 # check the args for validity to ensure no unknowns were passed
 $args | ForEach-Object {
-  if (($_ -ne '-Rebuild') -and ($_ -ne '-Verbose')) {
-    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Rebuild', 'Verbose'."
+  if (($_ -ne '-Rebuild') -and ($_ -ne '-RollOver') -and ($_ -ne '-Verbose')) {
+    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Rebuild', 'RollOver', and 'Verbose'."
     Write-Warning "This argument will be ignored."
   }
 }

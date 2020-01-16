@@ -51,7 +51,7 @@
   # ProcessorArchitecture = ''
 
   # Modules that must be imported into the global environment prior to importing this module
-  # RequiredModules      = @(@{ModuleName = 'XAz'; GUID = '420edacb-3c79-4254-ba8e-77ac989e7e3e'; ModuleVersion = '1.0.2'; })
+  # RequiredModules      = @(@{ModuleName = 'XAz'; GUID = '420edacb-3c79-4254-ba8e-77ac989e7e3e'; ModuleVersion = '2.0.0'; })
 
   # Assemblies that must be loaded prior to importing this module
   # RequiredAssemblies = @()
