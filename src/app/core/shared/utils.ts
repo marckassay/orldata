@@ -22,8 +22,7 @@ export const getDateOneWeekAgo = (asISODateString = false): Date | ISODateString
 
 export const getDateOneMonthAgo = (asISODateString = false): Date | ISODateString => {
   const date = new Date();
-  const month = date.getMonth();
-  date.setMonth((month !== 0) ? month - 1 : 11);
+  date.setMonth(-1);
 
   return (asISODateString === false) ? date : DateConverter.convert(date);
 };
