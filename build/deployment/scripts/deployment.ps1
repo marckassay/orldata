@@ -94,16 +94,6 @@ if ($IsCertificateNew) {
   if (-not $IsADGroupMember) {
     az ad group member add --group ($HostName + "ADG") --member-id ($AzADSP.objectId)
   }
-
-  # only az cli can currently set or reset SP credential that is using PEM certificate
-  $AzADSP = az ad sp list --display-name $DesktopPrincipalName | ConvertFrom-Json
-  if ($AzADSP) {
-    az ad sp credential reset --name $DesktopPrincipalName --cert @$PEMCertificatePath
-    $AzADSP = az ad sp list --display-name $DesktopPrincipalName | ConvertFrom-Json -AsHashtable
-  }
-  else {
-    az ad sp create-for-rbac --name $DesktopPrincipalName --cert @$PEMCertificatePath
-  }
 }
 
 # at this point principal (DesktopPrincipalName) is created, having a PEM cert for authenication, and as a member of AD Group.

@@ -1,5 +1,6 @@
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { MsalGuard } from '@azure/msal-angular';
 import * as fromCore from '@core/reducers';
 import { Store } from '@ngrx/store';
 import { merge, Observable } from 'rxjs';
@@ -49,7 +50,8 @@ export const routes: Routes = [
   {
     path: 'catalog/permits',
     loadChildren: '@permits/permits.module#PermitsModule',
-    data: { title: 'Permits' }
+    data: { title: 'Permits' },
+    canActivate: [MsalGuard]
   },
   {
     path: 'catalog',

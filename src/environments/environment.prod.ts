@@ -4,7 +4,8 @@
  */
 export const environment = {
   production: true,
-  // TODO: Yeah, I know. This is used exclusively for read-only queries. Setup Azure for OAuth for services.
   token: 'XsVdIPvgqvEmIgHOmFowjVeOu',
-  semver: '1.0.10'
+  semver: '1.0.12',
+  // This value is retrived by: (Get-AzADApplication -DisplayName orldata-msal | Select-Object -ExpandProperty ApplicationId).Guid
+  azureClientId: 'b4ef625d-edc4-4d5b-ac43-de07defa727e'
 };

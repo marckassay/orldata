@@ -14,8 +14,7 @@ Using VS Code's remote feature to work inside container, execute the 'Remote-Con
 
 ![Open Remote Window](../resources/development/vscode-remote-dev-status-bar.png)
 
-Once VS Code is running in the container and to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot
-reload is enabled. Also ensure git is enabled.
+Once VS Code is running in the container, Anuglar dev server should be hosting OrlData that can be seen by visiting, `http://localhost:4201/` using your host computer's browser. And to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot reload is enabled. Also ensure git is enabled.
 
 Caveats:
 

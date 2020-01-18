@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { BroadcastService } from '@azure/msal-angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'orl-app',
@@ -13,10 +15,13 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['app.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
+
   constructor(
     private iconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private broadcastService: BroadcastService
   ) { }
 
   ngOnInit(): void {
@@ -29,5 +34,31 @@ export class AppComponent implements OnInit {
       'orlando_fountain',
       this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/img/orlando-fountain.svg')
     );
+
+    this.broadcastService.subscribe('msal:loginFailure', (payload) => {
+      // do something here
+    });
+
+    this.broadcastService.subscribe('msal:loginSuccess', (payload) => {
+      // do something here
+    });
+
+    this.broadcastService.subscribe('msal:acquireTokenSuccess', (payload) => {
+      // do something here
+    });
+
+    this.broadcastService.subscribe('msal:acquireTokenFailure', (payload) => {
+      // do something here
+    });
+
+    this.subscription = this.broadcastService.subscribe('msal:acquireTokenFailure', (payload) => {
+    });
+  }
+
+  ngOnDestroy() {
+    this.broadcastService.getMSALSubject().next(1);
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }
