@@ -7,5 +7,5 @@ export const environment = {
   token: 'SODA_APP_TOKEN',
   semver: '',
   // This value is retrived by: (Get-AzADApplication -DisplayName orldata-msal | Select-Object -ExpandProperty ApplicationId).Guid
-  azureClientId: ''
+  azureClientId: '',
 };

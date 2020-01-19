@@ -1,0 +1,13 @@
+$menu-padding: 8px;
+
+.orl-theme-picker-menu {
+  .mat-menu-content {
+    padding: $menu-padding;
+  }
+
+  [mat-menu-item] {
+    flex: 0 0 auto;
+    padding: 0;
+    overflow: hidden;
+  }
+}

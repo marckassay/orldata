@@ -7,5 +7,5 @@ export const environment = {
   token: 'XsVdIPvgqvEmIgHOmFowjVeOu',
   semver: '1.0.12',
   // This value is retrived by: (Get-AzADApplication -DisplayName orldata-msal | Select-Object -ExpandProperty ApplicationId).Guid
-  azureClientId: 'b4ef625d-edc4-4d5b-ac43-de07defa727e'
+  azureClientId: '7ddfc531-7244-4f44-a3ff-5f89ff2bac4c',
 };

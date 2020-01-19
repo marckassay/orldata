@@ -10,13 +10,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { Logger } from 'msal';
+import { environment } from 'src/environments/environment';
 import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
 import { RouterEffects } from './core/effects/router.effects';
 import { StyleManager } from './core/shared/style-manager';
-import { ThemePickerModule } from './core/shared/theme-picker';
 import { metaReducers, ROOT_REDUCERS } from './reducers';
 
 // tslint:disable-next-line: variable-name
@@ -26,9 +26,13 @@ export function loggerCallback(_logLevel: any, message: any, _piiEnabled: any) {
 }
 
 export const protectedResourceMap: Array<[string, Array<string>]> = [
-  ['https://buildtodoservice.azurewebsites.net/api/todolist', ['api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user']],
-  ['https://graph.microsoft.com/v1.0/me', ['user.read']]
+  // ['https://buildtodoservice.azurewebsites.net/api/todolist', ['api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user']],
+  // ['https://graph.microsoft.com/v1.0/me', ['user.read']]
+  ['https://orldatab2c.onmicrosoft.com/api', ['demo.read']],
+  ['https://orldatab2c.onmicrosoft.com/api', ['demo.write']]
 ];
+
+export const unprotectedResources: Array<string> = ['https://www.microsoft.com/en-us/'];
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -67,20 +71,78 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     }),
     HttpClientModule,
     MsalModule.forRoot({
+      /**
+       * AuthOptions: Use this to configure the auth options in the Configuration object
+       *
+       * clientId
+       * Client ID of your app registered that has access to webapi application.
+       * I'm using orldata-b2c
+       *
+       * authority
+       * You can configure a specific authority, defaults to " " or "https://login.microsoftonline.com/common"
+       * See this link on why not to use the 'login.microsoftonline.com/common':
+       * https://docs.microsoft.com/en-us/azure/active-directory-b2c/b2clogin#deprecation-of-loginmicrosoftonlinecom
+       * I'm using the value-format from this doc:
+       * https://docs.microsoft.com/en-us/azure/active-directory-b2c/active-directory-b2c-tutorials-spa?tabs=applications#update-the-sample
+       *
+       * validateAuthority
+       * Used to turn authority validation on/off. When set to true (default), MSAL will compare the application's authority against
+       * well-known URLs templates representing well-formed authorities. It is useful when the authority is obtained at run time to prevent
+       * MSAL from displaying authentication prompts from malicious pages.
+       *
+       * redirectUri
+       * The redirect URI of the application, this should be same as the value in the application registration portal.
+       * Defaults to `window.location.href`.
+       *
+       * postLogoutRedirectUri
+       * Used to redirect the user to this location after logout. Defaults to `window.location.href`.
+       *
+       * navigateToLoginRequestUrl
+       * Used to turn off default navigation to start page after login. Default is true. This is used only for redirect flows.
+       *
+       */
       auth: {
-        clientId: '6226576d-37e9-49eb-b201-ec1eeb0029b6',
-        authority: 'https://login.microsoftonline.com/common/',
-        validateAuthority: true,
-        redirectUri: 'http://localhost:4200/',
-        postLogoutRedirectUri: 'http://localhost:4200/',
+        clientId: environment.azureClientId,
+        authority: 'https://orldatab2c.b2clogin.com/orldatab2c.onmicrosoft.com/B2C_1_signupsignin2',
+        validateAuthority: false,
+        redirectUri: 'http://localhost:4201/',
+        postLogoutRedirectUri: 'http://localhost:4201/',
         navigateToLoginRequestUrl: true,
       },
+      /**
+       * Use this to configure the below cache configuration options:
+       *
+       * cacheLocation
+       * Used to specify the cacheLocation user wants to set. Valid values are "localStorage" and "sessionStorage"
+       *
+       * storeAuthStateInCookie
+       * If set, MSAL store's the auth request state required for validation of the auth flows in the browser cookies. By default
+       * this flag is set to false.
+       */
       cache: {
         cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // set to true for IE 11
+        storeAuthStateInCookie: isIE,
       },
+      /**
+       * App/Framework specific environment support
+       *
+       * isAngular
+       * flag set to determine if it is Angular Framework. MSAL uses this to broadcast tokens. More to come here: detangle this
+       * dependency from core.
+       *
+       * unprotectedResources
+       * Array of URI's which are unprotected resources. MSAL will not attach a token to outgoing requests that have these URI. Defaults to
+       * 'null'.
+       *
+       * protectedResourceMap
+       * This is mapping of resources to scopes used by MSAL for automatically attaching access tokens in web API calls.A single access
+       * token is obtained for the resource. So you can map a specific resource path as follows: {"https://graph.microsoft.com/v1.0/me",
+       * ["user.read"]}, or the app URL of the resource as: {"https://graph.microsoft.com/", ["user.read", "mail.send"]}. This is required
+       * for CORS calls.
+       */
       framework: {
-        unprotectedResources: ['https://www.microsoft.com/en-us/'],
+        isAngular: true,
+        unprotectedResources,
         protectedResourceMap: new Map(protectedResourceMap)
       },
       system: {
@@ -89,7 +151,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     },
       {
         popUp: !isIE,
-        consentScopes: ['user.read', 'openid', 'profile', 'api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user'],
+        consentScopes: ['demo.read', 'demo.write', 'openid', 'offline_access'],
         extraQueryParameters: {}
       }
     ),
@@ -111,8 +173,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
       [RouterEffects]
     ),
 
-    CoreModule,
-    ThemePickerModule
+    CoreModule
   ],
   providers: [
     StyleManager,

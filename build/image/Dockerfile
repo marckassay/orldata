@@ -31,7 +31,7 @@ FROM install as development
 WORKDIR /usr/src/app
 RUN apk add --no-cache \
   git
-
+  
 
 # Stage 4 of 5: calls `ng build` for production build.
 FROM install as production
