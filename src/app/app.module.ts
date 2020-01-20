@@ -17,6 +17,7 @@ import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
 import { RouterEffects } from './core/effects/router.effects';
 import { StyleManager } from './core/shared/style-manager';
+import { ThemePickerModule } from './core/shared/theme-picker';
 import { metaReducers, ROOT_REDUCERS } from './reducers';
 
 // tslint:disable-next-line: variable-name
@@ -69,7 +70,6 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
       routerState: RouterState.Minimal,
       navigationActionTiming: NavigationActionTiming.PreActivation,
     }),
-    HttpClientModule,
     MsalModule.forRoot({
       /**
        * AuthOptions: Use this to configure the auth options in the Configuration object
@@ -155,6 +155,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         extraQueryParameters: {}
       }
     ),
+
     /**
      * Store devtools instrument the store retaining past versions of state
      * and recalculating new states. This enables powerful time-travel
@@ -172,7 +173,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     EffectsModule.forRoot(
       [RouterEffects]
     ),
-
+    ThemePickerModule,
     CoreModule
   ],
   providers: [

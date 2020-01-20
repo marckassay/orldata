@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Injectable, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,9 @@ import { filter, map } from 'rxjs/operators';
 import { StyleManager } from '../style-manager/style-manager';
 import { DocsSiteTheme, ThemeStorage } from './theme-storage/theme-storage';
 
+@Injectable({
+  providedIn: 'root',
+})
 @Component({
   selector: 'theme-picker',
   templateUrl: 'theme-picker.html',
@@ -54,7 +57,7 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
 
   constructor(
     public styleManager: StyleManager,
-    private themeStorage: ThemeStorage,
+    public themeStorage: ThemeStorage,
     private activatedRoute: ActivatedRoute) {
     this.installTheme(this.themeStorage.getStoredThemeName());
   }

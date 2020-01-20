@@ -1,7 +1,7 @@
-<h4>Select a theme:<h4>
-    <mat-grid-list class="orl-theme-picker-menu" cols="2">
+<p>Themes:<p>
+    <mat-grid-list class="orl-theme-picker-menu" cols="4">
       <mat-grid-tile *ngFor="let theme of themes">
-        <div mat-menu-item (click)="installTheme(theme.name)">
+        <div (click)="installTheme(theme.name)">
           <div class="orl-theme-picker-swatch">
             <mat-icon class="orl-theme-chosen-icon" *ngIf="currentTheme === theme">check_circle</mat-icon>
             <div class="orl-theme-picker-primary" [style.background]="theme.primary"></div>

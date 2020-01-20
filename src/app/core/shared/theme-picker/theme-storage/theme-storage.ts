@@ -12,14 +12,14 @@ export interface DocsSiteTheme {
 export class ThemeStorage {
   static storageKey = 'docs-theme-storage-current-name';
 
-  onThemeUpdate: EventEmitter<DocsSiteTheme> = new EventEmitter<DocsSiteTheme>();
+  themeUpdate: EventEmitter<DocsSiteTheme> = new EventEmitter<DocsSiteTheme>();
 
   storeTheme(theme: DocsSiteTheme) {
     try {
       window.localStorage[ThemeStorage.storageKey] = theme.name;
     } catch { }
 
-    this.onThemeUpdate.emit(theme);
+    this.themeUpdate.emit(theme);
   }
 
   getStoredThemeName(): string | null {

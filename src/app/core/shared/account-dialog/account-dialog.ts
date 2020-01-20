@@ -1,39 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Inject, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ThemePickerModule } from '../theme-picker';
-
-/* export interface DialogData {
-  name: string;
-  city: string;
-  country: string;
-  theme: string;
-}
+import * as fromCore from '@app/core/reducers';
+import * as fromMSAL from '@app/core/reducers/msal.reducer';
+import { select, Store } from '@ngrx/store';
+import { ThemePickerComponent, ThemePickerModule } from '../theme-picker';
+import { DocsSiteTheme } from '../theme-picker/theme-storage/theme-storage';
 
 @Component({
-  selector: 'dialog',
-  templateUrl: 'dialog.html',
+  selector: 'orldata-dialog',
+  templateUrl: 'dialog.html'
 })
 export class DialogComponent {
+  useWhiteFill: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    public theme: ThemePickerComponent,
+    @Inject(MAT_DIALOG_DATA) public data: fromMSAL.State) {
+    theme.themeStorage.themeUpdate.subscribe((value: DocsSiteTheme) => {
+      this.useWhiteFill = value.isDark === true;
+    });
+  }
 
-  onNoClick(): void {
+  onIdentityClick(): void {
     this.dialogRef.close();
   }
-} */
-// [mat-menu-trigger-for]="openDialog"
+}
+
+@NgModule({
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatGridListModule,
+    MatTooltipModule,
+    MatDialogModule,
+    ThemePickerModule,
+    CommonModule
+  ],
+  exports: [DialogComponent],
+  declarations: [DialogComponent]
+})
+export class DialogModule { }
+
 @Component({
   selector: 'account-dialog',
   template: `
-  <button mat-icon-button matTooltip="Account Menu" tabindex="1">
+  <button mat-icon-button matTooltip="Account Menu" (click)="openDialog()" tabindex="1">
     <mat-icon>account_circle</mat-icon>
   </button>
   `,
@@ -42,50 +59,47 @@ export class DialogComponent {
   encapsulation: ViewEncapsulation.None
 })
 export class AccountDialogComponent implements OnInit, OnDestroy {
-  // @HostBinding('attr.aria-hidden') hidden = true;
+  @HostBinding('attr.aria-hidden') hidden = true;
 
-  /*
-    idp: "github.com"
-    name: "marckassay"
-    city: "Orlando"
-    country: "United States"
-  */
-  name: string;
-  city: string;
-  country: string;
-  theme: string;
+  identity: fromMSAL.State;
 
-  constructor(public dialog: MatDialog) { }
-  /*
-    openDialog(): void {
-      const dialogRef = this.dialog.open(DialogComponent, {
-        width: '250px',
-        data: { name: this.name, city: this.city }
-      });
+  constructor(
+    public dialog: MatDialog,
+    // keep ThemePickerComponent injected here so that theme will be applied upon launched. otherwize user would need to click on this
+    // component so that theme will be applied.
+    public theme: ThemePickerComponent,
+    private store: Store<fromCore.State>) {
+  }
 
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        // this.animal = result;
-      });
-    } */
   ngOnInit() {
+    this.store.pipe(
+      select(fromCore.getIdentity),
+    ).subscribe((value) => {
+      this.identity = value;
+    });
   }
 
   ngOnDestroy() {
+  }
+
+  openDialog(): void {
+    // ref: https://material.angular.io/components/dialog/api#MatDialogConfig
+    this.dialog.open(DialogComponent, {
+      data: this.identity
+    });
   }
 }
 
 @NgModule({
   imports: [
+    DialogModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
-    MatGridListModule,
     MatTooltipModule,
     MatDialogModule,
-    ThemePickerModule,
     CommonModule
   ],
+  entryComponents: [DialogComponent],
   exports: [AccountDialogComponent],
   declarations: [AccountDialogComponent]
 })

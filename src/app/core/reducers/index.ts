@@ -1,4 +1,5 @@
 import * as fromCatalog from '@app/core/reducers/catalog.reducer';
+import * as fromMSAL from '@app/core/reducers/msal.reducer';
 import * as fromServicesStatus from '@app/core/reducers/services-status.reducer';
 import * as fromRoot from '@app/reducers';
 import { Action, combineReducers, createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
@@ -6,6 +7,7 @@ import { Action, combineReducers, createFeatureSelector, createSelector, Memoize
 export interface CoreState {
   datasets: fromCatalog.State;
   services: fromServicesStatus.State;
+  msal: fromMSAL.State;
 }
 
 export interface State extends fromRoot.State {
@@ -16,6 +18,7 @@ export function reducers(state: CoreState | undefined, action: Action) {
   return combineReducers({
     datasets: fromCatalog.reducer,
     services: fromServicesStatus.reducer,
+    msal: fromMSAL.reducer
   })(state, action);
 }
 
@@ -37,7 +40,7 @@ export const getPermitsMetadata: MemoizedSelector<State, object | undefined> = c
   (datasets) => datasets.permitsMetadata
 );
 
-export const getCrimesMetadata: MemoizedSelector<State, object | undefined > = createSelector(
+export const getCrimesMetadata: MemoizedSelector<State, object | undefined> = createSelector(
   getDatasetsMetas,
   (datasets) => datasets.crimesMetadata
 );
@@ -57,5 +60,16 @@ export const getCommunicatingStatus: MemoizedSelector<State, boolean> = createSe
   getServicesStatus,
   (services) => {
     return services.servicesCommunicating;
+  }
+);
+
+/*
+ MSAL selector
+*/
+
+export const getIdentity: MemoizedSelector<State, fromMSAL.State> = createSelector(
+  getCoreState,
+  (state: CoreState) => {
+    return state.msal;
   }
 );

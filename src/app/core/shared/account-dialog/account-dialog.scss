@@ -4,10 +4,31 @@ $menu-padding: 8px;
   .mat-menu-content {
     padding: $menu-padding;
   }
+}
 
-  [mat-menu-item] {
-    flex: 0 0 auto;
-    padding: 0;
-    overflow: hidden;
+.orl-dialog-content {
+  
+  .center-children {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  min-width: 200px;
+  min-height: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+
+  .mat-icon-36 {
+    width: 36px;
+    height: 36px;
+  }
+  .mat-icon-40 {
+    width: 40px;
+    height: 40px;
+  }
+  .mat-icon-48 {
+    font-size: 48px;
+    width: auto;
+    height: auto;
   }
 }
