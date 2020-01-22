@@ -221,10 +221,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@azure/msal-angular@1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@azure/msal-angular/-/msal-angular-1.0.0-alpha.1.tgz#c73db8faefba5b859afde58c10d08f253733712d"
-  integrity sha512-iBvgHtg0QWujd2Bey1B0rIlTCKCGZZmCj6N6zIqEItnPX14F2n4rDMWp3EOgoInts7oE3auie9KXXTDifv9pdQ==
+"@azure/msal-angular@1.0.0-beta.1":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@azure/msal-angular/-/msal-angular-1.0.0-beta.1.tgz#9863e7988a4df42f18769089d4e3e3fb491d9a9f"
+  integrity sha512-r4NSTM72Vi4k4OWuNogp30hD5ZU/Tknak9CxlSWebKA1Lv6hfr82n7Jpi0ufpgwPa1qYTE/xKNXtedLEvSEkBQ==
   dependencies:
     tslib "1.7.1"
 
@@ -4562,10 +4562,10 @@ ms@^2.0.0, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-msal@^1.2.1-beta.1:
-  version "1.2.1-beta.1"
-  resolved "https://registry.yarnpkg.com/msal/-/msal-1.2.1-beta.1.tgz#54779957ce8ee6c549d94910ace8f17400ccd13e"
-  integrity sha512-PI8XE0htCDEAJkCxYaOtH11DF9SvOts88B/DoF9NZMivWuu1++y1vMcbF/mZ8V//NWD0tYdWPreeMy6p4DbGyw==
+msal@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/msal/-/msal-1.2.1.tgz#08133e37ab0b9741866c89a3fadc55aadb980723"
+  integrity sha512-Zo28eyRtT/Un+zcpMfPtTPD+eo/OqzsRER0k5dyk8Mje/K1oLlaEOAgZHlJs59Y2xyuVg8OrcKqSn/1MeNjZYw==
   dependencies:
     tslib "^1.9.3"
 
@@ -5894,11 +5894,6 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
-
-rxjs-compat@~6.5.2:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.5.2.tgz#e469070adf6260bdad195e9d4a39f444ae28b458"
-  integrity sha512-TRMkTp4FgSxE2HtGvxmgRukh3JqdFM7ejAj1Ti/VdodbPGfWvZR5+KdLKRV9jVDFyu2SknM8RD+PR54KGnoLjg==
 
 rxjs@6.4.0:
   version "6.4.0"
