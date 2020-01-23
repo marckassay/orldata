@@ -1,0 +1,26 @@
+<div mat-dialog-content class="orl-dialog-content">
+    <div *ngIf="identity.idp">
+        <h1 mat-dialog-title>Hi {{identity.name}},</h1>
+        <div class="center-children">
+            <mat-icon class="mat-icon-36" *ngIf="identity.idp === 'github.com'"
+                [svgIcon]="useWhiteFill ? 'github_circle_white' : 'github_circle_black'">
+            </mat-icon>
+
+            <mat-icon class="mat-icon-36" *ngIf="identity.idp === 'linkedin.com'"
+                [svgIcon]="useWhiteFill ? 'linkedin_white' : 'linkedin_black'">
+            </mat-icon>
+
+            <mat-icon *ngIf="identity.idp === 'email'" color="primary" class="mat-icon-48">email</mat-icon>
+            <p>You are signed-in with your '{{identity.idp}}' identity. To sign-out, click the button below.</p>
+            <button mat-stroked-button color="warn" (click)="onSignOnOrOff()">Sign out</button>
+        </div>
+    </div>
+    <div *ngIf="!identity.idp">
+        <h1 mat-dialog-title>You are currently not signed-in.</h1>
+        <div class="center-children">
+            <p>You need to be sign-in to view OrlData.</p>
+            <button mat-stroked-button color="accent" (click)="onSignOnOrOff()">Sign in</button>
+        </div>
+    </div>
+    <theme-picker></theme-picker>
+</div>

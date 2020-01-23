@@ -1,11 +1,11 @@
-<p>Themes:<p>
-    <mat-grid-list class="orl-theme-picker-menu" cols="4">
-      <mat-grid-tile *ngFor="let theme of themes">
-        <div (click)="installTheme(theme.name)">
-          <div class="orl-theme-picker-swatch">
-            <mat-icon class="orl-theme-chosen-icon" *ngIf="currentTheme === theme">check_circle</mat-icon>
-            <div class="orl-theme-picker-primary" [style.background]="theme.primary"></div>
-          </div>
-        </div>
-      </mat-grid-tile>
-    </mat-grid-list>
+<div class="divider"></div>
+<mat-grid-list class="orl-theme-picker-menu" cols="4">
+  <mat-grid-tile *ngFor="let theme of themes">
+    <div (click)="installTheme(theme.name)">
+      <div class="orl-theme-picker-swatch">
+        <mat-icon class="orl-theme-chosen-icon" *ngIf="currentTheme === theme">check_circle</mat-icon>
+        <div class="orl-theme-picker-primary" [style.background]="theme.primary"></div>
+      </div>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

@@ -24,6 +24,9 @@ Caveats:
 - "Port 4200 is already in use."
   - This comes after debugger is launched. Fortunately, the debugger continues with session. Solution is likely mentioned [here](https://code.visualstudio.com/docs/remote/containers#_creating-a-devcontainerjson-file) which needs to be implemented.
 
+- "favicon.ico error"
+  - This is likely erroneous due to the start-up command failing; 'ng serve'. When VS Code launches inside a container, the Angular live dev server logs cannot be seen, at least in that instance of VS Code. A solution is to open another instance of VS Code and in the 'Docker' extentsion, right-click on the now running container (even though Angular server is failing), to select the 'View Logs' item in the context menu. This should open VS Code's Terminal panel with logs shown.
+
 ### production
 
 To build for production, simply call:

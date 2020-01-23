@@ -15,6 +15,7 @@ import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './core/containers/app.component';
 import { CoreModule } from './core/core.module';
+import { MsalEffects } from './core/effects/msal.effects';
 import { RouterEffects } from './core/effects/router.effects';
 import { StyleManager } from './core/shared/style-manager';
 import { ThemePickerModule } from './core/shared/theme-picker';
@@ -171,7 +172,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         }), */
 
     EffectsModule.forRoot(
-      [RouterEffects]
+      [RouterEffects, MsalEffects]
     ),
     ThemePickerModule,
     CoreModule

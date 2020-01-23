@@ -27,26 +27,6 @@ export const serviceActive = createAction(
 export const serviceInactive = createAction(
   '[App API] Service Inactive'
 );
-/*
-export const msalLoginSuccess = createAction(
-  '[MSAL API] Login Success'
-);
-
-export const msalLoginFailure = createAction(
-  '[MSAL API] Login Failure'
-);
-
-export const msalAcquireTokenSuccess = createAction(
-  '[MSAL API] Acquire Token Success',
-  props<{
-    idp: string;
-    name: string;
-  }>()
-);
-
-export const msalAcquireTokenFailure = createAction(
-  '[MSAL API] Acquire Token Failure'
-); */
 
 export const updateIdentityClaimsSuccess = createAction(
   '[MSAL API] Update Identity Claims Success',
@@ -58,5 +38,18 @@ export const updateIdentityClaimsSuccess = createAction(
 
 export const updateIdentityClaimsFailure = createAction(
   '[MSAL API] Update Identity Claims Failure',
+  props<{ errorMsg: string }>()
+);
+
+export const logoutClicked = createAction(
+  '[Account Settings - Identity] Logout Clicked'
+);
+
+export const logoutIdentitySuccess = createAction(
+  '[MSAL API] Logout Identity Success'
+);
+
+export const logoutIdentityFailure = createAction(
+  '[MSAL API] Logout Identity Failure',
   props<{ errorMsg: string }>()
 );

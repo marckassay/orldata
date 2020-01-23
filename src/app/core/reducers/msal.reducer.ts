@@ -21,6 +21,12 @@ export const reducer = createReducer(
         name,
         error: '',
     })),
+    on(AppApiActions.logoutIdentitySuccess, (state) => ({
+        ...state,
+        idp: '',
+        name: '',
+        error: '',
+    })),
     on(AppApiActions.updateIdentityClaimsFailure, (state, { errorMsg }) => ({
         ...initialState,
         error: errorMsg,

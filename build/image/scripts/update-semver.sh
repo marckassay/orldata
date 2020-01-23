@@ -47,10 +47,10 @@ then
   sed -i "s/TAG=.*/TAG=$semver/" .env
 
   echo "  Updating src/environments/environment.prod.ts with semver"
-  sed -i "s/semver:.*/semver: '$semver'/" src/environments/environment.prod.ts
+  sed -i "s/semver:.*/semver: '$semver',/" src/environments/environment.prod.ts
 
   echo "  Updating src/environments/environment.dev.ts with semver"
-  sed -i "s/semver:.*/semver: '$semver'/" src/environments/environment.dev.ts
+  sed -i "s/semver:.*/semver: '$semver',/" src/environments/environment.dev.ts
 
   echo "  Updating package.json with semver"
   sed -i "s/\"version\".*\:.*/\"version\": \"$semver\"\,/" package.json

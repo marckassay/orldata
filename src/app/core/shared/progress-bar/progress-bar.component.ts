@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatProgressBar } from '@angular/material/progress-bar';
+import { CommonModule } from '@angular/common';
+import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
 import * as fromCore from '@core/reducers';
 import { ProgressbarDelay } from '@core/shared/constants';
 import { select, Store } from '@ngrx/store';
@@ -43,6 +44,7 @@ export class ProgressBarComponent implements OnInit {
     // better: https://stackoverflow.com/a/37070282
     this.visibility = this.store.pipe(
       select(fromCore.getCommunicatingStatus),
+
       distinctUntilChanged((x, y) => {
         return x === y;
       }),
@@ -58,3 +60,17 @@ export class ProgressBarComponent implements OnInit {
     );
   }
 }
+
+@NgModule({
+  imports: [
+    MatProgressBarModule,
+    CommonModule
+  ],
+  exports: [
+    ProgressBarComponent
+  ],
+  declarations: [
+    ProgressBarComponent
+  ],
+})
+export class ProgressBarModule { }

@@ -110,7 +110,8 @@
             "dev": {
               "browserTarget": "OrlData:build:dev",
               "host": "0.0.0.0",
-              "progress": true
+              "progress": true,
+              "verbose": true
             }
           }
         },

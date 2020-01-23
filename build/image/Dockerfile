@@ -19,7 +19,7 @@ RUN apk add --no-cache \
 WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY package.json *yarn* ./
-RUN yarn install --ignore-engines \
+RUN yarn install --ignore-engines\
   && cp -f yarn.lock /tmp
 
 COPY ./ ./
@@ -31,7 +31,7 @@ FROM install as development
 WORKDIR /usr/src/app
 RUN apk add --no-cache \
   git
-  
+
 
 # Stage 4 of 5: calls `ng build` for production build.
 FROM install as production

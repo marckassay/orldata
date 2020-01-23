@@ -1,51 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import * as fromCore from '@app/core/reducers';
 import * as fromMSAL from '@app/core/reducers/msal.reducer';
 import { select, Store } from '@ngrx/store';
-import { ThemePickerComponent, ThemePickerModule } from '../theme-picker';
-import { DocsSiteTheme } from '../theme-picker/theme-storage/theme-storage';
-
-@Component({
-  selector: 'orldata-dialog',
-  templateUrl: 'dialog.html'
-})
-export class DialogComponent {
-  useWhiteFill: boolean;
-
-  constructor(
-    public dialogRef: MatDialogRef<DialogComponent>,
-    public theme: ThemePickerComponent,
-    @Inject(MAT_DIALOG_DATA) public data: fromMSAL.State) {
-    theme.themeStorage.themeUpdate.subscribe((value: DocsSiteTheme) => {
-      this.useWhiteFill = value.isDark === true;
-    });
-  }
-
-  onIdentityClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-@NgModule({
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatGridListModule,
-    MatTooltipModule,
-    MatDialogModule,
-    ThemePickerModule,
-    CommonModule
-  ],
-  exports: [DialogComponent],
-  declarations: [DialogComponent]
-})
-export class DialogModule { }
+import { ThemePickerComponent } from '../theme-picker';
+import { DialogComponent, DialogModule } from './dialog';
 
 @Component({
   selector: 'account-dialog',
@@ -59,13 +22,12 @@ export class DialogModule { }
   encapsulation: ViewEncapsulation.None
 })
 export class AccountDialogComponent implements OnInit, OnDestroy {
-  @HostBinding('attr.aria-hidden') hidden = true;
 
   identity: fromMSAL.State;
 
   constructor(
     public dialog: MatDialog,
-    // keep ThemePickerComponent injected here so that theme will be applied upon launched. otherwize user would need to click on this
+    // keep ThemePickerComponent injected here so that theme will be applied upon launched. otherwise user would need to click on this
     // component so that theme will be applied.
     public theme: ThemePickerComponent,
     private store: Store<fromCore.State>) {
@@ -84,9 +46,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     // ref: https://material.angular.io/components/dialog/api#MatDialogConfig
-    this.dialog.open(DialogComponent, {
-      data: this.identity
-    });
+    this.dialog.open(DialogComponent);
   }
 }
 

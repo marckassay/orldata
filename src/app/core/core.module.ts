@@ -6,13 +6,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
-import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { AppComponent } from './containers/app.component';
 import { AccountDialogModule } from './shared/account-dialog';
+import { ProgressBarModule } from './shared/progress-bar/progress-bar.component';
 
 @NgModule({
   imports: [
-    AccountDialogModule,
     CommonModule,
     // TODO: For now, synchronously load HomeModule to prevent any rendering "jumping" of elements.
     // Although I attempted to preload it, but wasn't able to successfully.
@@ -22,15 +21,15 @@ import { AccountDialogModule } from './shared/account-dialog';
     MatProgressBarModule,
     MatButtonModule,
     RouterModule,
+    ProgressBarModule,
+    AccountDialogModule,
   ],
   declarations: [
-    ProgressBarComponent,
     AppComponent,
     HeaderComponent,
     FooterComponent
   ],
   exports: [
-    ProgressBarComponent,
     AppComponent,
     HeaderComponent,
     FooterComponent

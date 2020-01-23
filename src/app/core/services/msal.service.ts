@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as fromCore from '@app/core/reducers';
 import * as Azure from '@azure/msal-angular';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { AppApiActions } from '../actions';
 
 @Injectable({
@@ -48,6 +48,10 @@ export class MsalService {
         this.subscription = this.broadcast.subscribe('msal:acquireTokenFailure', (payload) => {
             this.store.dispatch(AppApiActions.updateIdentityClaimsFailure(payload.errorMessage));
         });
+    }
+
+    logOut(): Observable<void> {
+        return of(this.msal.logout());
     }
 
     destroy() {
