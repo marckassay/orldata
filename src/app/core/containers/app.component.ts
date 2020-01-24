@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MsalService } from '../services/msal.service';
 
 @Component({
   selector: 'orl-app',
@@ -18,9 +17,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private iconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-    private msalSvc: MsalService
-  ) { console.log(this.msalSvc); }
+    private domSanitizer: DomSanitizer
+  ) { }
 
   ngOnInit(): void {
     this.iconRegistry.addSvgIcon(

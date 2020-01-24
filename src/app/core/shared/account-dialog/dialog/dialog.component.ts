@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -12,16 +12,19 @@ import { ProgressBarModule } from '@core/shared/progress-bar/progress-bar.compon
 import { ThemePickerComponent, ThemePickerModule } from '@core/shared/theme-picker';
 import { DocsSiteTheme } from '@core/shared/theme-picker/theme-storage/theme-storage';
 import { select, Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'orldata-dialog',
     templateUrl: 'dialog.html',
     styleUrls: ['dialog.scss']
 })
-export class DialogComponent implements OnInit {
+export class DialogComponent implements OnInit, OnDestroy {
 
     useWhiteFill: boolean;
     identity: fromMSAL.State;
+    private unsubscribe = new Subject<void>();
 
     constructor(
         public dialogRef: MatDialogRef<DialogComponent>,
@@ -31,9 +34,13 @@ export class DialogComponent implements OnInit {
     ngOnInit() {
         this.store.pipe(
             select(fromCore.getIdentity),
+            takeUntil(this.unsubscribe)
         ).subscribe((value) => {
             this.identity = value;
         });
+
+        const currentTheme = this.theme.themes.find((value) => value.name === this.theme.themeStorage.getStoredThemeName());
+        this.useWhiteFill = (currentTheme as DocsSiteTheme).isDark === true;
 
         this.theme.themeStorage.themeUpdate.subscribe((value: DocsSiteTheme) => {
             this.useWhiteFill = value.isDark === true;
@@ -43,10 +50,16 @@ export class DialogComponent implements OnInit {
     onSignOnOrOff(): void {
         if (this.identity.idp) {
             this.store.dispatch(AppApiActions.logoutClicked());
-            this.dialogRef.close();
         } else {
-
+            this.store.dispatch(AppApiActions.loginClicked());
         }
+
+        this.dialogRef.close();
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 }
 

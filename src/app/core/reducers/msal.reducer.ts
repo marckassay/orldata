@@ -15,12 +15,13 @@ const initialState: State = {
 
 export const reducer = createReducer(
     initialState,
-    on(AppApiActions.updateIdentityClaimsSuccess, (state, { idp, name }) => ({
-        ...state,
-        idp,
-        name,
-        error: '',
-    })),
+    on(AppApiActions.updateIdentityClaimsSuccess,
+        AppApiActions.loginIdentitySuccess, (state, { idp, name }) => ({
+            ...state,
+            idp,
+            name,
+            error: '',
+        })),
     on(AppApiActions.logoutIdentitySuccess, (state) => ({
         ...state,
         idp: '',
