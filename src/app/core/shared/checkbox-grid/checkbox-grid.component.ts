@@ -42,10 +42,6 @@ export interface CheckGridItem {
   `,
 
   styles: [`
-    .mat-grid-tile .mat-figure {
-      justify-content: start;
-    }
-
     .orl-button-row button, {
       margin-top: 16px;
       margin-right: 8px;

@@ -49,7 +49,7 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef, ViewEncapsulati
   }
 
   .mat-grid-tile .mat-figure {
-    justify-content: start;
+    justify-content: unset !important;
   }
 
   mat-card {

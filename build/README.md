@@ -2,13 +2,13 @@
 
 ## .\build\image\
 
-Contents of this folder include Docker related files and shell scripts to assist in building image.
+Contents of this folder include Docker related files and shell scripts to assist in building image and Azure deployments.
 
 The following sections explain about development and production environments:
 
 ### development
 
-These development instructions assume you're using VS Code for development. Before running inside VS Code, I find it best to do an initial build via CLI. This can be done by running: `yarn run up:dev`. Afterwards, stop the container and read the following instructions in the next paragraph.
+These development instructions assume you're using VS Code for development. Before running inside VS Code, I find it best to do an initial build via CLI. This can be done by running: `yarn run up:dev`. Afterwards, stop the container and continue the instructions in the next paragraph.
 
 Using VS Code's remote feature to work inside container, execute the 'Remote-Containers: Reopen in Container' command. This command will be seen when typing in the View > Command Palette of VS Code. Or can be executed by a click of the green left-bottom button as shown below:
 
@@ -25,7 +25,7 @@ Caveats:
   - This comes after debugger is launched. Fortunately, the debugger continues with session. Solution is likely mentioned [here](https://code.visualstudio.com/docs/remote/containers#_creating-a-devcontainerjson-file) which needs to be implemented.
 
 - "favicon.ico error"
-  - This is likely erroneous due to the start-up command failing; 'ng serve'. When VS Code launches inside a container, the Angular live dev server logs cannot be seen, at least in that instance of VS Code. A solution is to open another instance of VS Code and in the 'Docker' extentsion, right-click on the now running container (even though Angular server is failing), to select the 'View Logs' item in the context menu. This should open VS Code's Terminal panel with logs shown.
+  - This is likely erroneous due to the start-up command failing; 'ng serve'. When VS Code launches inside a container, the Angular live dev server logs cannot be seen, at least in the instance of VS Code that launched it. A solution is to open another instance of VS Code and in the 'Docker' extension, right-click on the now running container (even though Angular server is failing), to select the 'View Logs' item in the context menu. This should open VS Code's Terminal panel with logs shown.
 
 ### production
 
