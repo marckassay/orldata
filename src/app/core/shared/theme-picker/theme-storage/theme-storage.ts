@@ -22,6 +22,12 @@ export class ThemeStorage {
     this.themeUpdate.emit(theme);
   }
 
+  setDefault(theme: DocsSiteTheme) {
+    if (this.getStoredThemeName() === null) {
+      this.storeTheme(theme);
+    }
+  }
+
   getStoredThemeName(): string | null {
     try {
       return window.localStorage[ThemeStorage.storageKey] || null;

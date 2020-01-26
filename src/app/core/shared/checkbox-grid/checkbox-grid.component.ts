@@ -110,7 +110,6 @@ export class CheckboxGridComponent implements AfterViewInit, OnDestroy, ControlV
       debounceTime(500),
       takeUntil(this.unsubscribe),
     ).subscribe((res: any) => {
-      console.log('Checkbox - valueChanges(res)', res);
       if (this.onChange) {
         this.onChange(this.form);
         this.ref.markForCheck();

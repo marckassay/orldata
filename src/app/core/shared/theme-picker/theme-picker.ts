@@ -59,6 +59,8 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
     public styleManager: StyleManager,
     public themeStorage: ThemeStorage,
     private activatedRoute: ActivatedRoute) {
+    const theme = this.themes.find(currentTheme => currentTheme.isDefault === true) as DocsSiteTheme;
+    this.themeStorage.setDefault(theme);
     this.installTheme(this.themeStorage.getStoredThemeName());
   }
 
