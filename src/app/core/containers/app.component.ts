@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.iconRegistry.addSvgIcon(
       'orlando_fountain',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/img/orlando-fountain.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/orlando-fountain.svg')
     );
   }
 

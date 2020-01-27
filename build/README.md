@@ -14,7 +14,7 @@ Using VS Code's remote feature to work inside container, execute the 'Remote-Con
 
 ![Open Remote Window](../resources/development/vscode-remote-dev-status-bar.png)
 
-Once VS Code is running in the container, Anuglar dev server should be hosting OrlData that can be seen by visiting, `http://localhost:4201/` using your host computer's browser. And to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot reload is enabled. Also ensure git is enabled.
+Once VS Code is running in the container, Angular dev server should be hosting OrlData that can be seen by visiting, `https://localhost:4201/` using your host computer's browser. SSL is enabled as a requirement for Azure B2C redirect Uri. And to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot reload is enabled. Also ensure git is enabled.
 
 Caveats:
 
@@ -39,9 +39,11 @@ This will eventually call: `docker-compose up ...production.yml ... -d --build`.
 
 ## .\build\deployment\
 
-Contents of this folder includes a PowerShell module named, PSApp, and Azure ARM templates, to be used to deploy to Azure. PSApp has a dependency listed in its `RequiredModules` array. This dependecy is named `XAz`, which will get downloaded and installed automatically
+Contents of this folder includes a PowerShell module named, PSApp, and Azure ARM templates, to be used to deploy to Azure. PSApp has a dependency listed in its `RequiredModules` array. This dependency is named `XAz`, which will get downloaded and installed automatically.
 
 The following command will deploy the Azure ARM template (`.\templates\app-deployment.json`). This template will create several resources on Azure that will be used in commands that follows. All variables need to be set in the `.\templates\app-deployment.parameters.json` file. When executed initially, an account in both in 'az cli' and 'Az PowerShell module' needs have at least a role to create new resource on Azure. All subsequent deployments can use the service principal created in the initial deployment.
+
+Since Azure AD B2C is treated differently than Azure, unfortunately there isn't any templates to automate deployment.
 
 For an example of output to a successful initial deployment, see `.\output-of-initial-deployment.md`  
 
@@ -59,7 +61,7 @@ yarn run deployment -Rebuild
 
 ### RollOver
 
-The service principal to be used in deployments (expect for initial deployment), is created in the `.\scripts\deployment.ps1` file. This principal is authenicated using a x509 certificate, which is stored in the certificate store. As the certificate has an expiration date, it will need to be rolled over at times. This switch indicates that prior to deployment, rollover this certificate.
+The service principal to be used in deployments (expect for initial deployment), is created in the `.\scripts\deployment.ps1` file. This principal is authenticated using a x509 certificate, which is stored in the certificate store. As the certificate has an expiration date, it will need to be rolled over at times. This switch indicates that prior to deployment, rollover this certificate.
 
 ```powershell
 yarn run deployment -RollOver
@@ -80,4 +82,4 @@ Select image for deployment and press 'ENTER': 3
 
 ### Authenticate with Certificate and Authorize with Assigned Role
 
-In the `.\scripts\deployment.ps1` file is where creation of service principal is located. Having `XAz` automatically installed into PowerShell session, creating a self-signed certificate and assigned to service principal for authenicationg to Azure, can be achieved. With this method of authenication, it seems that Azure doesn't allow system identities for WebApps to be able to authenicate to container registry too. Because of this, no managed identities are currently being used.
+In the `.\scripts\deployment.ps1` file is where creation of service principal is located. Having `XAz` automatically installed into PowerShell session, creating a self-signed certificate and assigned to service principal for authenticationg to Azure, can be achieved. With this method of authentication, it seems that Azure doesn't allow system identities for WebApps to be able to authenticate to container registry too. Because of this, no managed identities are currently being used.
