@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AppApiActions } from '@app/core/actions';
 import * as fromCore from '@app/core/reducers';
 import * as Azure from '@azure/msal-angular';
 import { Store } from '@ngrx/store';
@@ -8,6 +9,8 @@ export interface TokenClaimsResponse {
     idp: string;
     name: string;
 }
+
+// export type TokenClaimsState =
 
 @Injectable({
     providedIn: 'root',
@@ -25,36 +28,56 @@ export class MsalService {
         private msal: Azure.MsalService,
         private store: Store<fromCore.State>,
     ) {
-        this.init();
+        this.subscribeToRedirectCallback();
     }
 
-    init() {
-        /*         this.broadcast.subscribe('msal:loginSuccess', (payload) => {
-                    this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
-                        idp: payload.account.idTokenClaims.idp,
-                        name: payload.account.idTokenClaims.name,
-                    }));
-                });
+    // TODO: having these broadcast.subscribe(), in an addition having logIn() and logOut(), there are going to be redunant actions.
 
-                this.broadcast.subscribe('msal:loginFailure', (payload) => {
-                    this.store.dispatch(AppApiActions.updateIdentityClaimsFailure(payload.errorMessage));
-                });
-                this.broadcast.subscribe('msal:acquireTokenSuccess', (payload) => {
-                    this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
-                        idp: payload.account.idTokenClaims.idp,
-                        name: payload.account.idTokenClaims.name,
-                    }));
-                }); */
+    /**
+     * these are broadcasted in the MsalService.prototype.handleRedirectCallback()
+     * ref: node_modules/@azure/msal-angular/dist/msal.service.js
+     */
+    subscribeToRedirectCallback() {
 
         /**
-         * errorCode: "user_login_error"
-         * errorMessage: "User login is required."
-         * name: "ClientAuthError"
-         * type: "[MSAL API] Update Identity Claims Failure"
+         * ref: node_modules/msal/src/AuthResponse.ts
          */
-        /*         this.subscription = this.broadcast.subscribe('msal:acquireTokenFailure', (payload) => {
-                    this.store.dispatch(AppApiActions.updateIdentityClaimsFailure(payload.errorMessage));
-                }); */
+        this.broadcast.subscribe('msal:loginSuccess', (payload) => {
+            this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
+                idp: payload.account.idTokenClaims.idp,
+                name: payload.account.idTokenClaims.name,
+            }));
+        });
+
+        /**
+         * ref: node_modules/msal/src/error/AuthError.ts
+         * ref: node_modules/msal/src/error/ClientAuthError.ts
+         */
+        this.broadcast.subscribe('msal:loginFailure', (payload) => {
+            this.store.dispatch(AppApiActions.updateIdentityClaimsFailure({ errorMsg: payload.errorMessage }));
+        });
+
+        /**
+         * ref: node_modules/msal/src/AuthResponse.ts
+         */
+        this.broadcast.subscribe('msal:acquireTokenSuccess', (payload) => {
+            this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
+                idp: payload.account.idTokenClaims.idp,
+                name: payload.account.idTokenClaims.name,
+            }));
+        });
+
+        /**
+         * ref: node_modules/msal/src/error/AuthError.ts
+         * ref: node_modules/msal/src/error/ClientAuthError.ts
+         */
+        this.subscription = this.broadcast.subscribe('msal:acquireTokenFailure', (payload) => {
+            this.store.dispatch(AppApiActions.updateIdentityClaimsFailure({ errorMsg: payload.errorMessage }));
+        });
+    }
+
+    isLoginInProgress() {
+        return this.msal.getLoginInProgress();
     }
 
     logIn(): Observable<TokenClaimsResponse> {
@@ -72,10 +95,13 @@ export class MsalService {
         return of(this.msal.logout());
     }
 
+    // TODO: this service will be needed for the life of app. not sure if this is even neccessary.
+    /*
     destroy() {
         this.broadcast.getMSALSubject().next(1);
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
     }
+    */
 }

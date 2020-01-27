@@ -28,8 +28,9 @@ export class DialogComponent implements OnInit, OnDestroy {
 
     constructor(
         public dialogRef: MatDialogRef<DialogComponent>,
+        private store: Store<fromCore.State>,
         public theme: ThemePickerComponent,
-        private store: Store<fromCore.State>) { }
+    ) { }
 
     ngOnInit() {
         this.store.pipe(
@@ -74,6 +75,7 @@ export class DialogComponent implements OnInit, OnDestroy {
         ThemePickerModule,
         CommonModule
     ],
+    entryComponents: [DialogComponent],
     exports: [DialogComponent],
     declarations: [DialogComponent]
 })

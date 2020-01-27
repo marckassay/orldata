@@ -1,10 +1,10 @@
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
-import { MsalGuard } from '@azure/msal-angular';
 import * as fromCore from '@core/reducers';
 import { Store } from '@ngrx/store';
 import { merge, Observable } from 'rxjs';
 import { filter, mapTo, scan, take } from 'rxjs/operators';
+import { MsalAuthGuard } from './msal-auth.guard';
 
 export interface CatalogResolverType {
   permits: boolean;
@@ -51,7 +51,7 @@ export const routes: Routes = [
     path: 'catalog/permits',
     loadChildren: '@permits/permits.module#PermitsModule',
     data: { title: 'Permits' },
-    canActivate: [MsalGuard]
+    canActivate: [MsalAuthGuard],
   },
   {
     path: 'catalog',
@@ -64,19 +64,28 @@ export const routes: Routes = [
     path: 'home',
     loadChildren: '@core/components/home/home.component#HomeModule',
     pathMatch: 'full',
-    data: { title: 'Home' }
+    data: { title: 'Home' },
+  },
+  {
+    path: 'auth',
+    pathMatch: 'full',
+    redirectTo: '.',
   },
   {
     path: '',
     pathMatch: 'full',
     redirectTo: 'home',
   },
+  {
+    path: '**',
+    redirectTo: 'home',
+  }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
+      useHash: false,
       enableTracing: false, // <-- debugging purposes only
       relativeLinkResolution: 'corrected',
     })

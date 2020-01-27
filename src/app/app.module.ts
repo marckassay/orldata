@@ -24,17 +24,22 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
 // tslint:disable-next-line: variable-name
 export function loggerCallback(_logLevel: any, message: any, _piiEnabled: any) {
   // tslint:disable-next-line: prefer-template
-  console.log('client logging' + message);
+  console.log('[Azure Msal]', message);
 }
 
 export const protectedResourceMap: Array<[string, Array<string>]> = [
   // ['https://buildtodoservice.azurewebsites.net/api/todolist', ['api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user']],
   // ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-  ['https://orldatab2c.onmicrosoft.com/api', ['demo.read']],
-  ['https://orldatab2c.onmicrosoft.com/api', ['demo.write']]
+  ['https://orldatab2c.onmicrosoft.com/api', ['user.read']],
+  ['https://orldatab2c.onmicrosoft.com/api', ['user.write']]
 ];
 
-export const unprotectedResources: Array<string> = ['https://www.microsoft.com/en-us/'];
+export const unprotectedResources: Array<string> = [
+  'https://dev.socrata.com/foundry/data.cityoforlando.net',
+  'https://localhost',
+  'https://www.github.com',
+  'https://data.cityoforlando.net'
+];
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -71,6 +76,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
       routerState: RouterState.Minimal,
       navigationActionTiming: NavigationActionTiming.PreActivation,
     }),
+
     MsalModule.forRoot({
       /**
        * AuthOptions: Use this to configure the auth options in the Configuration object
@@ -103,11 +109,11 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
        *
        */
       auth: {
-        clientId: environment.azureClientId,
-        authority: 'https://orldatab2c.b2clogin.com/orldatab2c.onmicrosoft.com/B2C_1_signupsignin2',
+        clientId: environment.azure.clientId,
+        authority: environment.azure.authority,
         validateAuthority: false,
-        redirectUri: 'http://localhost:4201/',
-        postLogoutRedirectUri: 'http://localhost:4201/',
+        redirectUri: environment.azure.redirectUri,
+        postLogoutRedirectUri: window.location.href,
         navigateToLoginRequestUrl: true,
       },
       /**
@@ -136,7 +142,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
        * 'null'.
        *
        * protectedResourceMap
-       * This is mapping of resources to scopes used by MSAL for automatically attaching access tokens in web API calls.A single access
+       * This is mapping of resources to scopes used by MSAL for automatically attaching access tokens in web API calls. A single access
        * token is obtained for the resource. So you can map a specific resource path as follows: {"https://graph.microsoft.com/v1.0/me",
        * ["user.read"]}, or the app URL of the resource as: {"https://graph.microsoft.com/", ["user.read", "mail.send"]}. This is required
        * for CORS calls.
@@ -152,7 +158,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     },
       {
         popUp: !isIE,
-        consentScopes: ['demo.read', 'demo.write', 'openid', 'offline_access'],
+        consentScopes: ['user.read', 'user.write', 'openid', 'offline_access'],
         extraQueryParameters: {}
       }
     ),
@@ -167,13 +173,15 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
      *
      * See: https://github.com/zalmoxisus/redux-devtools-extension
      */
-    /*     StoreDevtoolsModule.instrument({
-          name: 'NgRx - orldata',
-        }), */
-
-    EffectsModule.forRoot(
-      [RouterEffects, MsalEffects]
-    ),
+    /*
+    storeDevtoolsModule.instrument({
+      name: 'NgRx - orldata',
+    }),
+    */
+    EffectsModule.forRoot([
+      RouterEffects,
+      MsalEffects,
+    ]),
     ThemePickerModule,
     CoreModule
   ],

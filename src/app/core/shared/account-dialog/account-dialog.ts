@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import * as fromCore from '@app/core/reducers';
 import * as fromMSAL from '@app/core/reducers/msal.reducer';
 import { select, Store } from '@ngrx/store';
 import { ThemePickerComponent } from '../theme-picker';
-import { DialogComponent, DialogModule } from './dialog';
+import { DialogModule } from './dialog';
+import { DialogService } from './dialog/dialog.service';
 
 @Component({
   selector: 'account-dialog',
@@ -17,7 +18,6 @@ import { DialogComponent, DialogModule } from './dialog';
     <mat-icon>account_circle</mat-icon>
   </button>
   `,
-  styleUrls: ['account-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
@@ -26,7 +26,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
   identity: fromMSAL.State;
 
   constructor(
-    public dialog: MatDialog,
+    public service: DialogService,
     // keep ThemePickerComponent injected here so that theme will be applied upon launched. otherwise user would need to click on this
     // component so that theme will be applied.
     public theme: ThemePickerComponent,
@@ -46,7 +46,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     // ref: https://material.angular.io/components/dialog/api#MatDialogConfig
-    this.dialog.open(DialogComponent);
+    this.service.openDialog();
   }
 }
 
@@ -59,7 +59,6 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
     MatDialogModule,
     CommonModule
   ],
-  entryComponents: [DialogComponent],
   exports: [AccountDialogComponent],
   declarations: [AccountDialogComponent]
 })

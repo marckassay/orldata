@@ -6,6 +6,10 @@ export const environment = {
   production: false,
   token: 'SODA_APP_TOKEN',
   semver: '',
-  // This value is retrived by: (Get-AzADApplication -DisplayName orldata-msal | Select-Object -ExpandProperty ApplicationId).Guid
-  azureClientId: '',
+  azure: {
+    authority: '',
+    // A unique identifier that is used to represent your application on requests made to Azure AD B2C
+    clientId: '',
+    redirectUri: ''
+  }
 };

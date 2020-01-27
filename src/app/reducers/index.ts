@@ -1,7 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import * as fromCore from '@core/reducers';
 import * as fromRouter from '@ngrx/router-store';
-import { getSelectors } from '@ngrx/router-store';
 import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 
@@ -68,4 +67,4 @@ export const {
   selectRouteParams,    // select the current route params
   selectRouteData,      // select the current route data
   selectUrl,            // select the current url
-} = getSelectors(selectRouter);
+} = fromRouter.getSelectors(selectRouter);

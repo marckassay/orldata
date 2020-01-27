@@ -7,6 +7,7 @@
 @import './app/core/shared/checkbox-grid/mixin-theme';
 @import './app/core/shared/progress-bar/mixin-theme';
 @import './app/core/shared/theme-picker/mixin-theme';
+@import './app/core/shared/account-dialog/dialog/mixin-theme';
 
 @import './styles/svg-theme';
 @import './styles/tables-theme';
@@ -49,6 +50,7 @@
   @include orl-svg-theme($theme);
   @include orl-tables-theme($theme);
   @include progress-bar-theme($theme);
+  @include dialog-theme($theme);
   @include theme-picker-theme($theme);
   @include header-theme($theme);
   @include footer-theme($theme);
