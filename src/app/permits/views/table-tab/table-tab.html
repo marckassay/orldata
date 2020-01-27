@@ -12,9 +12,9 @@
             <geo-coordinates [value]="map.value.coordinates[1]" [direction]="1"></geo-coordinates>
             <geo-coordinates [value]="map.value.coordinates[0]" [direction]="2"></geo-coordinates>
           </div>
-          <div *ngSwitchCase="'Label'">{{ record[column] | labelcase }}</div>
-          <div *ngSwitchCase="'Other'">{{ record[column] }}</div>
-          <div *ngSwitchDefault>{{ record[column] }}</div>
+          <div *ngSwitchCase="'Label'">{{ record[column] | labelcase | truncate }}</div>
+          <div *ngSwitchCase="'Other'">{{ record[column] | truncate }}</div>
+          <div *ngSwitchDefault>{{ record[column] | truncate }}</div>
         </div>
       </td>
     </ng-container>

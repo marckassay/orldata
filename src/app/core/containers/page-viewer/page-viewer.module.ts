@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRouteSnapshot, CanActivate, Resolve, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { CatalogItems } from '@app/core/components/catalog/catalog-items';
 import { CheckboxGridModule } from '@app/core/shared/checkbox-grid/checkbox-grid.module';
+import { TruncateTextPipe } from '@app/core/shared/truncate-text.pipe';
 import { FieldTypePipe } from '@core/shared/field-type.pipe';
 import { GeoLocationPipe } from '@core/shared/geo-location.pipe';
 import { LabelCasePipe } from '@core/shared/label-case.pipe';
@@ -86,6 +87,7 @@ export abstract class CanActivateTab implements CanActivate {
     GeoLocationPipe,
     NumericLimitPipe,
     MailAddressPipe,
+    TruncateTextPipe,
     CoordinatesModule,
     FormsModule,
     ReactiveFormsModule,
@@ -117,6 +119,7 @@ export abstract class CanActivateTab implements CanActivate {
     GeoLocationPipe,
     LabelCasePipe,
     MailAddressPipe,
+    TruncateTextPipe,
     NumericLimitPipe,
     PageViewerComponent,
     TableTabComponent,
