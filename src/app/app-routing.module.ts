@@ -69,7 +69,12 @@ export const routes: Routes = [
   {
     path: 'auth',
     pathMatch: 'full',
-    redirectTo: '.',
+    redirectTo: 'home',
+  },
+  {
+    path: 'logout',
+    pathMatch: 'full',
+    redirectTo: 'home',
   },
   {
     path: '',

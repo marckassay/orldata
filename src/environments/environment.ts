@@ -10,6 +10,7 @@ export const environment = {
     authority: '',
     // A unique identifier that is used to represent your application on requests made to Azure AD B2C
     clientId: '',
-    redirectUri: ''
+    redirectUri: '',
+    postLogoutRedirectUri: ''
   }
 };

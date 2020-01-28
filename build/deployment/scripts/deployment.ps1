@@ -15,6 +15,7 @@ yarn run deployment -Rebuild
 #>
 
 $Rebuild = $args.Contains('-Rebuild')
+$SkipStage2 = $args.Contains('-SkipStage2')
 $RollOver = $args.Contains('-RollOver')
 $Verbose = $args.Contains('-Verbose')
 
@@ -22,8 +23,8 @@ Import-Module '.\build\deployment\psapp\'
 
 # check the args for validity to ensure no unknowns were passed
 $args | ForEach-Object {
-  if (($_ -ne '-Rebuild') -and ($_ -ne '-RollOver') -and ($_ -ne '-Verbose')) {
-    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Rebuild', 'RollOver', and 'Verbose'."
+  if (($_ -ne '-Rebuild') -and ($_ -ne '-RollOver') -and ($_ -ne '-SkipStage2') -and ($_ -ne '-Verbose')) {
+    Write-Warning "Argument '$_' is not a member in the parameter set for New-AppDeployment. This function accepts only 'Rebuild', 'RollOver', 'SkipStage2', and 'Verbose'."
     Write-Warning "This argument will be ignored."
   }
 }
@@ -110,4 +111,4 @@ Write-Host "has no option for service principal, halt this operation now. Afterw
 Confirm-XAzAccount (Get-XAzAccountInfo) -StopOnEmptyCli -StopOnEmptyModule | Out-Null
 
 # now we are logged in Azure with 'PowerShell 'Az' module'
-New-AppDeployment -DesktopPrincipalName $DesktopPrincipalName -Certificate $X509 -Rebuild:$Rebuild -Verbose:$Verbose
+New-AppDeployment -DesktopPrincipalName $DesktopPrincipalName -Certificate $X509 -Rebuild:$Rebuild -SkipStage2:$SkipStage2 -Verbose:$Verbose

@@ -17,7 +17,8 @@ function New-AppDeployment {
     )]
     [X509Certificate]$Certificate,
 
-    [switch]$Rebuild
+    [switch]$Rebuild,
+    [switch]$SkipStage2
   )
 
   if (-not $PSBoundParameters.ContainsKey('Verbose')) {
@@ -53,71 +54,89 @@ function New-AppDeployment {
   $AppServicePlanName = $Obj.TemplateParameterObject.appServicePlanName
   $HostName = $Obj.TemplateParameterObject.hostName
 
-  $ExecuteStage1 = 0
+  $ExecuteStage2 = 0
 
   # silence AzAppServicePlan and AzWebApp progress bar activities
   $ProgressPreference = 'SilentlyContinue'
+  if ($SkipStage2.IsPresent -eq $false) {
 
-  if ($Rebuild.IsPresent -ne $true) {
-    # check to see if stage1 deployment can be skipped
-    $ExecuteStage1 += Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -ErrorAction 'SilentlyContinue' | `
-      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+    if ($Rebuild.IsPresent -eq $false) {
+      # check to see if stage 2 deployment can be skipped
+      $ExecuteStage2 += Get-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -ErrorAction 'SilentlyContinue' | `
+        Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-    $ExecuteStage1 += Get-AzKeyVault -Name $KeyVaultName -ErrorAction 'SilentlyContinue' | `
-      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+      $ExecuteStage2 += Get-AzKeyVault -Name $KeyVaultName -ErrorAction 'SilentlyContinue' | `
+        Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-    $ExecuteStage1 += Get-AzAppServicePlan -Name $AppServicePlanName -ErrorAction 'SilentlyContinue' | `
-      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
+      $ExecuteStage2 += Get-AzAppServicePlan -Name $AppServicePlanName -ErrorAction 'SilentlyContinue' | `
+        Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
 
-    $ExecuteStage1 += Get-AzWebApp -Name $HostName -ErrorAction 'SilentlyContinue' | `
-      Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
-  }
-  else {
-    $ExecuteStage1 = 1
-  }
-
-  if ($ExecuteStage1 -ge 1) {
-
-    Write-Verbose "Stage 1 needs to be deployed."
-
-    $Exit = New-AzResourceGroupDeployment -ResourceGroupName ($Obj.ResourceGroupName) `
-      -TemplateFile ($Obj.TemplateFile) `
-      -TemplateParameterObject ($Obj.TemplateParameterObject) `
-      -Mode 'Incremental' `
-      -Confirm
-
-    if ($Exit.ProvisioningState -ne 'Succeeded') {
-      Write-Error "New-AzResourceGroupDeployment must succeed before continuing" -ErrorAction Stop
+      $ExecuteStage2 += Get-AzWebApp -Name $HostName -ErrorAction 'SilentlyContinue' | `
+        Measure-Object | Select-Object -ExpandProperty Count | ForEach-Object { if ($_ -eq 0) { 1 } }
     }
     else {
+      $ExecuteStage2 = 1
+    }
 
-      # TODO: admin account needs to be enabled for current deployment. Azure allow cert authenication for ServicePrincipal, but not
-      # ManagedIdentities. At least, it doesn't not using a VM.
-      # Update-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -DisableAdminUser | Out-Null
+    if ($ExecuteStage2 -ge 1) {
 
-      # this sleeping is due to a bug (could be fixed now) in template deployments not having resources immediately available.
-      do {
-        Write-Warning "Sleeping for 5 seconds"
-        Start-Sleep -Milliseconds 5000
+      Write-Verbose "Stage 2 needs to be deployed." -Verbose
 
-        $AzADGroup = Get-AzADGroup -DisplayName ($HostName + 'ADG')
-        $RoleDef = Get-AzRoleDefinition -Name ($HostName + ' Contributor') -ErrorAction SilentlyContinue
+      Write-Host "Press 'C' to continue with this stage."
+      Write-Host "Press 'S' to skip this stage."
+      Write-Host "Press 'ENTER' to halt deployment."
+      $Selection = Read-Host "Make a selection and press 'ENTER'"
 
-        if (($null -ne $AzADGroup) -and ($null -ne $RoleDef)) {
-          New-AzRoleAssignment -ObjectId $AzADGroup.Id -RoleDefinitionId $RoleDef.Id -Scope ($RoleDef.AssignableScopes[0]) | `
-            Out-Null
+      # equality checks lower and upper
+      if ($Selection -eq 'S') {
+        Write-Verbose "Stage 2 has been commanded to be by-passed."
+      }
+      elseif ($Selection -eq 'C') {
+        $Exit = New-AzResourceGroupDeployment -ResourceGroupName ($Obj.ResourceGroupName) `
+          -TemplateFile ($Obj.TemplateFile) `
+          -TemplateParameterObject ($Obj.TemplateParameterObject) `
+          -Mode 'Incremental'
+
+        if ($Exit.ProvisioningState -ne 'Succeeded') {
+          Write-Error "New-AzResourceGroupDeployment must succeed before continuing" -ErrorAction Stop
         }
+        else {
 
-      } until (($null -ne $AzADGroup) -and ($null -ne $RoleDef))
+          # TODO: admin account needs to be enabled for current deployment. Azure allow cert authenication for ServicePrincipal, but not
+          # ManagedIdentities. At least, it doesn't not using a VM.
+          # Update-AzContainerRegistry -ResourceGroupName ($Obj.ResourceGroupName) -Name $CRName -DisableAdminUser | Out-Null
 
-      # now that we have AzADGroup.Id, assign it here versus in template.
-      Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName `
-        -ObjectId $AzADGroup.Id `
-        -PermissionsToSecrets set, delete, get | Out-Null
+          # this sleeping is due to a bug (could be fixed now) in template deployments not having resources immediately available.
+          do {
+            Write-Warning "Sleeping for 5 seconds"
+            Start-Sleep -Milliseconds 5000
+
+            $AzADGroup = Get-AzADGroup -DisplayName ($HostName + 'ADG')
+            $RoleDef = Get-AzRoleDefinition -Name ($HostName + ' Contributor') -ErrorAction SilentlyContinue
+
+            if (($null -ne $AzADGroup) -and ($null -ne $RoleDef)) {
+              New-AzRoleAssignment -ObjectId $AzADGroup.Id -RoleDefinitionId $RoleDef.Id -Scope ($RoleDef.AssignableScopes[0]) | `
+                Out-Null
+            }
+
+          } until (($null -ne $AzADGroup) -and ($null -ne $RoleDef))
+
+          # now that we have AzADGroup.Id, assign it here versus in template.
+          Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName `
+            -ObjectId $AzADGroup.Id `
+            -PermissionsToSecrets set, delete, get | Out-Null
+        }
+      }
+      else {
+        return
+      }
+    }
+    else {
+      Write-Verbose "Stage 2 has determined to be by-passed."
     }
   }
   else {
-    Write-Verbose "Stage 1 has been determined to be by-passed."
+    Write-Verbose "Stage 2 has been explicitly set to be by-passed."
   }
 
   Write-StepMessage
@@ -141,8 +160,8 @@ function New-AppDeployment {
   # this variable is used to determine execution flow should check for local image before performing a docker built command.
   $CheckForLocalImage = $false
 
-  # conditional statement is to have user select value for 'imageUri'. if stage 1 was just built, no need to check empty registry
-  if (($Rebuild.IsPresent -eq $false) -or ($SkipStage1 -eq $true)) {
+  # conditional statement is to have user select value for 'imageUri'. if stage 2 was just built, no need to check empty registry
+  if (($Rebuild.IsPresent -eq $false) -or ($SkipStage2.IsPresent -eq $true)) {
 
     Write-Verbose "Attempting to retrieve ContainerRegistry tags. This typically takes a few seconds." -Verbose
 
@@ -163,18 +182,30 @@ function New-AppDeployment {
 
       } -End {
 
+        Write-Host "Press 'S' to skip this stage."
         Write-Host "Press 'ENTER' to halt deployment."
-        $Selection = Read-Host "Select image for deployment and press 'ENTER'"
-
-        if (($Selection -ge $Images.Count) -and ($Selection -le $Images.Count)) {
+        $Selection = Read-Host "Make a selection and press 'ENTER'"
+        # equality checks lower and upper
+        if ($Selection -eq 'S') {
+          $script:Image = $null
+        }
+        elseif (($Selection -ge $Images.Count) -and ($Selection -le $Images.Count)) {
           $script:Image = $Images.Get($Selection - 1)
+        }
+        else {
+          return
         }
       }
 
-      $Image = $script:Image
+      if ($null -eq $script:Image) {
+        $CheckForLocalImage = $true;
+      }
+      else {
+        $Image = $script:Image
+      }
     }
     else {
-      Write-Verbose "No container repository has been found in '$CRName'. Now checking for local image to push."
+      Write-Verbose "No container repository has been found in '$($CRName.ToLower())'. Now checking for local image to push."
       $CheckForLocalImage = $true;
     }
   }
@@ -204,7 +235,7 @@ function New-AppDeployment {
     # if that is not available, build image. Afterwards tag it and push to ContainerRegistry and update app with it.
 
     # since the current Azure context is using the ServicePrincipal created above, we can login and authenicate using its Certificate.
-    Write-Verbose "Executing: 'az acr login --name $CRName'" -Verbose
+    Write-Verbose "Executing: 'az acr login --name $($CRName.ToLower())'" -Verbose
     az acr login --name ($CRName.ToLower()) 2>&1 | Out-Null
 
     # .env file must have NAME and TAG, with values assigned to them
@@ -241,7 +272,7 @@ function New-AppDeployment {
     docker tag $Image $ImageUri 2>&1 | Out-Null
 
     Write-Verbose "Executing: 'docker push $ImageUri'" -Verbose
-    docker push $ImageUri  2>&1 | Out-Null
+    docker push $ImageUri 2>&1 | Out-Null
 
     Write-Verbose "Executing: 'docker logout $LoginServer'"
     docker logout $LoginServer 2>&1 | Out-Null

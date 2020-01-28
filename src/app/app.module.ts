@@ -9,7 +9,6 @@ import { MsalInterceptor, MsalModule } from '@azure/msal-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { Logger } from 'msal';
 import { environment } from 'src/environments/environment';
 import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,12 +23,10 @@ import { metaReducers, ROOT_REDUCERS } from './reducers';
 // tslint:disable-next-line: variable-name
 export function loggerCallback(_logLevel: any, message: any, _piiEnabled: any) {
   // tslint:disable-next-line: prefer-template
-  console.log('[Azure Msal]', message);
+  console.log('client logging' + message);
 }
 
 export const protectedResourceMap: Array<[string, Array<string>]> = [
-  // ['https://buildtodoservice.azurewebsites.net/api/todolist', ['api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user']],
-  // ['https://graph.microsoft.com/v1.0/me', ['user.read']]
   ['https://orldatab2c.onmicrosoft.com/api', ['user.read']],
   ['https://orldatab2c.onmicrosoft.com/api', ['user.write']]
 ];
@@ -113,7 +110,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         authority: environment.azure.authority,
         validateAuthority: false,
         redirectUri: environment.azure.redirectUri,
-        postLogoutRedirectUri: window.location.href,
+        postLogoutRedirectUri: environment.azure.postLogoutRedirectUri,
         navigateToLoginRequestUrl: true,
       },
       /**
@@ -151,10 +148,10 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         isAngular: true,
         unprotectedResources,
         protectedResourceMap: new Map(protectedResourceMap)
-      },
+      }/* ,
       system: {
         logger: new Logger(loggerCallback)
-      }
+      } */
     },
       {
         popUp: !isIE,

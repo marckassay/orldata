@@ -10,6 +10,7 @@ export const environment = {
     authority: 'https://orldatab2c.b2clogin.com/orldatab2c.onmicrosoft.com/B2C_1_signupsignin2',
     // A unique identifier that is used to represent your application on requests made to Azure AD B2C
     clientId: '4ff92049-e2e1-44a0-894d-fd3c7580e8ce',
-    redirectUri: 'https://localhost:4201/auth'
+    redirectUri: 'https://localhost:4201/auth',
+    postLogoutRedirectUri: 'https://localhost:4201/logout',
   }
 };
