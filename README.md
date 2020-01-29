@@ -8,9 +8,13 @@ An Angular app that syndicates to ['Orlando's Open Data'](https://data.cityoforl
 - Docker image consists of: [Alpine](https://hub.docker.com/_/alpine/) for Linux OS; [NGINX](https://www.nginx.com/) for web server; and [Docker-compose](https://docs.docker.com/compose/) to build image.
 - Deployments are automated by utilizing PowerShell [Az](https://docs.microsoft.com/en-us/powershell/azure) module and [az](https://docs.microsoft.com/en-us/cli/azure) executable. These 2 programs are executed in PowerShell to deploy an [ARM template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview) when needed.
 - The underlying API service is provided by [Socrata](https://dev.socrata.com/) where OData query expressions are formed within the app.
-- Image below was composed in [GIMP](https://www.gimp.org/).
+- Image below was composed in [GIMP](https://www.gimp.org/). Animated Gif below was recorded and edited in [ScreenToGif](https://github.com/NickeManarin/ScreenToGif).
 
 ![OrlData](resources/media/homepage_image.png)
+
+<p align="center">
+  <img src="resources/media/orldata_demo.gif" />
+</p>
 
 The UI layout is derived from Angular Material's website, whereas my objective for the UI was to simply utilize Material components by styling and programming them.
 
