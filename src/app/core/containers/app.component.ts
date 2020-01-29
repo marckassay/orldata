@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import * as fromCore from '@core/reducers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'orl-app',
@@ -17,7 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private iconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private store: Store<fromCore.State>
   ) { }
 
   ngOnInit(): void {
@@ -40,11 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
       'linkedin_black',
       this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/linkedin-black.svg')
     );
-
-    /*     this.iconRegistry.addSvgIcon(
-          'linkedin_black',
-          this.domSanitizer.bypassSecurityTrustResourceUrl('./assets/linkedin-black.svg')
-        ); */
 
     this.iconRegistry.addSvgIcon(
       'orlando_fountain',

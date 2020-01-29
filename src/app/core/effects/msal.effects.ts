@@ -40,4 +40,12 @@ export class MsalEffects {
             return of(AppApiActions.logoutIdentityFailure({ errorMsg: err }));
         })
     ));
+
+    // since Msal, does its own broadcasting, orldata just invoke its API
+    guardTokenRequest = createEffect(() => this.actions.pipe(
+        ofType(AppApiActions.catalogGuardTokenRequest),
+        map((value): Observable<boolean> => {
+            return this.service.acquireTokenSilent(value);
+        })
+    ), { dispatch: false });
 }

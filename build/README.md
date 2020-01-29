@@ -51,6 +51,10 @@ For an example of output to a successful initial deployment, see `.\output-of-in
 yarn run deployment
 ```
 
+## Switches
+
+Any of these can be used alone or in combination of others.
+
 ### Rebuild
 
 This is to be used when docker image needs to be built. Since this is applied to deployment command, it will push the image to the registry and update Azure App with it.
@@ -73,12 +77,23 @@ If the desired image has already been published to Azure Container Registry, thi
 
 ```powershell
 yarn run deployment
+
 Press '1' for: orldata:1.0.6
 Press '2' for: orldata:1.0.7
 Press '3' for: orldata:1.0.8
 Press 'ENTER' to halt deployment.
-Select image for deployment and press 'ENTER': 3
+Select image for deployment and press 'ENTER': 2
 ```
+
+### SkipStage2
+
+Skips the ARM template check. When you know that Azure resources don't need to be created or updated, to expedite the deployment process, this can be used.
+
+```powershell
+yarn run deployment -SkipStage2
+```
+
+## More Information
 
 ### Authenticate with Certificate and Authorize with Assigned Role
 

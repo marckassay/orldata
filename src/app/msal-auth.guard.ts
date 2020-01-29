@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import * as Azure from '@azure/msal-angular';
 import * as fromCore from '@core/reducers';
 import { Store } from '@ngrx/store';
-import { map, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { first, mapTo, tap } from 'rxjs/operators';
+import { AppApiActions } from './core/actions';
 import { DialogService } from './core/shared/account-dialog/dialog/dialog.service';
 
 @Injectable({
@@ -15,28 +18,31 @@ export class MsalAuthGuard implements CanActivate {
     constructor(
         protected dialogService: DialogService,
         protected store: Store<fromCore.State>,
-        private router: Router
+        private router: Router,
+        private msal: Azure.MsalService
     ) { }
 
-    canActivate(
-        next: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot): boolean {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
 
-        let isLoggedIn = false;
-        this.store.select(fromCore.getIdentity).pipe(
-            take(1),
-            map(value => value.idp.length > 0),
-        ).subscribe((value) => {
-            isLoggedIn = value;
-        });
+        if (!this.msal.getAccount()) {
 
-        if (isLoggedIn === false) {
-            // arrived using a hard-link that is deeper than catalog, issues arises; so since we now know they are not signed-on
-            // navigate to a non-guarded route.
             this.router.navigate(['catalog']);
             this.dialogService.openDialog();
-        }
 
-        return isLoggedIn;
+            return of(false);
+
+        } else {
+
+            const clientId = this.msal.getCurrentConfiguration().auth.clientId;
+
+            return this.store.select(fromCore.getIdentity).pipe(
+                first(),
+                tap(() => {
+                    this.store.dispatch(AppApiActions.catalogGuardTokenRequest({ scopes: [clientId] }));
+                }),
+                mapTo(true)
+            );
+
+        }
     }
 }

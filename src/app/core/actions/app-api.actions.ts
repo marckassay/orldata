@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { TokenClaimsResponse } from '../services/msal.service';
+import { TokenResponse } from '../services/msal.service';
 
 export const permitsMetadata = createAction(
   '[App API] Permits Metadata',
@@ -31,10 +31,7 @@ export const serviceInactive = createAction(
 
 export const updateIdentityClaimsSuccess = createAction(
   '[MSAL API] Update Identity Claims Success',
-  props<{
-    idp: string;
-    name: string;
-  }>()
+  props<TokenResponse>()
 );
 
 export const updateIdentityClaimsFailure = createAction(
@@ -48,7 +45,7 @@ export const loginClicked = createAction(
 
 export const loginIdentitySuccess = createAction(
   '[MSAL API] Login Identity Success',
-  props<TokenClaimsResponse>()
+  props<TokenResponse>()
 );
 
 export const loginIdentityFailure = createAction(
@@ -65,6 +62,22 @@ export const logoutIdentitySuccess = createAction(
 );
 
 export const logoutIdentityFailure = createAction(
+  '[MSAL API] Logout Identity Failure',
+  props<{ errorMsg: string }>()
+);
+
+export const catalogGuardTokenRequest = createAction(
+  '[Catalog - Guard] Acquire Token Silent',
+  props<{
+    scopes: Array<string>;
+  }>()
+);
+
+export const acquireTokenSilentSuccess = createAction(
+  '[MSAL API] Logout Identity Success'
+);
+
+export const acquireTokenSilentFailure = createAction(
   '[MSAL API] Logout Identity Failure',
   props<{ errorMsg: string }>()
 );

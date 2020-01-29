@@ -9,6 +9,7 @@ import { MsalInterceptor, MsalModule } from '@azure/msal-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
+import { Logger } from 'msal';
 import { environment } from 'src/environments/environment';
 import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,13 +28,12 @@ export function loggerCallback(_logLevel: any, message: any, _piiEnabled: any) {
 }
 
 export const protectedResourceMap: Array<[string, Array<string>]> = [
-  ['https://orldatab2c.onmicrosoft.com/api', ['user.read']],
-  ['https://orldatab2c.onmicrosoft.com/api', ['user.write']]
+  ['https://graph.microsoft.com/', ['offline_access', 'openid']],
+  ['https://orldatab2c.onmicrosoft.com/api/', ['user.read', 'user.write']]
 ];
 
 export const unprotectedResources: Array<string> = [
   'https://dev.socrata.com/foundry/data.cityoforlando.net',
-  'https://localhost',
   'https://www.github.com',
   'https://data.cityoforlando.net'
 ];
@@ -148,10 +148,10 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         isAngular: true,
         unprotectedResources,
         protectedResourceMap: new Map(protectedResourceMap)
-      }/* ,
+	}/*,
       system: {
         logger: new Logger(loggerCallback)
-      } */
+	}*/
     },
       {
         popUp: !isIE,
@@ -176,8 +176,8 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     }),
     */
     EffectsModule.forRoot([
-      RouterEffects,
       MsalEffects,
+      RouterEffects,
     ]),
     ThemePickerModule,
     CoreModule

@@ -3,14 +3,14 @@ import { AppApiActions } from '@app/core/actions';
 import * as fromCore from '@app/core/reducers';
 import * as Azure from '@azure/msal-angular';
 import { Store } from '@ngrx/store';
+import { AuthError, AuthResponse } from 'msal';
 import { from, Observable, of, Subscription } from 'rxjs';
 
-export interface TokenClaimsResponse {
+export interface TokenResponse {
+    uniqueId: string;
     idp: string;
     name: string;
 }
-
-// export type TokenClaimsState =
 
 @Injectable({
     providedIn: 'root',
@@ -42,8 +42,9 @@ export class MsalService {
         /**
          * ref: node_modules/msal/src/AuthResponse.ts
          */
-        this.broadcast.subscribe('msal:loginSuccess', (payload) => {
+        this.broadcast.subscribe('msal:loginSuccess', (payload: AuthResponse) => {
             this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
+                uniqueId: payload.uniqueId,
                 idp: payload.account.idTokenClaims.idp,
                 name: payload.account.idTokenClaims.name,
             }));
@@ -60,8 +61,9 @@ export class MsalService {
         /**
          * ref: node_modules/msal/src/AuthResponse.ts
          */
-        this.broadcast.subscribe('msal:acquireTokenSuccess', (payload) => {
+        this.broadcast.subscribe('msal:acquireTokenSuccess', (payload: AuthResponse) => {
             this.store.dispatch(AppApiActions.updateIdentityClaimsSuccess({
+                uniqueId: payload.uniqueId,
                 idp: payload.account.idTokenClaims.idp,
                 name: payload.account.idTokenClaims.name,
             }));
@@ -80,10 +82,11 @@ export class MsalService {
         return this.msal.getLoginInProgress();
     }
 
-    logIn(): Observable<TokenClaimsResponse> {
+    logIn(): Observable<TokenResponse> {
 
         return from(this.msal.loginPopup().then((value) => {
             return {
+                uniqueId: value.uniqueId,
                 idp: value.account.idTokenClaims.idp,
                 name: value.account.idTokenClaims.name
             };
@@ -93,6 +96,22 @@ export class MsalService {
     logOut(): Observable<void> {
 
         return of(this.msal.logout());
+    }
+
+    acquireTokenSilent(scopes: {}): Observable<boolean> {
+
+        return from(this.msal.acquireTokenSilent(scopes)
+            .then((result: AuthResponse) => {
+                this.broadcast.broadcast('msal:loginSuccess', result);
+
+                return true;
+            })
+            .catch((error: AuthError) => {
+                this.broadcast.broadcast('msal:loginFailure', error);
+
+                return false;
+            })
+        );
     }
 
     // TODO: this service will be needed for the life of app. not sure if this is even neccessary.

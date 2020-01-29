@@ -3,7 +3,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { CrimesService } from '@app/core/services/crimes.service';
 import { PermitsService } from '@app/core/services/permits.service';
 import * as fromCore from '@core/reducers';
-import { createEffect } from '@ngrx/effects';
+import { Actions, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
@@ -14,6 +14,7 @@ export class RouterEffects {
 
   constructor(
     private router: Router,
+    private actions: Actions,
     private permitsSvc: PermitsService,
     private crimesSvc: CrimesService,
     private store: Store<fromCore.State>

@@ -2,12 +2,14 @@ import { AppApiActions } from '@core/actions';
 import { createReducer, on } from '@ngrx/store';
 
 export interface State {
+    uniqueId: string;
     idp: string;
     name: string;
     error: string;
 }
 
 const initialState: State = {
+    uniqueId: '',
     idp: '',
     name: '',
     error: '',
@@ -16,17 +18,14 @@ const initialState: State = {
 export const reducer = createReducer(
     initialState,
     on(AppApiActions.updateIdentityClaimsSuccess,
-        AppApiActions.loginIdentitySuccess, (state, { idp, name }) => ({
-            ...state,
+        AppApiActions.loginIdentitySuccess, (state, { uniqueId, idp, name }) => ({
+            uniqueId,
             idp,
             name,
-            error: '',
+            error: ''
         })),
     on(AppApiActions.logoutIdentitySuccess, (state) => ({
-        ...state,
-        idp: '',
-        name: '',
-        error: '',
+        ...initialState
     })),
     on(AppApiActions.updateIdentityClaimsFailure, (state, { errorMsg }) => ({
         ...initialState,
