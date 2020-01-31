@@ -13,7 +13,7 @@ An Angular app that syndicates to ['Orlando's Open Data'](https://data.cityoforl
 ![OrlData](resources/media/homepage_image.png)
 
 <p align="center">
-  <img src="resources/media/orldata_demo.gif" />
+  <img style="box-shadow: 3px 3px 5px rgba(0, 0, 0, .7);" class="small-shadow" src="resources/media/orldata_demo.gif" />
 </p>
 
 The UI layout is derived from Angular Material's website, whereas my objective for the UI was to simply utilize Material components by styling and programming them.

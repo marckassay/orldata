@@ -10,11 +10,11 @@ The following sections explain about development and production environments:
 
 These development instructions assume you're using VS Code for development. Before running inside VS Code, I find it best to do an initial build via CLI. This can be done by running: `yarn run up:dev`. Afterwards, stop the container and continue the instructions in the next paragraph.
 
-Using VS Code's remote feature to work inside container, execute the 'Remote-Containers: Reopen in Container' command. This command will be seen when typing in the View > Command Palette of VS Code. Or can be executed by a click of the green left-bottom button as shown below:
+Using VS Code's remote feature to develop inside running container, execute the 'Remote-Containers: Reopen in Container' command. This command will be seen when typing in the View > Command Palette of VS Code. Or can be executed by a click of the green left-bottom button as shown below:
 
 ![Open Remote Window](../resources/development/vscode-remote-dev-status-bar.png)
 
-Once VS Code is running in the container, Angular dev server should be hosting OrlData that can be seen by visiting, `https://localhost:4201/` using your host computer's browser. SSL is enabled as a requirement for Azure B2C redirect Uri. And to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot reload is enabled. Also ensure git is enabled.
+Once VS Code is running in the container, Angular dev server should be hosting OrlData that can be seen by visiting, `https://localhost:4201/` using your host computer's browser. The reason I choose to have enable SSL on localhost, was due to a requirement from Azure B2C for redirect Uris. And to start a debug session, select the 'serve orldata' debug configuration. Ensure breakpoints bind and hot reload is enabled. Also ensure git is enabled.
 
 Caveats:
 

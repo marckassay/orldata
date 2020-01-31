@@ -8,12 +8,17 @@
     140
   ],
   "files.autoSave": "off",
+  "files.eol": "\n",
+  "markdown.preview.fontSize": 18,
+  "markdown.styles": [
+    "tools/dev/vscode-readme.css"
+  ],
   "markdownlint.config": {
-    "MD014": false
+    "MD014": false,
+    "MD033": false
   },
   "npm.packageManager": "yarn",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "workbench.settings.editor": "json",
-  "files.eol": "\n"
+  "workbench.settings.editor": "json"
 }

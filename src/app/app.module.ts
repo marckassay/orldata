@@ -9,7 +9,6 @@ import { MsalInterceptor, MsalModule } from '@azure/msal-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { NavigationActionTiming, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { Logger } from 'msal';
 import { environment } from 'src/environments/environment';
 import { AppRouteStrategy } from './app-route-strategy';
 import { AppRoutingModule } from './app-routing.module';
@@ -148,10 +147,10 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         isAngular: true,
         unprotectedResources,
         protectedResourceMap: new Map(protectedResourceMap)
-	}/*,
+      }/* ,
       system: {
         logger: new Logger(loggerCallback)
-	}*/
+      } */
     },
       {
         popUp: !isIE,
